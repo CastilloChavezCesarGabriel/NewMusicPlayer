@@ -6,7 +6,7 @@
 class NoRepeatMode final : public RepeatStrategy {
 public:
     NoRepeatMode();
-    bool apply(Playlist& playlist, IPlaybackListener& listener) override;
+    bool apply(Playlist& playlist) override;
 };
 
 #endif //NO_REPEAT_MODE_H

@@ -2,4 +2,4 @@
 
 RepeatOneMode::RepeatOneMode() : RepeatStrategy(1) {}
 
-bool RepeatOneMode::apply(Playlist&, IPlaybackListener&) { return true; }
+bool RepeatOneMode::apply(Playlist&) { return true; }

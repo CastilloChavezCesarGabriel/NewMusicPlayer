@@ -3,7 +3,7 @@
 
 #include <string>
 #include <memory>
-#include "../model/MusicPlayer.h"
+#include "../model/service/Setlist.h"
 #include "../view/IPlayerView.h"
 #include "../model/SortingAlgorithm.h"
 
@@ -17,7 +17,7 @@ protected:
 public:
     SortMode(const std::string& label, SortingAlgorithm* criteria);
     virtual ~SortMode() = default;
-    virtual void apply(MusicPlayer& musicPlayer);
+    virtual void apply(Setlist& setlist);
     void display(IPlayerView& view) const;
 };
 

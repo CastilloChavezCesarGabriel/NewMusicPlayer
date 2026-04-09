@@ -2,20 +2,20 @@
 #define SORT_CONTROLLER_H
 
 #include "SortMode.h"
-#include "../model/MusicPlayer.h"
+#include "../model/service/Setlist.h"
 #include "../view/IPlayerView.h"
 #include <vector>
 #include <memory>
 
 class SortController {
 private:
-    MusicPlayer& music_player_;
+    Setlist& setlist_;
     IPlayerView& view_;
     std::vector<std::unique_ptr<SortMode>> modes_;
     int index_ = -1;
 
 public:
-    SortController(MusicPlayer& musicPlayer, IPlayerView& view);
+    SortController(Setlist& setlist, IPlayerView& view);
     void cycle();
 };
 

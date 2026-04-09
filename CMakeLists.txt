@@ -50,8 +50,16 @@ add_executable(NewMusicPlayer main.cpp
         model/RepeatAllMode.h
         model/RepeatMode.cpp
         model/RepeatMode.h
-        model/MusicPlayer.cpp
-        model/MusicPlayer.h
+        model/service/Playback.cpp
+        model/service/Playback.h
+        model/service/Library.cpp
+        model/service/Library.h
+        model/service/Setlist.cpp
+        model/service/Setlist.h
+        model/service/Catalog.cpp
+        model/service/Catalog.h
+        model/service/RepeatSwitch.cpp
+        model/service/RepeatSwitch.h
         model/IDice.h
         model/Dice.cpp
         model/Dice.h
@@ -196,8 +204,16 @@ add_executable(NewMusicPlayerTests
         model/RepeatAllMode.h
         model/RepeatMode.cpp
         model/RepeatMode.h
-        model/MusicPlayer.cpp
-        model/MusicPlayer.h
+        model/service/Playback.cpp
+        model/service/Playback.h
+        model/service/Library.cpp
+        model/service/Library.h
+        model/service/Setlist.cpp
+        model/service/Setlist.h
+        model/service/Catalog.cpp
+        model/service/Catalog.h
+        model/service/RepeatSwitch.cpp
+        model/service/RepeatSwitch.h
         model/IDice.h
         model/Dice.cpp
         model/Dice.h

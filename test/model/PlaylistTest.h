@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include "../../model/Playlist.h"
 #include "../../model/MusicLibrary.h"
+#include "../../model/PlaybackNotifier.h"
 #include "../TestPlaylistVisitor.h"
 #include "../MockPlaybackListener.h"
 #include <string>
@@ -15,6 +16,7 @@ protected:
     Playlist*playlist_ = nullptr;
     TestPlaylistVisitor visitor_;
     MockPlaybackListener listener_;
+    PlaybackNotifier notifier_;
 
     void SetUp() override;
     void TearDown() override;

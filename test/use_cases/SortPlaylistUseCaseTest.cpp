@@ -12,20 +12,18 @@ std::string SortPlaylistUseCaseTest::identify() const {
 TEST_F(SortPlaylistUseCaseTest, SortByNameNotifiesChanged) {
     createSong("b.mp3");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     EXPECT_TRUE(listener_.wasChanged());
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortByNumberNotifiesChanged) {
     createSong("b.mp3");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     DurationSort byDuration;
-    musicPlayer.sort(byDuration);
+    setlist_->sort(byDuration);
     EXPECT_TRUE(listener_.wasChanged());
 }
 
@@ -33,48 +31,43 @@ TEST_F(SortPlaylistUseCaseTest, SortByNameOrdersAlphabetically) {
     createSong("cherry.mp3");
     createSong("apple.mp3");
     createSong("banana.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasNameAt(0, "apple.mp3"));
     EXPECT_TRUE(visitor.hasNameAt(1, "banana.mp3"));
     EXPECT_TRUE(visitor.hasNameAt(2, "cherry.mp3"));
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortEmptyPlaylistDoesNotCrash) {
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    EXPECT_NO_THROW(musicPlayer.sort(byTitle));
+    EXPECT_NO_THROW(setlist_->sort(byTitle));
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortEmptyPlaylistNotifiesChanged) {
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     EXPECT_TRUE(listener_.wasChanged());
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortSingleSongDoesNotCrash) {
     createSong("only.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    EXPECT_NO_THROW(musicPlayer.sort(byTitle));
+    EXPECT_NO_THROW(setlist_->sort(byTitle));
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortSingleSongPreserves) {
     createSong("only.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasName("only.mp3"));
     EXPECT_TRUE(visitor.hasSongs(1));
 }
@@ -83,12 +76,11 @@ TEST_F(SortPlaylistUseCaseTest, SortPreservesSongCount) {
     createSong("c.mp3");
     createSong("a.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasSongs(3));
 }
 
@@ -96,12 +88,11 @@ TEST_F(SortPlaylistUseCaseTest, SortPreservesAllSongNames) {
     createSong("c.mp3");
     createSong("a.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasName("a.mp3"));
     EXPECT_TRUE(visitor.hasName("b.mp3"));
     EXPECT_TRUE(visitor.hasName("c.mp3"));
@@ -111,22 +102,20 @@ TEST_F(SortPlaylistUseCaseTest, SortThenPlayFirstSong) {
     createSong("c.mp3");
     createSong("a.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
-    musicPlayer.play(0);
+    setlist_->sort(byTitle);
+    playback_->play(0);
     EXPECT_TRUE(listener_.wasSelected());
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortThenPlaySelectsCorrectIndex) {
     createSong("c.mp3");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
-    musicPlayer.play(0);
+    setlist_->sort(byTitle);
+    playback_->play(0);
     EXPECT_TRUE(listener_.wasSelectedWith(0));
 }
 
@@ -134,12 +123,11 @@ TEST_F(SortPlaylistUseCaseTest, SortThenAdvance) {
     createSong("c.mp3");
     createSong("a.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
-    musicPlayer.play(0);
-    musicPlayer.advance();
+    setlist_->sort(byTitle);
+    playback_->play(0);
+    playback_->advance();
     EXPECT_TRUE(listener_.wasSelectedWith(1));
 }
 
@@ -147,37 +135,34 @@ TEST_F(SortPlaylistUseCaseTest, SortThenRetreat) {
     createSong("c.mp3");
     createSong("a.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
-    musicPlayer.play(1);
-    musicPlayer.retreat();
+    setlist_->sort(byTitle);
+    playback_->play(1);
+    playback_->retreat();
     EXPECT_TRUE(listener_.wasSelectedWith(0));
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortMultipleTimesDoesNotCrash) {
     createSong("b.mp3");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    EXPECT_NO_THROW(musicPlayer.sort(byTitle));
+    EXPECT_NO_THROW(setlist_->sort(byTitle));
     DurationSort byDuration;
-    EXPECT_NO_THROW(musicPlayer.sort(byDuration));
-    EXPECT_NO_THROW(musicPlayer.sort(byTitle));
+    EXPECT_NO_THROW(setlist_->sort(byDuration));
+    EXPECT_NO_THROW(setlist_->sort(byTitle));
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortMultipleTimesNotifiesEachTime) {
     createSong("b.mp3");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
     DurationSort byDuration;
-    musicPlayer.sort(byTitle);
-    musicPlayer.sort(byDuration);
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
+    setlist_->sort(byDuration);
+    setlist_->sort(byTitle);
     EXPECT_TRUE(listener_.wasChangedTimes(3));
 }
 
@@ -185,12 +170,11 @@ TEST_F(SortPlaylistUseCaseTest, SortAlreadySortedPreservesOrder) {
     createSong("a.mp3");
     createSong("b.mp3");
     createSong("c.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasNameAt(0, "a.mp3"));
     EXPECT_TRUE(visitor.hasNameAt(1, "b.mp3"));
     EXPECT_TRUE(visitor.hasNameAt(2, "c.mp3"));
@@ -200,22 +184,20 @@ TEST_F(SortPlaylistUseCaseTest, SortByNumberDoesNotCrash) {
     createSong("c.mp3");
     createSong("a.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     DurationSort byDuration;
-    EXPECT_NO_THROW(musicPlayer.sort(byDuration));
+    EXPECT_NO_THROW(setlist_->sort(byDuration));
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortByNumberPreservesSongCount) {
     createSong("c.mp3");
     createSong("a.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     DurationSort byDuration;
-    musicPlayer.sort(byDuration);
+    setlist_->sort(byDuration);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasSongs(3));
 }
 
@@ -225,13 +207,12 @@ TEST_F(SortPlaylistUseCaseTest, SortAfterInsert) {
     std::string srcDir = base_directory_ + "/src";
     std::filesystem::create_directories(srcDir);
     std::ofstream(srcDir + "/b.mp3") << "audio";
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
-    musicPlayer.insert(srcDir + "/b.mp3");
+    build();
+    library_->insert(srcDir + "/b.mp3");
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasNameAt(0, "a.mp3"));
     EXPECT_TRUE(visitor.hasNameAt(1, "b.mp3"));
     EXPECT_TRUE(visitor.hasNameAt(2, "c.mp3"));
@@ -241,13 +222,12 @@ TEST_F(SortPlaylistUseCaseTest, SortAfterRemove) {
     createSong("c.mp3");
     createSong("a.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
-    musicPlayer.remove(1);
+    setlist_->sort(byTitle);
+    library_->remove(1);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasSongs(2));
     EXPECT_TRUE(visitor.hasName("a.mp3"));
     EXPECT_TRUE(visitor.hasName("c.mp3"));
@@ -256,26 +236,24 @@ TEST_F(SortPlaylistUseCaseTest, SortAfterRemove) {
 TEST_F(SortPlaylistUseCaseTest, SortByNameThenByNumber) {
     createSong("b.mp3");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     DurationSort byDuration;
-    musicPlayer.sort(byDuration);
+    setlist_->sort(byDuration);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasSongs(2));
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortByNameTwoSongs) {
     createSong("z.mp3");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasNameAt(0, "a.mp3"));
     EXPECT_TRUE(visitor.hasNameAt(1, "z.mp3"));
 }
@@ -286,12 +264,11 @@ TEST_F(SortPlaylistUseCaseTest, SortFiveSongsByName) {
     createSong("a.mp3");
     createSong("d.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasNameAt(0, "a.mp3"));
     EXPECT_TRUE(visitor.hasNameAt(1, "b.mp3"));
     EXPECT_TRUE(visitor.hasNameAt(2, "c.mp3"));
@@ -303,12 +280,11 @@ TEST_F(SortPlaylistUseCaseTest, SortThenAcceptVisitsAll) {
     createSong("b.mp3");
     createSong("a.mp3");
     createSong("c.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_FALSE(visitor.isEmpty());
     EXPECT_TRUE(visitor.hasSongs(3));
 }
@@ -316,20 +292,18 @@ TEST_F(SortPlaylistUseCaseTest, SortThenAcceptVisitsAll) {
 TEST_F(SortPlaylistUseCaseTest, SortDoesNotAffectPlayback) {
     createSong("b.mp3");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     EXPECT_FALSE(listener_.wasStarted());
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortDoesNotSelect) {
     createSong("b.mp3");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     EXPECT_FALSE(listener_.wasSelected());
 }
 
@@ -337,25 +311,23 @@ TEST_F(SortPlaylistUseCaseTest, SortThenPlayThenAdvanceThroughAll) {
     createSong("c.mp3");
     createSong("a.mp3");
     createSong("b.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
-    musicPlayer.play(0);
-    musicPlayer.advance();
-    musicPlayer.advance();
+    setlist_->sort(byTitle);
+    playback_->play(0);
+    playback_->advance();
+    playback_->advance();
     EXPECT_TRUE(listener_.wasSelectedWith(2));
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortWavFiles) {
     createSong("b.wav");
     createSong("a.wav");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasNameAt(0, "a.wav"));
     EXPECT_TRUE(visitor.hasNameAt(1, "b.wav"));
 }
@@ -363,21 +335,19 @@ TEST_F(SortPlaylistUseCaseTest, SortWavFiles) {
 TEST_F(SortPlaylistUseCaseTest, SortMixedExtensions) {
     createSong("b.wav");
     createSong("a.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.accept(visitor);
+    catalog_->accept(visitor);
     EXPECT_TRUE(visitor.hasSongs(2));
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortSingleSongNotifiesChanged) {
     createSong("only.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     EXPECT_TRUE(listener_.wasChangedTimes(1));
 }
 
@@ -385,11 +355,10 @@ TEST_F(SortPlaylistUseCaseTest, SortThenSearchFindsCorrectly) {
     createSong("cherry.mp3");
     createSong("apple.mp3");
     createSong("banana.mp3");
-    MusicPlayer musicPlayer(base_directory_, dice_);
-    musicPlayer.subscribe(listener_);
+    build();
     QuickSort byTitle;
-    musicPlayer.sort(byTitle);
+    setlist_->sort(byTitle);
     TestPlaylistVisitor visitor;
-    musicPlayer.search("apple", visitor);
+    catalog_->search("apple", visitor);
     EXPECT_TRUE(visitor.hasName("apple.mp3"));
 }

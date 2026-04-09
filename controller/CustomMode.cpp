@@ -2,6 +2,6 @@
 
 CustomMode::CustomMode() : SortMode("Custom", nullptr) {}
 
-void CustomMode::apply(MusicPlayer& musicPlayer) {
-    musicPlayer.restore();
+void CustomMode::apply(Setlist& setlist) {
+    setlist.restore();
 }

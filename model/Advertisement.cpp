@@ -1,8 +1,8 @@
 #include "Advertisement.h"
 #include "MusicLibrary.h"
 
-Advertisement::Advertisement(const std::string& adsPath, IDice& dice)
-    : path_(adsPath), dice_(dice) {
+Advertisement::Advertisement(const std::string& adsPath, IDice& dice, PlaybackNotifier& notifier)
+    : path_(adsPath), dice_(dice), notifier_(notifier) {
 }
 
 void Advertisement::load() {
@@ -17,23 +17,23 @@ int Advertisement::randomize() const {
     return (dice_.roll(6) + 4) * 1000;
 }
 
-bool Advertisement::interrupt(IPlaybackListener& listener) {
+bool Advertisement::interrupt() {
     if (ads_.empty() || !isScheduled()) return false;
 
     is_playing_ = true;
-    listener.onEnabled(false);
-    listener.onSchedule(randomize());
+    notifier_.onEnabled(false);
+    notifier_.onSchedule(randomize());
 
     const int index = dice_.roll(static_cast<int>(ads_.size())) - 1;
-    listener.onStart(ads_.at(index));
+    notifier_.onStart(ads_.at(index));
     return true;
 }
 
-bool Advertisement::conclude(IPlaybackListener& listener) {
+bool Advertisement::conclude() {
     if (!is_playing_) return false;
     is_playing_ = false;
-    listener.onCancel();
-    listener.onReveal(false);
-    listener.onEnabled(true);
+    notifier_.onCancel();
+    notifier_.onReveal(false);
+    notifier_.onEnabled(true);
     return true;
 }

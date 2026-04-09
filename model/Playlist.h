@@ -4,7 +4,7 @@
 #include "Song.h"
 #include "SortingAlgorithm.h"
 #include "IPlaylistVisitor.h"
-#include "IPlaybackListener.h"
+#include "PlaybackNotifier.h"
 #include "Arrangement.h"
 #include <vector>
 #include <functional>
@@ -14,10 +14,11 @@ private:
     std::vector<Song> songs_;
     Arrangement arrangement_;
     IPlaylistVisitor& deleter_;
+    PlaybackNotifier& notifier_;
     int current_song_ = -1;
 
 public:
-    explicit Playlist(IPlaylistVisitor& deleter);
+    Playlist(IPlaylistVisitor& deleter, PlaybackNotifier& notifier);
 
     void add(const Song& song);
     void remove(int index);
@@ -26,11 +27,11 @@ public:
     void restore();
     void shuffle();
     void clear();
-    void select(int index, IPlaybackListener& listener);
-    void pick(const std::string& name, IPlaybackListener& listener);
-    void advance(IPlaybackListener& listener);
-    void retreat(IPlaybackListener& listener);
-    void play(IPlaylistVisitor& player) const;
+    void select(int index);
+    void pick(const std::string& name);
+    void advance();
+    void retreat();
+    void play() const;
     void accept(IPlaylistVisitor& visitor) const;
     void search(const std::string& query, IPlaylistVisitor& visitor) const;
     bool hasNext() const;
@@ -39,7 +40,7 @@ public:
 private:
     void rearrange(const std::function<void()>& operation);
     void locate(const Song& target);
-    void notify(IPlaybackListener& listener) const;
+    void notify() const;
 };
 
 #endif //PLAYLIST_H

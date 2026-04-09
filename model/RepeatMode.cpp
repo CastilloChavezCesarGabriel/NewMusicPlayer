@@ -16,5 +16,9 @@ void RepeatMode::advance() {
 }
 
 bool RepeatMode::apply() const {
-    return modes_[index_]->apply(playlist_, notifier_);
+    return modes_[index_]->apply(playlist_);
+}
+
+void RepeatMode::stop() const {
+    notifier_.onStopped();
 }

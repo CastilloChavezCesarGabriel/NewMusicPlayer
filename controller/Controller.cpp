@@ -1,9 +1,20 @@
 #include "Controller.h"
 #include "PlaylistRenderer.h"
 
-Controller::Controller(MusicPlayer& musicPlayer, IPlayerView& view) : music_player_(musicPlayer), view_(view),
-          sort_(musicPlayer, view), search_(musicPlayer, view) {
-    music_player_.subscribe(*this);
+Controller::Controller(Playback& playback,
+                       Library& library,
+                       Setlist& setlist,
+                       Catalog& catalog,
+                       RepeatSwitch& repeat_switch,
+                       IPlayerView& view)
+    : playback_(playback),
+      library_(library),
+      setlist_(setlist),
+      catalog_(catalog),
+      repeat_switch_(repeat_switch),
+      view_(view),
+      sort_(setlist, view),
+      search_(catalog, view) {
     view_.add(this);
     refresh();
 }
@@ -54,7 +65,7 @@ void Controller::onStopped() {
 }
 
 void Controller::onPlay(const int index) {
-    music_player_.play(index);
+    playback_.play(index);
 }
 
 void Controller::onToggle() {
@@ -67,36 +78,36 @@ void Controller::onToggle() {
 }
 
 void Controller::onRepeat() {
-    music_player_.repeat();
+    repeat_switch_.cycle();
 }
 
 void Controller::onAdvance() {
-    music_player_.advance();
+    playback_.advance();
 }
 
 void Controller::onRetreat() {
-    music_player_.retreat();
+    playback_.retreat();
 }
 
 void Controller::onAdd() {
     const std::string path = view_.browse();
     if (!path.empty()) {
-        music_player_.insert(path);
+        library_.insert(path);
     }
 }
 
 void Controller::onRemove(const int index) {
     if (view_.confirm("Are you sure you wanna delete this song?")) {
-        music_player_.remove(index);
+        library_.remove(index);
     }
 }
 
 void Controller::onShuffle() {
-    music_player_.shuffle();
+    setlist_.shuffle();
 }
 
 void Controller::onSkip() {
-    music_player_.skip();
+    playback_.skip();
 }
 
 void Controller::onSort() {
@@ -108,13 +119,13 @@ void Controller::onSearch(const std::string& query) {
 }
 
 void Controller::onPick(const std::string& name) {
-    music_player_.pick(name);
+    playback_.pick(name);
     view_.dismiss();
 }
 
 void Controller::onDrop(const std::vector<std::string>& paths) {
     for (const auto& path : paths) {
-        music_player_.insert(path);
+        library_.insert(path);
     }
 }
 
@@ -123,11 +134,11 @@ void Controller::onAdjust(const int volume) {
 }
 
 void Controller::onEnd() {
-    music_player_.end();
+    playback_.end();
 }
 
 void Controller::refresh() const {
     PlaylistRenderer renderer(view_);
-    music_player_.accept(renderer);
+    catalog_.accept(renderer);
     renderer.render();
 }

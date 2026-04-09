@@ -1,9 +1,12 @@
 #include "Playlist.h"
+#include "PlaybackNotifier.h"
+#include "Channel.h"
 #include <random>
 #include <algorithm>
 #include <ranges>
 
-Playlist::Playlist(IPlaylistVisitor& deleter) : deleter_(deleter) {}
+Playlist::Playlist(IPlaylistVisitor& deleter, PlaybackNotifier& notifier)
+    : deleter_(deleter), notifier_(notifier) {}
 
 void Playlist::add(const Song& song) {
     songs_.push_back(song);
@@ -44,9 +47,9 @@ void Playlist::rearrange(const std::function<void()>& operation) {
 }
 
 void Playlist::locate(const Song& target) {
-    for (int i = 0; i < songs_.size(); i++) {
-        if (songs_[i].isEqualTo(target)) {
-            current_song_ = i;
+    for (int index = 0; index < songs_.size(); index++) {
+        if (songs_[index].isEqualTo(target)) {
+            current_song_ = index;
             return;
         }
     }
@@ -54,8 +57,8 @@ void Playlist::locate(const Song& target) {
 }
 
 void Playlist::shuffle() {
-    static std::random_device rd;
-    static std::mt19937 generator(rd());
+    static std::random_device device;
+    static std::mt19937 generator(device());
 
     if (hasSelected()) {
         std::swap(songs_[0], songs_[current_song_]);
@@ -71,43 +74,44 @@ void Playlist::clear() {
     current_song_ = -1;
 }
 
-void Playlist::select(const int index, IPlaybackListener& listener) {
+void Playlist::select(const int index) {
     if (index >= 0 && index < songs_.size()) {
         current_song_ = index;
-        notify(listener);
+        notify();
     }
 }
 
-void Playlist::pick(const std::string& name, IPlaybackListener& listener) {
-    for (int i = 0; i < songs_.size(); i++) {
-        if (songs_[i].matches(name)) {
-            select(i, listener);
+void Playlist::pick(const std::string& name) {
+    for (int index = 0; index < songs_.size(); index++) {
+        if (songs_[index].matches(name)) {
+            select(index);
             return;
         }
     }
 }
 
-void Playlist::advance(IPlaybackListener& listener) {
+void Playlist::advance() {
     if (hasNext()) {
         current_song_++;
-        notify(listener);
+        notify();
     }
 }
 
-void Playlist::retreat(IPlaybackListener& listener) {
+void Playlist::retreat() {
     if (current_song_ > 0) {
         current_song_--;
-        notify(listener);
+        notify();
     }
 }
 
-void Playlist::notify(IPlaybackListener& listener) const {
-    listener.onSelected(current_song_);
+void Playlist::notify() const {
+    notifier_.onSelected(current_song_);
 }
 
-void Playlist::play(IPlaylistVisitor& player) const {
+void Playlist::play() const {
     if (hasSelected()) {
-        songs_[current_song_].accept(player);
+        Channel channel(notifier_);
+        songs_[current_song_].accept(channel);
     }
 }
 

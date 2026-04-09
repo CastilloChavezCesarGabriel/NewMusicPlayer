@@ -2,6 +2,11 @@
 #include "../../model/Advertisement.h"
 #include <fstream>
 
+void AdvertisementTest::SetUp() {
+    DirectoryTestFixture::SetUp();
+    notifier_.add(listener_);
+}
+
 std::string AdvertisementTest::identify() const {
     return "ad_test";
 }
@@ -9,12 +14,12 @@ std::string AdvertisementTest::identify() const {
 TEST_F(AdvertisementTest, LoadFindsAudioFiles) {
     createFile("ad1.mp3");
     createFile("ad2.wav");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
     bool interrupted = false;
     for (int i = 0; i < 100 && !interrupted; i++) {
-        interrupted = ad.interrupt(listener_);
-        if (interrupted) ad.conclude(listener_);
+        interrupted = ad.interrupt();
+        if (interrupted) ad.conclude();
     }
     EXPECT_TRUE(interrupted);
 }
@@ -22,79 +27,79 @@ TEST_F(AdvertisementTest, LoadFindsAudioFiles) {
 TEST_F(AdvertisementTest, LoadIgnoresNonAudioFiles) {
     createFile("readme.txt");
     createFile("image.png");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    EXPECT_FALSE(ad.interrupt(listener_));
+    EXPECT_FALSE(ad.interrupt());
 }
 
 TEST_F(AdvertisementTest, LoadEmptyDirectory) {
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    EXPECT_FALSE(ad.interrupt(listener_));
+    EXPECT_FALSE(ad.interrupt());
 }
 
 TEST_F(AdvertisementTest, LoadNonExistentDirectory) {
-    Advertisement ad("/nonexistent/path", dice_);
+    Advertisement ad("/nonexistent/path", dice_, notifier_);
     ad.load();
-    EXPECT_FALSE(ad.interrupt(listener_));
+    EXPECT_FALSE(ad.interrupt());
 }
 
 TEST_F(AdvertisementTest, InterruptStartsPlayback) {
     createFile("ad.mp3");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    while (!ad.interrupt(listener_)) {}
+    while (!ad.interrupt()) {}
     EXPECT_TRUE(listener_.wasStarted());
 }
 
 TEST_F(AdvertisementTest, InterruptReturnsTrueWithAds) {
     createFile("ad.mp3");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
     bool interrupted = false;
     for (int i = 0; i < 100 && !interrupted; i++) {
-        interrupted = ad.interrupt(listener_);
-        if (interrupted) ad.conclude(listener_);
+        interrupted = ad.interrupt();
+        if (interrupted) ad.conclude();
     }
     EXPECT_TRUE(interrupted);
 }
 
 TEST_F(AdvertisementTest, InterruptReturnsFalseWhenNoAds) {
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    EXPECT_FALSE(ad.interrupt(listener_));
+    EXPECT_FALSE(ad.interrupt());
 }
 
 TEST_F(AdvertisementTest, ConcludeReturnsTrueAfterInterrupt) {
     createFile("ad.mp3");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    while (!ad.interrupt(listener_)) {}
-    EXPECT_TRUE(ad.conclude(listener_));
+    while (!ad.interrupt()) {}
+    EXPECT_TRUE(ad.conclude());
 }
 
 TEST_F(AdvertisementTest, ConcludeReturnsFalseWithoutInterrupt) {
-    Advertisement ad(test_directory_, dice_);
-    EXPECT_FALSE(ad.conclude(listener_));
+    Advertisement ad(test_directory_, dice_, notifier_);
+    EXPECT_FALSE(ad.conclude());
 }
 
 TEST_F(AdvertisementTest, ConcludeReturnsFalseOnSecondCall) {
     createFile("ad.mp3");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    while (!ad.interrupt(listener_)) {}
-    ad.conclude(listener_);
-    EXPECT_FALSE(ad.conclude(listener_));
+    while (!ad.interrupt()) {}
+    ad.conclude();
+    EXPECT_FALSE(ad.conclude());
 }
 
 TEST_F(AdvertisementTest, InterruptAfterConcludeWorks) {
     createFile("ad.mp3");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    while (!ad.interrupt(listener_)) {}
-    ad.conclude(listener_);
-    while (!ad.interrupt(listener_)) {}
-    EXPECT_TRUE(ad.conclude(listener_));
+    while (!ad.interrupt()) {}
+    ad.conclude();
+    while (!ad.interrupt()) {}
+    EXPECT_TRUE(ad.conclude());
 }
 
 TEST_F(AdvertisementTest, LoadMixedFiles) {
@@ -102,81 +107,81 @@ TEST_F(AdvertisementTest, LoadMixedFiles) {
     createFile("readme.txt");
     createFile("ad2.wav");
     createFile("image.jpg");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
     bool interrupted = false;
     for (int i = 0; i < 100 && !interrupted; i++) {
-        interrupted = ad.interrupt(listener_);
-        if (interrupted) ad.conclude(listener_);
+        interrupted = ad.interrupt();
+        if (interrupted) ad.conclude();
     }
     EXPECT_TRUE(interrupted);
 }
 
 TEST_F(AdvertisementTest, InterruptPlaysFromLoadedAds) {
     createFile("only_ad.mp3");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    while (!ad.interrupt(listener_)) {}
+    while (!ad.interrupt()) {}
     EXPECT_TRUE(listener_.wasStarted());
 }
 
 TEST_F(AdvertisementTest, MultipleInterruptsAllStart) {
     createFile("ad.mp3");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    while (!ad.interrupt(listener_)) {}
-    ad.conclude(listener_);
-    while (!ad.interrupt(listener_)) {}
+    while (!ad.interrupt()) {}
+    ad.conclude();
+    while (!ad.interrupt()) {}
     EXPECT_TRUE(listener_.wasStarted());
 }
 
 TEST_F(AdvertisementTest, ConcludeWithoutLoadReturnsFalse) {
-    Advertisement ad(test_directory_, dice_);
-    EXPECT_FALSE(ad.conclude(listener_));
+    Advertisement ad(test_directory_, dice_, notifier_);
+    EXPECT_FALSE(ad.conclude());
 }
 
 TEST_F(AdvertisementTest, LoadMultipleMp3Files) {
     for (int i = 0; i < 8; i++) {
         createFile("ad" + std::to_string(i) + ".mp3");
     }
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
     bool interrupted = false;
     for (int i = 0; i < 100 && !interrupted; i++) {
-        interrupted = ad.interrupt(listener_);
-        if (interrupted) ad.conclude(listener_);
+        interrupted = ad.interrupt();
+        if (interrupted) ad.conclude();
     }
     EXPECT_TRUE(interrupted);
 }
 
 TEST_F(AdvertisementTest, InterruptDoesNotStartWhenEmpty) {
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
-    ad.interrupt(listener_);
+    ad.interrupt();
     EXPECT_FALSE(listener_.wasStarted());
 }
 
 TEST_F(AdvertisementTest, LoadWavFiles) {
     createFile("sound.wav");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
     bool interrupted = false;
     for (int i = 0; i < 100 && !interrupted; i++) {
-        interrupted = ad.interrupt(listener_);
-        if (interrupted) ad.conclude(listener_);
+        interrupted = ad.interrupt();
+        if (interrupted) ad.conclude();
     }
     EXPECT_TRUE(interrupted);
 }
 
 TEST_F(AdvertisementTest, InterruptProducesVariation) {
     createFile("ad.mp3");
-    Advertisement ad(test_directory_, dice_);
+    Advertisement ad(test_directory_, dice_, notifier_);
     ad.load();
     int trueCount = 0;
     for (int i = 0; i < 1000; i++) {
-        if (ad.interrupt(listener_)) {
+        if (ad.interrupt()) {
             trueCount++;
-            ad.conclude(listener_);
+            ad.conclude();
         }
     }
     EXPECT_GT(trueCount, 0);

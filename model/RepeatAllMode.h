@@ -6,7 +6,7 @@
 class RepeatAllMode final : public RepeatStrategy {
 public:
     RepeatAllMode();
-    bool apply(Playlist& playlist, IPlaybackListener& listener) override;
+    bool apply(Playlist& playlist) override;
 };
 
 #endif //REPEAT_ALL_MODE_H

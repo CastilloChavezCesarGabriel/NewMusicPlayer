@@ -2,11 +2,11 @@
 
 RepeatAllMode::RepeatAllMode() : RepeatStrategy(2) {}
 
-bool RepeatAllMode::apply(Playlist& playlist, IPlaybackListener& listener) {
+bool RepeatAllMode::apply(Playlist& playlist) {
     if (playlist.hasNext()) {
-        playlist.advance(listener);
+        playlist.advance();
     } else {
-        playlist.select(0, listener);
+        playlist.select(0);
     }
     return true;
 }
