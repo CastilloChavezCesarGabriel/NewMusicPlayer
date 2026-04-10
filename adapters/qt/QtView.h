@@ -1,7 +1,16 @@
 #ifndef QT_VIEW_H
 #define QT_VIEW_H
 
-#include "../../view/IPlayerView.h"
+#include "../../view/IPlaylistPanel.h"
+#include "../../view/ISearchPanel.h"
+#include "../../view/IControlPanel.h"
+#include "../../view/INotification.h"
+#include "../../view/IDialog.h"
+#include "../../view/IAudioPlayer.h"
+#include "../../view/IPlaybackControl.h"
+#include "../../view/IArrangementControl.h"
+#include "../../view/ILibraryControl.h"
+#include "../../view/IDisplayControl.h"
 #include "QtPlaybackPanel.h"
 #include "QtToolbar.h"
 #include "QtAudioEngine.h"
@@ -13,10 +22,19 @@
 #include <QWidget>
 #include <QLineEdit>
 
-class QtView final : public QWidget, public IPlayerView {
+class QtView final : public QWidget,
+                     public IPlaylistPanel,
+                     public ISearchPanel,
+                     public IControlPanel,
+                     public INotification,
+                     public IDialog,
+                     public IAudioPlayer {
     Q_OBJECT
 private:
-    IPlayerListener* listener_ = nullptr;
+    IPlaybackControl* playback_control_ = nullptr;
+    IArrangementControl* arrangement_control_ = nullptr;
+    ILibraryControl* library_control_ = nullptr;
+    IDisplayControl* display_control_ = nullptr;
     QtPlaybackPanel* playback_ = nullptr;
     QtToolbar* toolbar_ = nullptr;
     QtAudioEngine* audio_;
@@ -27,13 +45,15 @@ private:
     QtDialog* dialog_;
 
     void setup();
-    void wire(QLineEdit* search);
+    void link(QLineEdit* search);
     void bind();
 
 public:
     explicit QtView(QWidget* parent = nullptr);
 
-    void add(IPlayerListener* listener) override;
+    void wire(IPlaybackControl& playback, IArrangementControl& arrangement,
+              ILibraryControl& library, IDisplayControl& display);
+
     void refresh(const std::vector<std::string>& names) override;
     void highlight(int index) override;
     void suggest(const std::vector<std::string>& names) override;

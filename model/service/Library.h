@@ -11,9 +11,9 @@ private:
     MusicDirectory& directory_;
     Tracklist& tracklist_;
     ILibraryListener& library_events_;
-    static constexpr const char* UNSUPPORTED = "Unsupported file type.";
-    static constexpr const char* DUPLICATE = "This song already exists.";
-    static constexpr const char* ADDED = "Song added successfully!";
+    static constexpr auto UNSUPPORTED = "Unsupported file type.";
+    static constexpr auto DUPLICATE = "This song already exists.";
+    static constexpr auto ADDED = "Song added successfully!";
 
 public:
     Library(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& library_events);

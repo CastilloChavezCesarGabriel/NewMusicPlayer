@@ -1,11 +1,11 @@
 #include "QtViewFactory.h"
 
-QtPlaybackPanel* QtViewFactory::createPlayback(IPlayerListener& listener, QWidget* parent) {
-    return new QtPlaybackPanel(listener, parent);
+QtPlaybackPanel* QtViewFactory::createPlayback(IPlaybackControl& playback, IArrangementControl& arrangement, QWidget* parent) {
+    return new QtPlaybackPanel(playback, arrangement, parent);
 }
 
-QtVolumePanel* QtViewFactory::createVolume(IPlayerListener& listener, QWidget* parent) {
-    return new QtVolumePanel(listener, parent);
+QtVolumePanel* QtViewFactory::createVolume(IPlaybackControl& playback, QWidget* parent) {
+    return new QtVolumePanel(playback, parent);
 }
 
 QtToolbar* QtViewFactory::createToolbar(QWidget* parent) {

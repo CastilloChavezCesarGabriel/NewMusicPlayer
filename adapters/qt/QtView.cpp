@@ -10,15 +10,11 @@ QtView::QtView(QWidget* parent) : QWidget(parent) {
     setObjectName("MainWindow");
     audio_ = new QtAudioEngine(this);
 
-    connect(audio_, &QtAudioEngine::endRequested, this, [this]() {
-        listener_->onEnd();
-    });
-
-    connect(audio_, &QtAudioEngine::revealRequested, this, [this]() {
+    QObject::connect(audio_, &QtAudioEngine::revealRequested, this, [this]() {
         toolbar_->reveal(true);
     });
 
-    connect(audio_, &QtAudioEngine::toggleRequested, this, [this](const bool playing) {
+    QObject::connect(audio_, &QtAudioEngine::toggleRequested, this, [this](const bool playing) {
         playback_->toggle(playing);
     });
 
@@ -43,34 +39,42 @@ void QtView::setup() {
     main->addWidget(display_);
     main->addWidget(audio_);
 
-    connect(sort_header_, &QtSortHeader::clickRequested, this, [this]() {
-        listener_->onSort();
+    QObject::connect(sort_header_, &QtSortHeader::clickRequested, this, [this]() {
+        arrangement_control_->onSort();
     });
 
-    wire(search);
+    link(search);
 }
 
-void QtView::wire(QLineEdit* search) {
-    connect(display_, &QtPlaylistDisplay::selectRequested, this, [this](const int index) {
-        listener_->onPlay(index);
+void QtView::link(QLineEdit* search) {
+    QObject::connect(display_, &QtPlaylistDisplay::selectRequested, this, [this](const int index) {
+        playback_control_->onPlay(index);
     });
 
-    connect(search, &QLineEdit::textChanged, this, [this](const QString& text) {
-        listener_->onSearch(text.toStdString());
+    QObject::connect(search, &QLineEdit::textChanged, this, [this](const QString& text) {
+        display_control_->onSearch(text.toStdString());
     });
 
-    connect(search_overlay_, &QtSearchOverlay::selectRequested, this, [this, search](const std::string& name) {
-        listener_->onPick(name);
+    QObject::connect(search_overlay_, &QtSearchOverlay::selectRequested, this, [this, search](const std::string& name) {
+        display_control_->onPick(name);
         search->clear();
     });
 }
 
-void QtView::add(IPlayerListener* listener) {
-    listener_ = listener;
+void QtView::wire(IPlaybackControl& playback, IArrangementControl& arrangement,
+                  ILibraryControl& library, IDisplayControl& display) {
+    playback_control_ = &playback;
+    arrangement_control_ = &arrangement;
+    library_control_ = &library;
+    display_control_ = &display;
+
+    QObject::connect(audio_, &QtAudioEngine::endRequested, this, [this]() {
+        playback_control_->onEnd();
+    });
 
     auto* main = layout();
-    playback_ = QtViewFactory::createPlayback(*listener, this);
-    auto* volume = QtViewFactory::createVolume(*listener, this);
+    playback_ = QtViewFactory::createPlayback(*playback_control_, *arrangement_control_, this);
+    auto* volume = QtViewFactory::createVolume(*playback_control_, this);
     toolbar_ = QtViewFactory::createToolbar(this);
 
     main->addWidget(playback_);
@@ -81,15 +85,15 @@ void QtView::add(IPlayerListener* listener) {
 }
 
 void QtView::bind() {
-    connect(toolbar_, &QtToolbar::addClicked, this, [this]() {
-        listener_->onAdd();
+    QObject::connect(toolbar_, &QtToolbar::addClicked, this, [this]() {
+        library_control_->onAdd();
     });
-    connect(toolbar_, &QtToolbar::removeClicked, display_, &QtPlaylistDisplay::remove);
-    connect(display_, &QtPlaylistDisplay::removeRequested, this, [this](const int index) {
-        listener_->onRemove(index);
+    QObject::connect(toolbar_, &QtToolbar::removeClicked, display_, &QtPlaylistDisplay::remove);
+    QObject::connect(display_, &QtPlaylistDisplay::removeRequested, this, [this](const int index) {
+        library_control_->onRemove(index);
     });
-    connect(toolbar_, &QtToolbar::skipClicked, this, [this]() {
-        listener_->onSkip();
+    QObject::connect(toolbar_, &QtToolbar::skipClicked, this, [this]() {
+        playback_control_->onSkip();
     });
 }
 
@@ -173,5 +177,5 @@ void QtView::dragEnterEvent(QDragEnterEvent* event) {
 
 void QtView::dropEvent(QDropEvent* event) {
     const std::vector<std::string> paths = QtDragDrop::extract(event);
-    if (!paths.empty()) listener_->onDrop(paths);
+    if (!paths.empty()) library_control_->onDrop(paths);
 }

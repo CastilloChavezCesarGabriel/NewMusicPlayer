@@ -4,7 +4,7 @@
 #include "../Tracklist.h"
 #include "../Cursor.h"
 #include "../ILibraryListener.h"
-#include "../SortingAlgorithm.h"
+#include "../ISortingAlgorithm.h"
 #include "../IArrangementStrategy.h"
 
 class Setlist {
@@ -19,7 +19,7 @@ public:
     Setlist(Tracklist& tracklist, Cursor& cursor, ILibraryListener& library_events);
 
     void shuffle() const;
-    void sort(SortingAlgorithm& criteria) const;
+    void sort(ISortingAlgorithm& criteria) const;
     void reverse() const;
     void restore() const;
 };

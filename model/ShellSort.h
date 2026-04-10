@@ -2,7 +2,7 @@
 #define SHELL_SORT_H
 #include "SortingAlgorithm.h"
 
-class ShellSort : public SortingAlgorithm {
+class ShellSort : public ISortingAlgorithm {
 protected:
     long long key_ = 0;
 

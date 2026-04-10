@@ -4,13 +4,15 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QHBoxLayout>
-#include "../../view/IPlayerListener.h"
+#include "../../view/IPlaybackControl.h"
+#include "../../view/IArrangementControl.h"
 #include "IWidgetSetup.h"
 
 class QtPlaybackPanel final : public QWidget, public IWidgetSetup {
     Q_OBJECT
 private:
-    IPlayerListener& player_listener_;
+    IPlaybackControl& playback_;
+    IArrangementControl& arrangement_;
     QPushButton* shuffle_button_;
     QPushButton* toggle_button_;
     QPushButton* repeat_button_;
@@ -20,7 +22,7 @@ private:
     static void paint(QPushButton* button, const std::string& path);
 
 public:
-    explicit QtPlaybackPanel(IPlayerListener& listener, QWidget* parent = nullptr);
+    QtPlaybackPanel(IPlaybackControl& playback, IArrangementControl& arrangement, QWidget* parent = nullptr);
     void setup() override;
     void wire() override;
     void enable(bool state) const;

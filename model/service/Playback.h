@@ -12,17 +12,17 @@ private:
     Advertisement& advertisement_;
     RepeatMode& repeat_mode_;
 
-    void start();
+    void start() const;
 
 public:
     Playback(Cursor& cursor, Advertisement& advertisement, RepeatMode& repeat_mode);
 
-    void play(int index);
-    void pick(const std::string& name);
-    void advance();
-    void retreat();
-    void end();
-    void skip();
+    void play(int index) const;
+    void pick(const std::string& name) const;
+    void advance() const;
+    void retreat() const;
+    void end() const;
+    void skip() const;
 };
 
 #endif //PLAYBACK_H

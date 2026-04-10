@@ -6,9 +6,9 @@
 #include "IArrangementStrategy.h"
 #include <vector>
 
-class SortingAlgorithm : public IArrangementStrategy, public ISongVisitor {
+class ISortingAlgorithm : public IArrangementStrategy, public ISongVisitor {
 public:
-    ~SortingAlgorithm() override = default;
+    ~ISortingAlgorithm() override = default;
     void arrange(std::vector<Song>& songs) override = 0;
 };
 

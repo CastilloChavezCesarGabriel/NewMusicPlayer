@@ -19,7 +19,7 @@ add_executable(NewMusicPlayer main.cpp
         model/Song.h
         model/ISongVisitor.h
         model/IPathVisitor.h
-        model/SortingAlgorithm.h
+        model/ISortingAlgorithm.h
         model/ShellSort.cpp
         model/ShellSort.h
         model/DurationSort.cpp
@@ -100,11 +100,10 @@ add_executable(NewMusicPlayer main.cpp
         view/IControlPanel.h
         view/INotification.h
         view/IDialog.h
-        view/IPlayerView.h
         view/IPlaybackControl.h
         view/ILibraryControl.h
         view/IDisplayControl.h
-        view/IPlayerListener.h
+        view/IArrangementControl.h
         view/IAudioPlayer.h
         controller/PlaylistRenderer.cpp
         controller/PlaylistRenderer.h
@@ -114,12 +113,20 @@ add_executable(NewMusicPlayer main.cpp
         controller/TitleDescending.h
         controller/CustomMode.cpp
         controller/CustomMode.h
-        controller/SortController.cpp
-        controller/SortController.h
         controller/SearchController.cpp
         controller/SearchController.h
-        controller/Controller.cpp
-        controller/Controller.h
+        controller/TrackRelay.cpp
+        controller/TrackRelay.h
+        controller/LibraryRelay.cpp
+        controller/LibraryRelay.h
+        controller/AdRelay.cpp
+        controller/AdRelay.h
+        controller/TransportController.cpp
+        controller/TransportController.h
+        controller/LibraryController.cpp
+        controller/LibraryController.h
+        controller/ArrangementController.cpp
+        controller/ArrangementController.h
         adapters/qt/QtLayoutUtil.cpp
         adapters/qt/QtLayoutUtil.h
         adapters/qt/QtPlaybackPanel.cpp
@@ -216,7 +223,7 @@ add_executable(NewMusicPlayerTests
         model/RepeatBus.h
         model/RepeatListener.cpp
         model/RepeatListener.h
-        model/SortingAlgorithm.h
+        model/ISortingAlgorithm.h
         model/ShellSort.cpp
         model/ShellSort.h
         model/DurationSort.cpp

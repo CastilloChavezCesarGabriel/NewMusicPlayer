@@ -1,10 +1,10 @@
 #ifndef QUICK_SORT_H
 #define QUICK_SORT_H
 
-#include "SortingAlgorithm.h"
+#include "ISortingAlgorithm.h"
 #include <utility>
 
-class QuickSort final : public SortingAlgorithm {
+class QuickSort final : public ISortingAlgorithm {
 private:
     std::string title_;
 

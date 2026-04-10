@@ -10,7 +10,7 @@ private:
 public:
     explicit RepeatSwitch(RepeatMode& repeat_mode);
 
-    void cycle();
+    void cycle() const;
 };
 
 #endif //REPEAT_SWITCH_H

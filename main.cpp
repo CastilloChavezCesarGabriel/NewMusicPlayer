@@ -20,7 +20,13 @@
 #include "model/service/RepeatSwitch.h"
 #include "adapters/qt/QtView.h"
 #include "adapters/qt/QtStyler.h"
-#include "controller/Controller.h"
+#include "controller/TrackRelay.h"
+#include "controller/LibraryRelay.h"
+#include "controller/AdRelay.h"
+#include "controller/TransportController.h"
+#include "controller/LibraryController.h"
+#include "controller/ArrangementController.h"
+#include "controller/SearchController.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -58,11 +64,22 @@ int main(int argc, char *argv[]) {
     RepeatSwitch repeatSwitch(repeatMode);
 
     QtView view;
-    Controller controller(playback, library, setlist, catalog, repeatSwitch, view);
-    trackBus.add(controller);
-    libraryBus.add(controller);
-    adBus.add(controller);
-    repeatBus.add(controller);
+
+    TrackRelay trackRelay(view, view, view);
+    LibraryRelay libraryRelay(catalog, view, view);
+    AdRelay adRelay(view);
+
+    trackBus.add(trackRelay);
+    libraryBus.add(libraryRelay);
+    adBus.add(adRelay);
+    repeatBus.add(adRelay);
+
+    TransportController transport(playback, view, view);
+    LibraryController libraryController(library, view);
+    ArrangementController arrangement(setlist, repeatSwitch, view);
+    SearchController searchController(catalog, playback, view);
+
+    view.wire(transport, arrangement, libraryController, searchController);
 
     view.show();
     return app.exec();

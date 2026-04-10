@@ -1,8 +1,8 @@
 #include "QtVolumePanel.h"
 #include <QHBoxLayout>
 
-QtVolumePanel::QtVolumePanel(IPlayerListener& listener, QWidget* parent)
-    : QWidget(parent), listener_(listener) {
+QtVolumePanel::QtVolumePanel(IPlaybackControl& playback, QWidget* parent)
+    : QWidget(parent), playback_(playback) {
 
     auto* layout = new QHBoxLayout(this);
 
@@ -17,7 +17,7 @@ QtVolumePanel::QtVolumePanel(IPlayerListener& listener, QWidget* parent)
 
     connect(slider_, &QSlider::valueChanged, this, [this](const int value) {
         adjust(value);
-        listener_.onAdjust(value);
+        playback_.onAdjust(value);
     });
 }
 

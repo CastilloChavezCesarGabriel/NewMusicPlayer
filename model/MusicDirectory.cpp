@@ -15,7 +15,7 @@ bool MusicDirectory::contains(const std::string& filename) const {
     return std::filesystem::exists(destination);
 }
 
-void MusicDirectory::erase(const std::string& path) const {
+void MusicDirectory::erase(const std::string& path) {
     std::filesystem::remove(path);
 }
 
