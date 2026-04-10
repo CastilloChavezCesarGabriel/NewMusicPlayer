@@ -2,9 +2,10 @@
 #include "QtLayoutUtil.h"
 #include <QVBoxLayout>
 
-QtSearchOverlay::QtSearchOverlay(QWidget* parent) : QWidget(parent) {
+QtSearchOverlay::QtSearchOverlay(QWidget* parent)
+    : QWidget(parent) {
     setup();
-    setVisible(false);
+    QWidget::setVisible(false);
 }
 
 void QtSearchOverlay::setup() {
@@ -22,8 +23,8 @@ void QtSearchOverlay::setup() {
 
 void QtSearchOverlay::align() {
     if (!parentWidget()) return;
-    const int margin = 8;
-    const int top = 75;
+    constexpr int margin = 8;
+    constexpr int top = 75;
     const int width = parentWidget()->width() - margin * 2;
     const int height = std::min(200, results_->count() * 36 + 8);
     setGeometry(margin, top, width, height);
@@ -42,10 +43,4 @@ void QtSearchOverlay::suggest(const std::vector<std::string>& names) {
 void QtSearchOverlay::dismiss() {
     results_->clear();
     setVisible(false);
-}
-
-void QtSearchOverlay::wire(IDisplayControl& display) {
-    connect(this, &QtSearchOverlay::selectRequested, this, [&display](const std::string& name) {
-        display.onPick(name);
-    });
 }

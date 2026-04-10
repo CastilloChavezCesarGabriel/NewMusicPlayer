@@ -1,44 +1,23 @@
 #include <filesystem>
-#include "model/Tracklist.h"
-#include "model/TracklistSink.h"
-#include "model/Cursor.h"
-#include "model/MusicDirectory.h"
-#include "model/Advertisement.h"
-#include "model/TrackBus.h"
-#include "model/LibraryBus.h"
-#include "model/AdBus.h"
-#include "model/RepeatBus.h"
-#include "model/RepeatListener.h"
-#include "model/RepeatMode.h"
-#include "model/Dice.h"
-#include "model/RandomAdPolicy.h"
-#include "model/ShuffleArrangement.h"
-#include "model/service/Playback.h"
-#include "model/service/Library.h"
-#include "model/service/Setlist.h"
-#include "model/service/Catalog.h"
-#include "model/service/RepeatSwitch.h"
+#include "core/EventFactory.h"
+#include "core/CollectionFactory.h"
+#include "core/PlaybackFactory.h"
+#include "core/ServiceFactory.h"
+#include "core/ControllerFactory.h"
+#include "core/RelayFactory.h"
 #include "adapters/qt/QtView.h"
 #include "adapters/qt/QtStyler.h"
-#include "adapters/qt/QtAudioEngine.h"
-#include "adapters/qt/QtPlaylistDisplay.h"
-#include "adapters/qt/QtSortHeader.h"
-#include "adapters/qt/QtSearchOverlay.h"
-#include "adapters/qt/QtNotification.h"
-#include "adapters/qt/QtDialog.h"
-#include "adapters/qt/QtTransportPanel.h"
-#include "adapters/qt/QtArrangementPanel.h"
-#include "adapters/qt/QtVolumePanel.h"
-#include "adapters/qt/QtToolbar.h"
-#include "controller/TrackRelay.h"
-#include "controller/LibraryRelay.h"
-#include "controller/AdRelay.h"
-#include "controller/RepeatRelay.h"
+#include "adapters/qt/QtViewFactory.h"
+#include "adapters/qt/QtSearchField.h"
+#include "adapters/qt/QtEndConnection.h"
+#include "adapters/qt/QtToggleConnection.h"
+#include "adapters/qt/QtRevealConnection.h"
+#include "adapters/qt/QtSearchFieldConnection.h"
+#include "adapters/qt/QtPickConnection.h"
+#include "adapters/qt/QtClearConnection.h"
+#include "adapters/qt/QtSortConnection.h"
+#include "adapters/qt/QtRemoveConnection.h"
 #include "controller/EnableGroup.h"
-#include "controller/TransportController.h"
-#include "controller/LibraryController.h"
-#include "controller/ArrangementController.h"
-#include "controller/SearchController.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -46,89 +25,100 @@ int main(int argc, char *argv[]) {
     const std::string base = std::filesystem::current_path().string();
     QtStyler::apply(app, base + "/resources/styles.qss");
 
-    Dice dice;
-    TrackBus trackBus;
-    LibraryBus libraryBus;
-    AdBus adBus;
-    RepeatBus repeatBus;
+    // Event buses
+    auto trackBus = EventFactory::createTrackBus();
+    auto libraryBus = EventFactory::createLibraryBus();
+    auto adBus = EventFactory::createAdBus();
+    auto repeatBus = EventFactory::createRepeatBus();
 
-    MusicDirectory musicDirectory(base + "/resources/music");
-    Tracklist tracklist;
-    TracklistSink sink(tracklist);
-    musicDirectory.load(sink);
-
-    Cursor cursor(tracklist, trackBus);
-
-    ShuffleArrangement initialShuffle;
+    // Music collection
+    auto musicDirectory = CollectionFactory::createDirectory(base + "/resources/music");
+    auto tracklist = CollectionFactory::createTracklist();
+    auto sink = CollectionFactory::createSink(tracklist);
+    musicDirectory.load(*sink);
+    auto cursor = CollectionFactory::createCursor(tracklist, trackBus);
+    auto initialShuffle = CollectionFactory::createShuffle();
     tracklist.arrange(initialShuffle);
 
-    RandomAdPolicy adPolicy(dice);
-    Advertisement advertisement(adPolicy, adBus, trackBus);
-    advertisement.load(base + "/resources/announcements");
+    // Playback system
+    auto dice = PlaybackFactory::createDice();
+    auto adPolicy = PlaybackFactory::createAdPolicy(dice);
+    auto advertisement = PlaybackFactory::createAdvertisement(*adPolicy, adBus, trackBus);
+    advertisement->load(base + "/resources/announcements");
+    auto repeatListener = PlaybackFactory::createRepeatListener(repeatBus, trackBus);
+    auto repeatMode = PlaybackFactory::createRepeatMode(*cursor, *repeatListener);
 
-    RepeatListener repeatListener(repeatBus, trackBus);
-    RepeatMode repeatMode(cursor, repeatListener);
+    // Services
+    auto playback = ServiceFactory::createPlayback(*cursor, *advertisement, *repeatMode);
+    auto library = ServiceFactory::createLibrary(musicDirectory, tracklist, libraryBus);
+    auto setlist = ServiceFactory::createSetlist(tracklist, *cursor, libraryBus);
+    auto catalog = ServiceFactory::createCatalog(tracklist);
+    auto repeatSwitch = ServiceFactory::createRepeatSwitch(*repeatMode);
 
-    Playback playback(cursor, advertisement, repeatMode);
-    Library library(musicDirectory, tracklist, libraryBus);
-    Setlist setlist(tracklist, cursor, libraryBus);
-    Catalog catalog(tracklist);
-    RepeatSwitch repeatSwitch(repeatMode);
+    // Layout shell (created early so it can parent notification/dialog)
+    QtView view;
 
-    // Adapter widgets
-    QtAudioEngine audio;
-    QtPlaylistDisplay display;
-    QtSortHeader sortHeader;
-    QtSearchOverlay searchOverlay;
-    QtNotification notification(nullptr);
-    QtDialog dialog(nullptr);
+    // Passive widgets
+    auto* audio = QtViewFactory::createAudio();
+    auto* sortHeader = QtViewFactory::createSortHeader();
+    auto* searchOverlay = QtViewFactory::createSearchOverlay();
+    auto* notification = QtViewFactory::createNotification(&view);
+    auto* dialog = QtViewFactory::createDialog(&view);
 
     // Controllers
-    TransportController transportController(playback, audio, searchOverlay);
-    LibraryController libraryController(library, dialog);
-    ArrangementController arrangementController(setlist, repeatSwitch, sortHeader);
-    SearchController searchController(catalog, playback, searchOverlay);
+    auto transportCtrl = ControllerFactory::createTransport(*playback, *audio, *searchOverlay);
+    auto libraryCtrl = ControllerFactory::createLibrary(*library, *dialog);
+    auto arrangementCtrl = ControllerFactory::createArrangement(*setlist, *repeatSwitch, *sortHeader);
+    auto searchCtrl = ControllerFactory::createSearch(*catalog, *playback, *searchOverlay);
 
-    // Panels that need controller refs
-    QtTransportPanel transport(transportController);
-    QtArrangementPanel arrangement(arrangementController);
-    QtVolumePanel volume(transportController);
-    QtToolbar toolbar;
+    // Active widgets
+    auto* display = QtViewFactory::createDisplay(*transportCtrl, *libraryCtrl);
+    QtSearchField searchField;
+    auto* transport = QtViewFactory::createTransport(*transportCtrl);
+    auto* arrangement = QtViewFactory::createArrangement(*arrangementCtrl);
+    auto* volume = QtViewFactory::createVolume(*transportCtrl);
+    auto* toolbar = QtViewFactory::createToolbar(*transportCtrl, *libraryCtrl);
 
-    // Wire internal adapter signals
-    audio.wire(transportController, transport, toolbar);
-    display.wire(transportController, libraryController);
-    searchOverlay.wire(searchController);
-    sortHeader.wire(arrangementController);
-    toolbar.wire(transportController, libraryController, display);
+    // Connections (cross-layer)
+    QtEndConnection endConnection(*audio, *transportCtrl);
+    QtSearchFieldConnection searchFieldConnection(searchField, *searchCtrl);
+    QtPickConnection pickConnection(*searchOverlay, *searchCtrl);
+    QtClearConnection clearConnection(*searchOverlay, searchField);
+    QtSortConnection sortConnection(*sortHeader, *arrangementCtrl);
+
+    // Connections (adapter-to-adapter)
+    QtToggleConnection toggleConnection(*audio, *transport);
+    QtRevealConnection revealConnection(*audio, *toolbar);
+    QtRemoveConnection removeConnection(*toolbar, *display);
 
     // Enable broadcast
     EnableGroup enableGroup;
-    enableGroup.add(transport);
-    enableGroup.add(toolbar);
-    enableGroup.add(audio);
+    enableGroup.add(*transport);
+    enableGroup.add(*arrangement);
+    enableGroup.add(*toolbar);
+    enableGroup.add(*audio);
 
     // Relays
-    TrackRelay trackRelay(audio, display, enableGroup);
-    LibraryRelay libraryRelay(catalog, display, notification);
-    AdRelay adRelay(enableGroup, audio, toolbar);
-    RepeatRelay repeatRelay(arrangement);
+    auto trackRelay = RelayFactory::createTrackRelay(*audio, *display, enableGroup);
+    auto libraryRelay = RelayFactory::createLibraryRelay(*catalog, *display, *notification);
+    auto adRelay = RelayFactory::createAdRelay(enableGroup, *audio, *toolbar);
+    auto repeatRelay = RelayFactory::createRepeatRelay(*arrangement);
 
-    trackBus.add(trackRelay);
-    libraryBus.add(libraryRelay);
-    adBus.add(adRelay);
-    repeatBus.add(repeatRelay);
+    trackBus.add(*trackRelay);
+    libraryBus.add(*libraryRelay);
+    adBus.add(*adRelay);
+    repeatBus.add(*repeatRelay);
 
     // Layout
-    QtView view;
-    view.place(sortHeader);
-    view.place(display);
-    view.place(audio);
-    view.place(transport);
-    view.place(arrangement);
-    view.place(volume);
-    view.place(toolbar);
-    view.wire(libraryController, searchController);
+    view.place(searchField);
+    view.place(*sortHeader);
+    view.place(*display);
+    view.place(*audio);
+    view.place(*transport);
+    view.place(*arrangement);
+    view.place(*volume);
+    view.place(*toolbar);
+    view.attach(*searchOverlay);
 
     view.show();
     return app.exec();

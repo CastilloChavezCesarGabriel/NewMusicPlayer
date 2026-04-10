@@ -1,9 +1,9 @@
 #include "QtToolbar.h"
-#include "QtPlaylistDisplay.h"
 #include "QtLayoutUtil.h"
 #include <QHBoxLayout>
 
-QtToolbar::QtToolbar(QWidget* parent) : QWidget(parent) {
+QtToolbar::QtToolbar(IPlaybackControl& playback, ILibraryControl& library, QWidget* parent)
+    : QWidget(parent), playback_control_(playback), library_control_(library) {
     setup();
     wire();
 }
@@ -29,18 +29,8 @@ void QtToolbar::wire() {
     connect(add_button_, &QPushButton::clicked, this, &QtToolbar::addClicked);
     connect(remove_button_, &QPushButton::clicked, this, &QtToolbar::removeClicked);
     connect(skip_button_, &QPushButton::clicked, this, &QtToolbar::skipClicked);
-}
-
-void QtToolbar::wire(IPlaybackControl& playback, ILibraryControl& library, QtPlaylistDisplay& display) {
-    connect(this, &QtToolbar::addClicked, this, [&library]() {
-        library.onAdd();
-    });
-
-    connect(this, &QtToolbar::removeClicked, &display, &QtPlaylistDisplay::remove);
-
-    connect(this, &QtToolbar::skipClicked, this, [&playback]() {
-        playback.onSkip();
-    });
+    connect(this, &QtToolbar::addClicked, this, [this]() { library_control_.onAdd(); });
+    connect(this, &QtToolbar::skipClicked, this, [this]() { playback_control_.onSkip(); });
 }
 
 void QtToolbar::enable(const bool state) {

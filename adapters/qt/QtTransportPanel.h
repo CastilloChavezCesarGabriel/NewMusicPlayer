@@ -11,10 +11,10 @@
 class QtTransportPanel final : public QWidget, public IWidgetSetup, public IPlaybackDisplay, public IEnableable {
     Q_OBJECT
 private:
-    IPlaybackControl& playback_;
-    QPushButton* toggle_;
-    QPushButton* next_;
-    QPushButton* previous_;
+    IPlaybackControl& playback_control_;
+    QPushButton* toggle_button_;
+    QPushButton* next_button_;
+    QPushButton* previous_button_;
 
 public:
     explicit QtTransportPanel(IPlaybackControl& playback, QWidget* parent = nullptr);

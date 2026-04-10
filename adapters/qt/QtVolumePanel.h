@@ -8,7 +8,7 @@
 class QtVolumePanel final : public QWidget {
     Q_OBJECT
 private:
-    IPlaybackControl& playback_;
+    IPlaybackControl& playback_control_;
     QSlider* slider_;
     QLabel* label_;
 

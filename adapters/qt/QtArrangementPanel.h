@@ -15,8 +15,6 @@ private:
     QPushButton* shuffle_;
     QPushButton* repeat_;
 
-    static void paint(QPushButton* button, const std::string& path);
-
 public:
     explicit QtArrangementPanel(IArrangementControl& arrangement, QWidget* parent = nullptr);
     void setup() override;

@@ -9,20 +9,19 @@
 #include <QPushButton>
 #include "IWidgetSetup.h"
 
-class QtPlaylistDisplay;
-
 class QtToolbar final : public QWidget, public IWidgetSetup, public IToolbarDisplay, public IEnableable {
     Q_OBJECT
 private:
     QPushButton* add_button_;
     QPushButton* remove_button_;
     QPushButton* skip_button_;
+    IPlaybackControl& playback_control_;
+    ILibraryControl& library_control_;
 
 public:
-    explicit QtToolbar(QWidget* parent = nullptr);
+    QtToolbar(IPlaybackControl& playback, ILibraryControl& library, QWidget* parent = nullptr);
     void setup() override;
     void wire() override;
-    void wire(IPlaybackControl& playback, ILibraryControl& library, QtPlaylistDisplay& display);
     void enable(bool state) override;
     void reveal(bool visible) override;
 

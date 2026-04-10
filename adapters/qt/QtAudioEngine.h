@@ -6,9 +6,6 @@
 #include "../../view/IAudioPlayer.h"
 #include "../../view/ITimingPanel.h"
 #include "../../view/IEnableable.h"
-#include "../../view/IPlaybackControl.h"
-#include "../../view/IPlaybackDisplay.h"
-#include "../../view/IToolbarDisplay.h"
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QAudioOutput>
@@ -25,13 +22,12 @@ private:
     QtProgressPanel* progress_bar_;
 
     void monitor();
-    void start();
+    void start() const;
 
 public:
     explicit QtAudioEngine(QWidget* parent = nullptr);
     void setup() override;
     void wire() override;
-    void wire(IPlaybackControl& playback, IPlaybackDisplay& display, IToolbarDisplay& toolbar);
     void play(const std::string& path) override;
     void resume() override;
     void pause() override;

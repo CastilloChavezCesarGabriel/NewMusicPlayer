@@ -1,9 +1,19 @@
 #include "QtPlaylistDisplay.h"
+#include "QtDragDrop.h"
 #include "QtLayoutUtil.h"
 #include <QVBoxLayout>
 
-QtPlaylistDisplay::QtPlaylistDisplay(QWidget* parent) : QWidget(parent) {
+QtPlaylistDisplay::QtPlaylistDisplay(IPlaybackControl& playback, ILibraryControl& library, QWidget* parent)
+    : QWidget(parent), playback_(playback), library_(library) {
+    setAcceptDrops(true);
     setup();
+
+    connect(this, &QtPlaylistDisplay::selectRequested, this, [this](const int index) {
+        playback_.onPlay(index);
+    });
+    connect(this, &QtPlaylistDisplay::removeRequested, this, [this](const int index) {
+        library_.onRemove(index);
+    });
 }
 
 void QtPlaylistDisplay::setup() {
@@ -42,12 +52,11 @@ void QtPlaylistDisplay::remove() {
     }
 }
 
-void QtPlaylistDisplay::wire(IPlaybackControl& playback, ILibraryControl& library) {
-    connect(this, &QtPlaylistDisplay::selectRequested, this, [&playback](const int index) {
-        playback.onPlay(index);
-    });
+void QtPlaylistDisplay::dragEnterEvent(QDragEnterEvent* event) {
+    QtDragDrop::accept(event);
+}
 
-    connect(this, &QtPlaylistDisplay::removeRequested, this, [&library](const int index) {
-        library.onRemove(index);
-    });
+void QtPlaylistDisplay::dropEvent(QDropEvent* event) {
+    const std::vector<std::string> paths = QtDragDrop::extract(event);
+    if (!paths.empty()) library_.onDrop(paths);
 }

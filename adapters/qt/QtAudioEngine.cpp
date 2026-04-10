@@ -33,35 +33,25 @@ void QtAudioEngine::wire() {
         }
     });
 
+    connect(media_player_, &QMediaPlayer::playbackStateChanged, this, [this]
+        (const QMediaPlayer::PlaybackState state) {
+        emit toggleRequested(state == QMediaPlayer::PlayingState);
+    });
+
     connect(ad_timer_, &QTimer::timeout, this, [this]() {
         emit revealRequested();
     });
 }
 
-void QtAudioEngine::wire(IPlaybackControl& playback, IPlaybackDisplay& display, IToolbarDisplay& toolbar) {
-    connect(this, &QtAudioEngine::endRequested, this, [&playback]() {
-        playback.onEnd();
-    });
-
-    connect(this, &QtAudioEngine::toggleRequested, this, [&display](const bool playing) {
-        display.toggle(playing);
-    });
-
-    connect(this, &QtAudioEngine::revealRequested, this, [&toolbar]() {
-        toolbar.reveal(true);
-    });
-}
-
 void QtAudioEngine::monitor() {
-    auto* devices = new QMediaDevices(this);
+    const auto* devices = new QMediaDevices(this);
     connect(devices, &QMediaDevices::audioOutputsChanged, this, [this]() {
         audio_output_->setDevice(QMediaDevices::defaultAudioOutput());
     });
 }
 
-void QtAudioEngine::start() {
+void QtAudioEngine::start() const {
     media_player_->play();
-    emit toggleRequested(true);
 }
 
 void QtAudioEngine::play(const std::string& path) {
@@ -76,7 +66,6 @@ void QtAudioEngine::resume() {
 
 void QtAudioEngine::pause() {
     media_player_->pause();
-    emit toggleRequested(false);
 }
 
 void QtAudioEngine::stop() {

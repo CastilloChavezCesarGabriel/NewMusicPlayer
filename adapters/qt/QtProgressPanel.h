@@ -6,19 +6,22 @@
 #include <QLabel>
 #include <QMediaPlayer>
 
-class QtProgressPanel final : public QWidget {
+#include "IWidgetSetup.h"
+
+class QtProgressPanel final : public QWidget, public IWidgetSetup {
     Q_OBJECT
 private:
+    QMediaPlayer& media_;
     QSlider* progress_bar_;
     QLabel* elapsed_time_;
     QLabel* total_time_;
 
-    void setup();
-    void wire(QMediaPlayer& media);
     static QString format(qint64 milliseconds);
 
 public:
-    QtProgressPanel(QMediaPlayer& media, QWidget* parent = nullptr);
+    explicit QtProgressPanel(QMediaPlayer& media, QWidget* parent = nullptr);
+    void setup() override;
+    void wire() override;
     void enable(bool state) const;
 };
 

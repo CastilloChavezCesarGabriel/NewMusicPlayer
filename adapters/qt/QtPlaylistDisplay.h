@@ -14,15 +14,20 @@ class QtPlaylistDisplay final : public QWidget, public IPlaylistPanel {
 private:
     QListView* playlist_;
     QStringListModel* list_model_;
+    IPlaybackControl& playback_;
+    ILibraryControl& library_;
 
     void setup();
 
 public:
-    explicit QtPlaylistDisplay(QWidget* parent = nullptr);
+    QtPlaylistDisplay(IPlaybackControl& playback, ILibraryControl& library, QWidget* parent = nullptr);
     void refresh(const std::vector<std::string>& names) override;
     void highlight(int index) override;
     void remove();
-    void wire(IPlaybackControl& playback, ILibraryControl& library);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent* event) override;
+    void dropEvent(QDropEvent* event) override;
 
 signals:
     void selectRequested(int index);

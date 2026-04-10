@@ -2,7 +2,9 @@
 #include "PlaylistRenderer.h"
 
 LibraryRelay::LibraryRelay(Catalog& catalog, IPlaylistPanel& panel, INotification& notification)
-    : catalog_(catalog), panel_(panel), notification_(notification) {}
+    : catalog_(catalog), panel_(panel), notification_(notification) {
+    onChanged();
+}
 
 void LibraryRelay::onChanged() {
     PlaylistRenderer renderer;

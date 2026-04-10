@@ -21,9 +21,3 @@ QtSortHeader::QtSortHeader(QWidget* parent)
 void QtSortHeader::sort(const std::string& label) {
     header_->setText(QString::fromStdString(label));
 }
-
-void QtSortHeader::wire(IArrangementControl& arrangement) {
-    connect(this, &QtSortHeader::clickRequested, this, [&arrangement]() {
-        arrangement.onSort();
-    });
-}

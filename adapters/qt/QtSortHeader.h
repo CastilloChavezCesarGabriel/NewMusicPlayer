@@ -2,7 +2,6 @@
 #define QT_SORT_HEADER_H
 
 #include "../../view/ISortDisplay.h"
-#include "../../view/IArrangementControl.h"
 #include <QPushButton>
 #include <string>
 
@@ -14,7 +13,6 @@ private:
 public:
     explicit QtSortHeader(QWidget* parent = nullptr);
     void sort(const std::string& label) override;
-    void wire(IArrangementControl& arrangement);
 
 signals:
     void clickRequested();

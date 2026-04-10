@@ -2,9 +2,9 @@
 #include <QHBoxLayout>
 
 QtProgressPanel::QtProgressPanel(QMediaPlayer& media, QWidget* parent)
-    : QWidget(parent) {
+    : QWidget(parent), media_(media) {
     setup();
-    wire(media);
+    wire();
 }
 
 void QtProgressPanel::setup() {
@@ -22,21 +22,21 @@ void QtProgressPanel::setup() {
     layout->addWidget(total_time_);
 }
 
-void QtProgressPanel::wire(QMediaPlayer& media) {
-    connect(&media, &QMediaPlayer::positionChanged, this, [this](const qint64 position) {
+void QtProgressPanel::wire() {
+    connect(&media_, &QMediaPlayer::positionChanged, this, [this](const qint64 position) {
         if (!progress_bar_->isSliderDown()) {
             progress_bar_->setValue(static_cast<int>(position));
         }
         elapsed_time_->setText(format(position));
     });
 
-    connect(&media, &QMediaPlayer::durationChanged, this, [this](const qint64 duration) {
+    connect(&media_, &QMediaPlayer::durationChanged, this, [this](const qint64 duration) {
         progress_bar_->setMaximum(static_cast<int>(duration));
         total_time_->setText(format(duration));
     });
 
-    connect(progress_bar_, &QSlider::sliderReleased, this, [&media, this]() {
-        media.setPosition(progress_bar_->value());
+    connect(progress_bar_, &QSlider::sliderReleased, this, [this]() {
+        media_.setPosition(progress_bar_->value());
     });
 }
 

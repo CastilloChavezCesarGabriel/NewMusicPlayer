@@ -162,12 +162,44 @@ add_executable(NewMusicPlayer main.cpp
         adapters/qt/QtDialog.h
         adapters/qt/QtDragDrop.cpp
         adapters/qt/QtDragDrop.h
+        adapters/qt/QtIconPainter.cpp
+        adapters/qt/QtIconPainter.h
         adapters/qt/QtViewFactory.cpp
         adapters/qt/QtViewFactory.h
         adapters/qt/QtStyler.cpp
         adapters/qt/QtStyler.h
+        adapters/qt/QtSearchField.cpp
+        adapters/qt/QtSearchField.h
+        adapters/qt/QtEndConnection.cpp
+        adapters/qt/QtEndConnection.h
+        adapters/qt/QtToggleConnection.cpp
+        adapters/qt/QtToggleConnection.h
+        adapters/qt/QtRevealConnection.cpp
+        adapters/qt/QtRevealConnection.h
+        adapters/qt/QtSearchFieldConnection.cpp
+        adapters/qt/QtSearchFieldConnection.h
+        adapters/qt/QtPickConnection.cpp
+        adapters/qt/QtPickConnection.h
+        adapters/qt/QtClearConnection.cpp
+        adapters/qt/QtClearConnection.h
+        adapters/qt/QtSortConnection.cpp
+        adapters/qt/QtSortConnection.h
+        adapters/qt/QtRemoveConnection.cpp
+        adapters/qt/QtRemoveConnection.h
         adapters/qt/QtView.cpp
         adapters/qt/QtView.h
+        core/EventFactory.cpp
+        core/EventFactory.h
+        core/CollectionFactory.cpp
+        core/CollectionFactory.h
+        core/PlaybackFactory.cpp
+        core/PlaybackFactory.h
+        core/ServiceFactory.cpp
+        core/ServiceFactory.h
+        core/ControllerFactory.cpp
+        core/ControllerFactory.h
+        core/RelayFactory.cpp
+        core/RelayFactory.h
 )
 
 add_custom_target(CopyResources ALL
