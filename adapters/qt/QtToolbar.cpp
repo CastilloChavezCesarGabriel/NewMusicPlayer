@@ -1,4 +1,5 @@
 #include "QtToolbar.h"
+#include "QtPlaylistDisplay.h"
 #include "QtLayoutUtil.h"
 #include <QHBoxLayout>
 
@@ -14,7 +15,7 @@ void QtToolbar::setup() {
     add_button_->setObjectName("add_button");
     remove_button_ = new QPushButton("Remove Song", this);
     remove_button_->setObjectName("remove_button");
-    skip_button_ = new QPushButton("⏭", this);
+    skip_button_ = new QPushButton("\xe2\x8f\xad", this);
     skip_button_->setObjectName("skip_button");
     skip_button_->setVisible(false);
 
@@ -30,11 +31,23 @@ void QtToolbar::wire() {
     connect(skip_button_, &QPushButton::clicked, this, &QtToolbar::skipClicked);
 }
 
-void QtToolbar::enable(const bool state) const {
+void QtToolbar::wire(IPlaybackControl& playback, ILibraryControl& library, QtPlaylistDisplay& display) {
+    connect(this, &QtToolbar::addClicked, this, [&library]() {
+        library.onAdd();
+    });
+
+    connect(this, &QtToolbar::removeClicked, &display, &QtPlaylistDisplay::remove);
+
+    connect(this, &QtToolbar::skipClicked, this, [&playback]() {
+        playback.onSkip();
+    });
+}
+
+void QtToolbar::enable(const bool state) {
     add_button_->setEnabled(state);
     remove_button_->setEnabled(state);
 }
 
-void QtToolbar::reveal(const bool visible) const {
+void QtToolbar::reveal(const bool visible) {
     skip_button_->setVisible(visible);
 }

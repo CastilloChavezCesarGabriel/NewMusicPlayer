@@ -7,6 +7,6 @@ void SortMode::apply(Setlist& setlist) {
     setlist.sort(*criteria_);
 }
 
-void SortMode::display(IControlPanel& control) const {
-    control.sort(label_);
+void SortMode::display(ISortDisplay& sort_display) const {
+    sort_display.sort(label_);
 }

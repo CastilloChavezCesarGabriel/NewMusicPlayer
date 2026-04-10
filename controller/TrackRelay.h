@@ -4,16 +4,16 @@
 #include "../model/ITrackListener.h"
 #include "../view/IAudioPlayer.h"
 #include "../view/IPlaylistPanel.h"
-#include "../view/IControlPanel.h"
+#include "../view/IEnableable.h"
 
 class TrackRelay final : public ITrackListener {
 private:
     IAudioPlayer& audio_;
     IPlaylistPanel& panel_;
-    IControlPanel& control_;
+    IEnableable& enable_;
 
 public:
-    TrackRelay(IAudioPlayer& audio, IPlaylistPanel& panel, IControlPanel& control);
+    TrackRelay(IAudioPlayer& audio, IPlaylistPanel& panel, IEnableable& enable);
     void onStart(const std::string& path) override;
     void onSelected(int index) override;
     void onStopped() override;

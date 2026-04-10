@@ -1,6 +1,6 @@
 #ifndef SHELL_SORT_H
 #define SHELL_SORT_H
-#include "SortingAlgorithm.h"
+#include "ISortingAlgorithm.h"
 
 class ShellSort : public ISortingAlgorithm {
 protected:

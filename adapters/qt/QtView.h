@@ -1,77 +1,25 @@
 #ifndef QT_VIEW_H
 #define QT_VIEW_H
 
-#include "../../view/IPlaylistPanel.h"
-#include "../../view/ISearchPanel.h"
-#include "../../view/IControlPanel.h"
-#include "../../view/INotification.h"
-#include "../../view/IDialog.h"
-#include "../../view/IAudioPlayer.h"
-#include "../../view/IPlaybackControl.h"
-#include "../../view/IArrangementControl.h"
 #include "../../view/ILibraryControl.h"
 #include "../../view/IDisplayControl.h"
-#include "QtPlaybackPanel.h"
-#include "QtToolbar.h"
-#include "QtAudioEngine.h"
-#include "QtPlaylistDisplay.h"
-#include "QtSortHeader.h"
-#include "QtSearchOverlay.h"
-#include "QtNotification.h"
-#include "QtDialog.h"
 #include <QWidget>
-#include <QLineEdit>
 
-class QtView final : public QWidget,
-                     public IPlaylistPanel,
-                     public ISearchPanel,
-                     public IControlPanel,
-                     public INotification,
-                     public IDialog,
-                     public IAudioPlayer {
+class QLineEdit;
+class QVBoxLayout;
+
+class QtView final : public QWidget {
     Q_OBJECT
 private:
-    IPlaybackControl* playback_control_ = nullptr;
-    IArrangementControl* arrangement_control_ = nullptr;
+    QVBoxLayout* layout_;
+    QLineEdit* search_field_;
     ILibraryControl* library_control_ = nullptr;
     IDisplayControl* display_control_ = nullptr;
-    QtPlaybackPanel* playback_ = nullptr;
-    QtToolbar* toolbar_ = nullptr;
-    QtAudioEngine* audio_;
-    QtPlaylistDisplay* display_;
-    QtSortHeader* sort_header_;
-    QtSearchOverlay* search_overlay_;
-    QtNotification* notification_;
-    QtDialog* dialog_;
-
-    void setup();
-    void link(QLineEdit* search);
-    void bind();
 
 public:
     explicit QtView(QWidget* parent = nullptr);
-
-    void wire(IPlaybackControl& playback, IArrangementControl& arrangement,
-              ILibraryControl& library, IDisplayControl& display);
-
-    void refresh(const std::vector<std::string>& names) override;
-    void highlight(int index) override;
-    void suggest(const std::vector<std::string>& names) override;
-    void dismiss() override;
-    void enable(bool state) override;
-    void reveal(bool visible) override;
-    void schedule(int delay) override;
-    void cancel() override;
-    void repeat(int mode) override;
-    void sort(const std::string& label) override;
-    void notify(const std::string& message, bool success) override;
-    bool confirm(const std::string& message) override;
-    std::string browse() override;
-    void play(const std::string& path) override;
-    void resume() override;
-    void pause() override;
-    void stop() override;
-    void adjust(int volume) override;
+    void place(QWidget& widget);
+    void wire(ILibraryControl& library, IDisplayControl& display);
 
 protected:
     void dragEnterEvent(QDragEnterEvent* event) override;

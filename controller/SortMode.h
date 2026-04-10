@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 #include "../model/service/Setlist.h"
-#include "../view/IControlPanel.h"
+#include "../view/ISortDisplay.h"
 #include "../model/ISortingAlgorithm.h"
 
 class SortMode {
@@ -18,7 +18,7 @@ public:
     SortMode(const std::string& label, ISortingAlgorithm* criteria);
     virtual ~SortMode() = default;
     virtual void apply(Setlist& setlist);
-    void display(IControlPanel& control) const;
+    void display(ISortDisplay& sort_display) const;
 };
 
 #endif //SORT_MODE_H

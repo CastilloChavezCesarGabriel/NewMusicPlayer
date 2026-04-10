@@ -1,7 +1,11 @@
 #include "QtViewFactory.h"
 
-QtPlaybackPanel* QtViewFactory::createPlayback(IPlaybackControl& playback, IArrangementControl& arrangement, QWidget* parent) {
-    return new QtPlaybackPanel(playback, arrangement, parent);
+QtTransportPanel* QtViewFactory::createTransport(IPlaybackControl& playback, QWidget* parent) {
+    return new QtTransportPanel(playback, parent);
+}
+
+QtArrangementPanel* QtViewFactory::createArrangement(IArrangementControl& arrangement, QWidget* parent) {
+    return new QtArrangementPanel(arrangement, parent);
 }
 
 QtVolumePanel* QtViewFactory::createVolume(IPlaybackControl& playback, QWidget* parent) {

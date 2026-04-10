@@ -18,6 +18,12 @@ QtSortHeader::QtSortHeader(QWidget* parent)
     connect(header_, &QPushButton::clicked, this, &QtSortHeader::clickRequested);
 }
 
-void QtSortHeader::display(const std::string& text) const {
-    header_->setText(QString::fromStdString(text));
+void QtSortHeader::sort(const std::string& label) {
+    header_->setText(QString::fromStdString(label));
+}
+
+void QtSortHeader::wire(IArrangementControl& arrangement) {
+    connect(this, &QtSortHeader::clickRequested, this, [&arrangement]() {
+        arrangement.onSort();
+    });
 }

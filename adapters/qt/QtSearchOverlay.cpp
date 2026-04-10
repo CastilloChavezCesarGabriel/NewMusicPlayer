@@ -29,7 +29,7 @@ void QtSearchOverlay::align() {
     setGeometry(margin, top, width, height);
 }
 
-void QtSearchOverlay::display(const std::vector<std::string>& names) {
+void QtSearchOverlay::suggest(const std::vector<std::string>& names) {
     results_->clear();
     for (const auto& name : names) {
         results_->addItem(QString::fromStdString(name));
@@ -39,7 +39,13 @@ void QtSearchOverlay::display(const std::vector<std::string>& names) {
     raise();
 }
 
-void QtSearchOverlay::clear() {
+void QtSearchOverlay::dismiss() {
     results_->clear();
     setVisible(false);
+}
+
+void QtSearchOverlay::wire(IDisplayControl& display) {
+    connect(this, &QtSearchOverlay::selectRequested, this, [&display](const std::string& name) {
+        display.onPick(name);
+    });
 }

@@ -20,9 +20,21 @@
 #include "model/service/RepeatSwitch.h"
 #include "adapters/qt/QtView.h"
 #include "adapters/qt/QtStyler.h"
+#include "adapters/qt/QtAudioEngine.h"
+#include "adapters/qt/QtPlaylistDisplay.h"
+#include "adapters/qt/QtSortHeader.h"
+#include "adapters/qt/QtSearchOverlay.h"
+#include "adapters/qt/QtNotification.h"
+#include "adapters/qt/QtDialog.h"
+#include "adapters/qt/QtTransportPanel.h"
+#include "adapters/qt/QtArrangementPanel.h"
+#include "adapters/qt/QtVolumePanel.h"
+#include "adapters/qt/QtToolbar.h"
 #include "controller/TrackRelay.h"
 #include "controller/LibraryRelay.h"
 #include "controller/AdRelay.h"
+#include "controller/RepeatRelay.h"
+#include "controller/EnableGroup.h"
 #include "controller/TransportController.h"
 #include "controller/LibraryController.h"
 #include "controller/ArrangementController.h"
@@ -63,23 +75,60 @@ int main(int argc, char *argv[]) {
     Catalog catalog(tracklist);
     RepeatSwitch repeatSwitch(repeatMode);
 
-    QtView view;
+    // Adapter widgets
+    QtAudioEngine audio;
+    QtPlaylistDisplay display;
+    QtSortHeader sortHeader;
+    QtSearchOverlay searchOverlay;
+    QtNotification notification(nullptr);
+    QtDialog dialog(nullptr);
 
-    TrackRelay trackRelay(view, view, view);
-    LibraryRelay libraryRelay(catalog, view, view);
-    AdRelay adRelay(view);
+    // Controllers
+    TransportController transportController(playback, audio, searchOverlay);
+    LibraryController libraryController(library, dialog);
+    ArrangementController arrangementController(setlist, repeatSwitch, sortHeader);
+    SearchController searchController(catalog, playback, searchOverlay);
+
+    // Panels that need controller refs
+    QtTransportPanel transport(transportController);
+    QtArrangementPanel arrangement(arrangementController);
+    QtVolumePanel volume(transportController);
+    QtToolbar toolbar;
+
+    // Wire internal adapter signals
+    audio.wire(transportController, transport, toolbar);
+    display.wire(transportController, libraryController);
+    searchOverlay.wire(searchController);
+    sortHeader.wire(arrangementController);
+    toolbar.wire(transportController, libraryController, display);
+
+    // Enable broadcast
+    EnableGroup enableGroup;
+    enableGroup.add(transport);
+    enableGroup.add(toolbar);
+    enableGroup.add(audio);
+
+    // Relays
+    TrackRelay trackRelay(audio, display, enableGroup);
+    LibraryRelay libraryRelay(catalog, display, notification);
+    AdRelay adRelay(enableGroup, audio, toolbar);
+    RepeatRelay repeatRelay(arrangement);
 
     trackBus.add(trackRelay);
     libraryBus.add(libraryRelay);
     adBus.add(adRelay);
-    repeatBus.add(adRelay);
+    repeatBus.add(repeatRelay);
 
-    TransportController transport(playback, view, view);
-    LibraryController libraryController(library, view);
-    ArrangementController arrangement(setlist, repeatSwitch, view);
-    SearchController searchController(catalog, playback, view);
-
-    view.wire(transport, arrangement, libraryController, searchController);
+    // Layout
+    QtView view;
+    view.place(sortHeader);
+    view.place(display);
+    view.place(audio);
+    view.place(transport);
+    view.place(arrangement);
+    view.place(volume);
+    view.place(toolbar);
+    view.wire(libraryController, searchController);
 
     view.show();
     return app.exec();

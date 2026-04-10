@@ -2,20 +2,22 @@
 #define AD_RELAY_H
 
 #include "../model/IAdListener.h"
-#include "../model/IRepeatListener.h"
-#include "../view/IControlPanel.h"
+#include "../view/IEnableable.h"
+#include "../view/ITimingPanel.h"
+#include "../view/IToolbarDisplay.h"
 
-class AdRelay final : public IAdListener, public IRepeatListener {
+class AdRelay final : public IAdListener {
 private:
-    IControlPanel& control_;
+    IEnableable& enable_;
+    ITimingPanel& timing_;
+    IToolbarDisplay& toolbar_;
 
 public:
-    explicit AdRelay(IControlPanel& control);
+    AdRelay(IEnableable& enable, ITimingPanel& timing, IToolbarDisplay& toolbar);
     void onEnabled(bool state) override;
     void onSchedule(int delay) override;
     void onCancel() override;
     void onReveal(bool visible) override;
-    void onRepeatChanged(RepeatModeKind kind) override;
 };
 
 #endif //AD_RELAY_H

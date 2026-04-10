@@ -3,6 +3,12 @@
 
 #include "QtProgressPanel.h"
 #include "IWidgetSetup.h"
+#include "../../view/IAudioPlayer.h"
+#include "../../view/ITimingPanel.h"
+#include "../../view/IEnableable.h"
+#include "../../view/IPlaybackControl.h"
+#include "../../view/IPlaybackDisplay.h"
+#include "../../view/IToolbarDisplay.h"
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QAudioOutput>
@@ -10,7 +16,7 @@
 #include <QTimer>
 #include <string>
 
-class QtAudioEngine final : public QWidget, public IWidgetSetup {
+class QtAudioEngine final : public QWidget, public IWidgetSetup, public IAudioPlayer, public ITimingPanel, public IEnableable {
     Q_OBJECT
 private:
     QMediaPlayer* media_player_;
@@ -25,14 +31,15 @@ public:
     explicit QtAudioEngine(QWidget* parent = nullptr);
     void setup() override;
     void wire() override;
-    void play(const std::string& path);
-    void resume();
-    void pause();
-    void stop() const;
-    void adjust(double volume) const;
-    void schedule(int milliseconds) const;
-    void cancel() const;
-    void enable(bool state) const;
+    void wire(IPlaybackControl& playback, IPlaybackDisplay& display, IToolbarDisplay& toolbar);
+    void play(const std::string& path) override;
+    void resume() override;
+    void pause() override;
+    void stop() override;
+    void adjust(int volume) override;
+    void schedule(int milliseconds) override;
+    void cancel() override;
+    void enable(bool state) override;
 
 signals:
     void endRequested();

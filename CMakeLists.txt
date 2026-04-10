@@ -97,7 +97,6 @@ add_executable(NewMusicPlayer main.cpp
         model/FileMetadata.h
         view/IPlaylistPanel.h
         view/ISearchPanel.h
-        view/IControlPanel.h
         view/INotification.h
         view/IDialog.h
         view/IPlaybackControl.h
@@ -105,6 +104,12 @@ add_executable(NewMusicPlayer main.cpp
         view/IDisplayControl.h
         view/IArrangementControl.h
         view/IAudioPlayer.h
+        view/IEnableable.h
+        view/ITimingPanel.h
+        view/ISortDisplay.h
+        view/IPlaybackDisplay.h
+        view/IRepeatDisplay.h
+        view/IToolbarDisplay.h
         controller/PlaylistRenderer.cpp
         controller/PlaylistRenderer.h
         controller/SortMode.cpp
@@ -121,6 +126,10 @@ add_executable(NewMusicPlayer main.cpp
         controller/LibraryRelay.h
         controller/AdRelay.cpp
         controller/AdRelay.h
+        controller/RepeatRelay.cpp
+        controller/RepeatRelay.h
+        controller/EnableGroup.cpp
+        controller/EnableGroup.h
         controller/TransportController.cpp
         controller/TransportController.h
         controller/LibraryController.cpp
@@ -129,8 +138,10 @@ add_executable(NewMusicPlayer main.cpp
         controller/ArrangementController.h
         adapters/qt/QtLayoutUtil.cpp
         adapters/qt/QtLayoutUtil.h
-        adapters/qt/QtPlaybackPanel.cpp
-        adapters/qt/QtPlaybackPanel.h
+        adapters/qt/QtTransportPanel.cpp
+        adapters/qt/QtTransportPanel.h
+        adapters/qt/QtArrangementPanel.cpp
+        adapters/qt/QtArrangementPanel.h
         adapters/qt/QtVolumePanel.cpp
         adapters/qt/QtVolumePanel.h
         adapters/qt/QtToolbar.cpp
