@@ -5,8 +5,8 @@
 
 class NoRepeatMode final : public RepeatStrategy {
 public:
-    NoRepeatMode();
-    bool apply(Playlist& playlist) override;
+    bool apply(Cursor& cursor) override;
+    RepeatModeKind identify() const override;
 };
 
 #endif //NO_REPEAT_MODE_H

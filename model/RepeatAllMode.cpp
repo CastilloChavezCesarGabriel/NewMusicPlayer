@@ -1,12 +1,14 @@
 #include "RepeatAllMode.h"
 
-RepeatAllMode::RepeatAllMode() : RepeatStrategy(2) {}
-
-bool RepeatAllMode::apply(Playlist& playlist) {
-    if (playlist.hasNext()) {
-        playlist.advance();
+bool RepeatAllMode::apply(Cursor& cursor) {
+    if (cursor.hasNext()) {
+        cursor.advance();
     } else {
-        playlist.select(0);
+        cursor.select(0);
     }
     return true;
+}
+
+RepeatModeKind RepeatAllMode::identify() const {
+    return RepeatModeKind::All;
 }

@@ -2,20 +2,20 @@
 #define REPEAT_MODE_H
 
 #include "RepeatStrategy.h"
-#include "Playlist.h"
-#include "PlaybackNotifier.h"
+#include "Cursor.h"
+#include "RepeatListener.h"
 #include <vector>
 #include <memory>
 
 class RepeatMode {
 private:
-    Playlist& playlist_;
-    PlaybackNotifier& notifier_;
+    Cursor& cursor_;
+    RepeatListener& listener_;
     std::vector<std::unique_ptr<RepeatStrategy>> modes_;
     int index_ = 0;
 
 public:
-    RepeatMode(Playlist& playlist, PlaybackNotifier& notifier);
+    RepeatMode(Cursor& cursor, RepeatListener& listener);
     void advance();
     bool apply() const;
     void stop() const;

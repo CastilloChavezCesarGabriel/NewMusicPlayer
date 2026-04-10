@@ -1,5 +1,4 @@
 #include "ModelTestFixture.h"
-#include "../model/Song.h"
 #include <filesystem>
 #include <fstream>
 
@@ -9,7 +8,10 @@ void ModelTestFixture::SetUp() {
     ads_directory_ = base_directory_ + "/announcements";
     std::filesystem::create_directories(music_directory_);
     std::filesystem::create_directories(ads_directory_);
-    notifier_.add(listener_);
+    track_bus_.add(listener_);
+    library_bus_.add(listener_);
+    ad_bus_.add(listener_);
+    repeat_bus_.add(listener_);
 }
 
 void ModelTestFixture::TearDown() {
@@ -25,21 +27,25 @@ void ModelTestFixture::createAd(const std::string& name) const {
 }
 
 void ModelTestFixture::build() {
-    music_library_ = std::make_unique<MusicLibrary>(music_directory_);
-    playlist_ = std::make_unique<Playlist>(*music_library_, notifier_);
-    for (const Song& song : music_library_->load()) {
-        playlist_->add(song);
-    }
-    playlist_->shuffle();
+    directory_ = std::make_unique<MusicDirectory>(music_directory_);
+    tracklist_ = std::make_unique<Tracklist>();
+    sink_ = std::make_unique<TracklistSink>(*tracklist_);
+    directory_->load(*sink_);
+    cursor_ = std::make_unique<Cursor>(*tracklist_, track_bus_);
 
-    advertisement_ = std::make_unique<Advertisement>(ads_directory_, dice_, notifier_);
-    advertisement_->load();
+    ShuffleArrangement initial;
+    tracklist_->arrange(initial);
 
-    repeat_mode_ = std::make_unique<RepeatMode>(*playlist_, notifier_);
+    ad_policy_ = std::make_unique<RandomAdPolicy>(dice_);
+    advertisement_ = std::make_unique<Advertisement>(*ad_policy_, ad_bus_, track_bus_);
+    advertisement_->load(ads_directory_);
 
-    playback_ = std::make_unique<Playback>(*playlist_, *advertisement_, *repeat_mode_);
-    library_ = std::make_unique<Library>(*music_library_, *playlist_, notifier_);
-    setlist_ = std::make_unique<Setlist>(*playlist_, notifier_);
-    catalog_ = std::make_unique<Catalog>(*playlist_);
+    repeat_listener_ = std::make_unique<RepeatListener>(repeat_bus_, track_bus_);
+    repeat_mode_ = std::make_unique<RepeatMode>(*cursor_, *repeat_listener_);
+
+    playback_ = std::make_unique<Playback>(*cursor_, *advertisement_, *repeat_mode_);
+    library_ = std::make_unique<Library>(*directory_, *tracklist_, library_bus_);
+    setlist_ = std::make_unique<Setlist>(*tracklist_, *cursor_, library_bus_);
+    catalog_ = std::make_unique<Catalog>(*tracklist_);
     repeat_switch_ = std::make_unique<RepeatSwitch>(*repeat_mode_);
 }

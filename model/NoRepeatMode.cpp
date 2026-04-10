@@ -1,9 +1,11 @@
 #include "NoRepeatMode.h"
 
-NoRepeatMode::NoRepeatMode() : RepeatStrategy(0) {}
-
-bool NoRepeatMode::apply(Playlist& playlist) {
-    if (!playlist.hasNext()) return false;
-    playlist.advance();
+bool NoRepeatMode::apply(Cursor& cursor) {
+    if (!cursor.hasNext()) return false;
+    cursor.advance();
     return true;
+}
+
+RepeatModeKind NoRepeatMode::identify() const {
+    return RepeatModeKind::None;
 }

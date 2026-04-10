@@ -1,19 +1,22 @@
 #ifndef LIBRARY_H
 #define LIBRARY_H
 
-#include "../MusicLibrary.h"
-#include "../Playlist.h"
-#include "../PlaybackNotifier.h"
+#include "../MusicDirectory.h"
+#include "../Tracklist.h"
+#include "../ILibraryListener.h"
 #include <string>
 
 class Library {
 private:
-    MusicLibrary& music_library_;
-    Playlist& playlist_;
-    PlaybackNotifier& notifier_;
+    MusicDirectory& directory_;
+    Tracklist& tracklist_;
+    ILibraryListener& library_events_;
+    static constexpr const char* UNSUPPORTED = "Unsupported file type.";
+    static constexpr const char* DUPLICATE = "This song already exists.";
+    static constexpr const char* ADDED = "Song added successfully!";
 
 public:
-    Library(MusicLibrary& music_library, Playlist& playlist, PlaybackNotifier& notifier);
+    Library(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& library_events);
 
     void insert(const std::string& filePath) const;
     void remove(int index) const;

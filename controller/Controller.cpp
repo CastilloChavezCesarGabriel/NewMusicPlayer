@@ -49,8 +49,8 @@ void Controller::onCancel() {
     view_.cancel();
 }
 
-void Controller::onRepeatChanged(const int mode) {
-    view_.repeat(mode);
+void Controller::onRepeatChanged(const RepeatModeKind kind) {
+    view_.repeat(static_cast<int>(kind));
 }
 
 void Controller::onFeedback(const std::string& message, const bool success) {

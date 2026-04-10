@@ -1,9 +1,9 @@
 #include "Channel.h"
 
-Channel::Channel(IPlaybackListener& listener)
-    : listener_(listener) {
+Channel::Channel(ITrackListener& tracks)
+    : tracks_(tracks) {
 }
 
-void Channel::visit(const std::string&, const std::string& path) {
-    listener_.onStart(path);
+void Channel::visit(const std::string& path) {
+    tracks_.onStart(path);
 }

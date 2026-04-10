@@ -1,11 +1,11 @@
 #include "Catalog.h"
 
-Catalog::Catalog(Playlist& playlist) : playlist_(playlist) {}
+Catalog::Catalog(Tracklist& tracklist) : tracklist_(tracklist) {}
 
-void Catalog::accept(IPlaylistVisitor& visitor) const {
-    playlist_.accept(visitor);
+void Catalog::accept(ISongVisitor& visitor) const {
+    tracklist_.accept(visitor);
 }
 
-void Catalog::search(const std::string& query, IPlaylistVisitor& visitor) const {
-    playlist_.search(query, visitor);
+void Catalog::search(const std::string& query, ISongVisitor& visitor) const {
+    tracklist_.search(query, visitor);
 }

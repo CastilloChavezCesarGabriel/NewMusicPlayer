@@ -5,8 +5,8 @@
 
 class RepeatAllMode final : public RepeatStrategy {
 public:
-    RepeatAllMode();
-    bool apply(Playlist& playlist) override;
+    bool apply(Cursor& cursor) override;
+    RepeatModeKind identify() const override;
 };
 
 #endif //REPEAT_ALL_MODE_H

@@ -1,11 +1,18 @@
 #include <filesystem>
-#include "model/Playlist.h"
-#include "model/MusicLibrary.h"
+#include "model/Tracklist.h"
+#include "model/TracklistSink.h"
+#include "model/Cursor.h"
+#include "model/MusicDirectory.h"
 #include "model/Advertisement.h"
-#include "model/PlaybackNotifier.h"
+#include "model/TrackBus.h"
+#include "model/LibraryBus.h"
+#include "model/AdBus.h"
+#include "model/RepeatBus.h"
+#include "model/RepeatListener.h"
 #include "model/RepeatMode.h"
-#include "model/Song.h"
 #include "model/Dice.h"
+#include "model/RandomAdPolicy.h"
+#include "model/ShuffleArrangement.h"
 #include "model/service/Playback.h"
 #include "model/service/Library.h"
 #include "model/service/Setlist.h"
@@ -22,29 +29,40 @@ int main(int argc, char *argv[]) {
     QtStyler::apply(app, base + "/resources/styles.qss");
 
     Dice dice;
-    PlaybackNotifier notifier;
+    TrackBus trackBus;
+    LibraryBus libraryBus;
+    AdBus adBus;
+    RepeatBus repeatBus;
 
-    MusicLibrary musicLibrary(base + "/resources/music");
-    Playlist playlist(musicLibrary, notifier);
-    for (const Song& song : musicLibrary.load()) {
-        playlist.add(song);
-    }
-    playlist.shuffle();
+    MusicDirectory musicDirectory(base + "/resources/music");
+    Tracklist tracklist;
+    TracklistSink sink(tracklist);
+    musicDirectory.load(sink);
 
-    Advertisement advertisement(base + "/resources/announcements", dice, notifier);
-    advertisement.load();
+    Cursor cursor(tracklist, trackBus);
 
-    RepeatMode repeatMode(playlist, notifier);
+    ShuffleArrangement initialShuffle;
+    tracklist.arrange(initialShuffle);
 
-    Playback playback(playlist, advertisement, repeatMode);
-    Library library(musicLibrary, playlist, notifier);
-    Setlist setlist(playlist, notifier);
-    Catalog catalog(playlist);
+    RandomAdPolicy adPolicy(dice);
+    Advertisement advertisement(adPolicy, adBus, trackBus);
+    advertisement.load(base + "/resources/announcements");
+
+    RepeatListener repeatListener(repeatBus, trackBus);
+    RepeatMode repeatMode(cursor, repeatListener);
+
+    Playback playback(cursor, advertisement, repeatMode);
+    Library library(musicDirectory, tracklist, libraryBus);
+    Setlist setlist(tracklist, cursor, libraryBus);
+    Catalog catalog(tracklist);
     RepeatSwitch repeatSwitch(repeatMode);
 
     QtView view;
     Controller controller(playback, library, setlist, catalog, repeatSwitch, view);
-    notifier.add(controller);
+    trackBus.add(controller);
+    libraryBus.add(controller);
+    adBus.add(controller);
+    repeatBus.add(controller);
 
     view.show();
     return app.exec();

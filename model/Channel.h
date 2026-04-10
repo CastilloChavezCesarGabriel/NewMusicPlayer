@@ -1,16 +1,16 @@
 #ifndef CHANNEL_H
 #define CHANNEL_H
 
-#include "IPlaylistVisitor.h"
-#include "IPlaybackListener.h"
+#include "IPathVisitor.h"
+#include "ITrackListener.h"
 
-class Channel final : public IPlaylistVisitor {
+class Channel final : public IPathVisitor {
 private:
-    IPlaybackListener& listener_;
+    ITrackListener& tracks_;
 
 public:
-    explicit Channel(IPlaybackListener& listener);
-    void visit(const std::string& name, const std::string& path) override;
+    explicit Channel(ITrackListener& tracks);
+    void visit(const std::string& path) override;
 };
 
 #endif //CHANNEL_H

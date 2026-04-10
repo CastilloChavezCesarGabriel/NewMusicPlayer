@@ -1,26 +1,24 @@
 #ifndef ADVERTISEMENT_H
 #define ADVERTISEMENT_H
 
-#include "PlaybackNotifier.h"
-#include "IDice.h"
+#include "IAdListener.h"
+#include "ITrackListener.h"
+#include "IAdPolicy.h"
 #include <string>
 #include <vector>
 
 class Advertisement {
 private:
     std::vector<std::string> ads_;
-    std::string path_;
-    IDice& dice_;
-    PlaybackNotifier& notifier_;
+    IAdPolicy& policy_;
+    IAdListener& ads_events_;
+    ITrackListener& tracks_;
     bool is_playing_ = false;
 
-    bool isScheduled() const;
-    int randomize() const;
-
 public:
-    Advertisement(const std::string& adsPath, IDice& dice, PlaybackNotifier& notifier);
+    Advertisement(IAdPolicy& policy, IAdListener& ads_events, ITrackListener& tracks);
 
-    void load();
+    void load(const std::string& adsPath);
     bool interrupt();
     bool conclude();
 };

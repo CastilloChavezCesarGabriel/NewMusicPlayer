@@ -5,7 +5,7 @@ void QuickSort::visit(const std::string& name, const std::string&) {
     title_ = Song::parse(name);
 }
 
-void QuickSort::sort(std::vector<Song>& songs) {
+void QuickSort::arrange(std::vector<Song>& songs) {
     if (songs.empty()) return;
 
     std::stack<std::pair<int, int>> stack;

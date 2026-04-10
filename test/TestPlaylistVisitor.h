@@ -1,17 +1,19 @@
 #ifndef TEST_PLAYLIST_VISITOR_H
 #define TEST_PLAYLIST_VISITOR_H
 
-#include "../model/IPlaylistVisitor.h"
+#include "../model/ISongVisitor.h"
+#include "../model/IPathVisitor.h"
 #include <string>
 #include <vector>
 
-class TestPlaylistVisitor final : public IPlaylistVisitor {
+class TestPlaylistVisitor final : public ISongVisitor, public IPathVisitor {
 private:
     std::vector<std::string> names_;
     std::vector<std::string> paths_;
 
 public:
     void visit(const std::string& name, const std::string& path) override;
+    void visit(const std::string& path) override;
 
     bool hasName(const std::string& name) const;
     bool hasPath(const std::string& path) const;

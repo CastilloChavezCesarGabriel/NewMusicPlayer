@@ -1,11 +1,14 @@
 #include "RegressionTest.h"
 #include "../model/Song.h"
-#include "../model/Playlist.h"
-#include "../model/MusicLibrary.h"
-#include "../model/PlaybackNotifier.h"
+#include "../model/Tracklist.h"
+#include "../model/Cursor.h"
+#include "../model/TrackBus.h"
+#include "../model/AdBus.h"
 #include "../model/Dice.h"
+#include "../model/RandomAdPolicy.h"
 #include "../model/DurationSort.h"
 #include "../model/QuickSort.h"
+#include "../model/ShuffleArrangement.h"
 #include "TestPlaylistVisitor.h"
 #include <filesystem>
 #include <fstream>
@@ -15,28 +18,22 @@ std::string RegressionTest::identify() const {
 }
 
 TEST_F(RegressionTest, SortEmptyPlaylistDoesNotCrash) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
+    Tracklist tracklist;
     QuickSort byName;
-    EXPECT_NO_THROW(playlist.sort(byName));
+    EXPECT_NO_THROW(tracklist.arrange(byName));
 }
 
 TEST_F(RegressionTest, SortSingleSongDoesNotCrash) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
-    playlist.add(Song("A.mp3", "/a"));
+    Tracklist tracklist;
+    tracklist.add(Song("A.mp3", "/a"));
     QuickSort byName;
-    EXPECT_NO_THROW(playlist.sort(byName));
+    EXPECT_NO_THROW(tracklist.arrange(byName));
 }
 
 TEST_F(RegressionTest, ShellSortEmptyDoesNotCrash) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
+    Tracklist tracklist;
     DurationSort byNumber;
-    EXPECT_NO_THROW(playlist.sort(byNumber));
+    EXPECT_NO_THROW(tracklist.arrange(byNumber));
 }
 
 TEST_F(RegressionTest, ModelRefreshDoesNotRecurse) {
@@ -87,15 +84,16 @@ TEST_F(RegressionTest, RetreatUpdatesSelection) {
 }
 
 TEST_F(RegressionTest, RemoveBeforeCurrentAdjustsSelection) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
-    playlist.add(Song("A.mp3", "/a"));
-    playlist.add(Song("B.mp3", "/b"));
-    playlist.add(Song("C.mp3", "/c"));
-    playlist.select(2);
-    playlist.remove(0);
-    EXPECT_TRUE(playlist.hasSelected());
+    TrackBus trackBus;
+    Tracklist tracklist;
+    Cursor cursor(tracklist, trackBus);
+    tracklist.add(Song("A.mp3", "/a"));
+    tracklist.add(Song("B.mp3", "/b"));
+    tracklist.add(Song("C.mp3", "/c"));
+    cursor.select(2);
+    TestPlaylistVisitor sink;
+    tracklist.discard(0, sink);
+    EXPECT_TRUE(cursor.hasSelected());
 }
 
 TEST_F(RegressionTest, QuickSortPartitionDoesNotUnderflow) {
@@ -104,7 +102,7 @@ TEST_F(RegressionTest, QuickSortPartitionDoesNotUnderflow) {
         Song("A.mp3", "/a")
     };
     QuickSort sorter;
-    EXPECT_NO_THROW(sorter.sort(songs));
+    EXPECT_NO_THROW(sorter.arrange(songs));
 }
 
 TEST_F(RegressionTest, InsertUnsupportedFileGivesFeedback) {
@@ -137,15 +135,14 @@ TEST_F(RegressionTest, SortPreservesAllSongs) {
 }
 
 TEST_F(RegressionTest, ShufflePreservesAllSongs) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
+    Tracklist tracklist;
     for (int i = 0; i < 20; i++) {
-        playlist.add(Song(std::to_string(i) + ".mp3", "/s"));
+        tracklist.add(Song(std::to_string(i) + ".mp3", "/s"));
     }
-    playlist.shuffle();
+    ShuffleArrangement strat;
+    tracklist.arrange(strat);
     TestPlaylistVisitor visitor;
-    playlist.accept(visitor);
+    tracklist.accept(visitor);
     EXPECT_TRUE(visitor.hasSongs(20));
 }
 
@@ -158,40 +155,42 @@ TEST_F(RegressionTest, RepeatCycles) {
 }
 
 TEST_F(RegressionTest, RemoveFromEmptyPlaylistDoesNotCrash) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
-    EXPECT_NO_THROW(playlist.remove(0));
+    Tracklist tracklist;
+    TestPlaylistVisitor sink;
+    EXPECT_NO_THROW(tracklist.discard(0, sink));
 }
 
 TEST_F(RegressionTest, RemoveNegativeIndexDoesNotCrash) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
-    playlist.add(Song("A.mp3", "/a"));
-    EXPECT_NO_THROW(playlist.remove(-1));
+    Tracklist tracklist;
+    tracklist.add(Song("A.mp3", "/a"));
+    TestPlaylistVisitor sink;
+    EXPECT_NO_THROW(tracklist.discard(-1, sink));
 }
 
 TEST_F(RegressionTest, SelectInvalidIndexDoesNotCrash) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
-    EXPECT_NO_THROW(playlist.select(999));
+    TrackBus trackBus;
+    Tracklist tracklist;
+    Cursor cursor(tracklist, trackBus);
+    EXPECT_NO_THROW(cursor.select(999));
 }
 
 TEST_F(RegressionTest, PlayWithNoSelectionDoesNotCrash) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
-    playlist.add(Song("A.mp3", "/a"));
-    EXPECT_NO_THROW(playlist.play());
+    TrackBus trackBus;
+    Tracklist tracklist;
+    Cursor cursor(tracklist, trackBus);
+    tracklist.add(Song("A.mp3", "/a"));
+    EXPECT_NO_THROW(cursor.play());
 }
 
 TEST_F(RegressionTest, ConcludeWithoutInterruptReturnsFalse) {
     Dice dice;
-    PlaybackNotifier notifier;
-    notifier.add(listener_);
-    Advertisement ad(ads_directory_, dice, notifier);
+    RandomAdPolicy adPolicy(dice);
+    AdBus adBus;
+    TrackBus trackBus;
+    adBus.add(listener_);
+    trackBus.add(listener_);
+    Advertisement ad(adPolicy, adBus, trackBus);
+    ad.load(ads_directory_);
     EXPECT_FALSE(ad.conclude());
 }
 
@@ -223,14 +222,12 @@ TEST_F(RegressionTest, SortThenAdvanceWorks) {
 }
 
 TEST_F(RegressionTest, LargePlaylistSortDoesNotCrash) {
-    MusicLibrary lib(music_directory_);
-    PlaybackNotifier notifier;
-    Playlist playlist(lib, notifier);
+    Tracklist tracklist;
     for (int i = 500; i > 0; i--) {
-        playlist.add(Song("(" + std::to_string(i) + ") Song.mp3", "/s"));
+        tracklist.add(Song("(" + std::to_string(i) + ") Song.mp3", "/s"));
     }
     DurationSort byNumber;
-    EXPECT_NO_THROW(playlist.sort(byNumber));
+    EXPECT_NO_THROW(tracklist.arrange(byNumber));
     QuickSort byName;
-    EXPECT_NO_THROW(playlist.sort(byName));
+    EXPECT_NO_THROW(tracklist.arrange(byName));
 }

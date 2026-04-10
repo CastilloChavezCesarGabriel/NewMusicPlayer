@@ -6,6 +6,10 @@ void TestPlaylistVisitor::visit(const std::string& name, const std::string& path
     paths_.push_back(path);
 }
 
+void TestPlaylistVisitor::visit(const std::string& path) {
+    paths_.push_back(path);
+}
+
 bool TestPlaylistVisitor::hasName(const std::string& name) const {
     return std::ranges::find(names_, name) != names_.end();
 }

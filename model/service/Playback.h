@@ -1,19 +1,21 @@
 #ifndef PLAYBACK_H
 #define PLAYBACK_H
 
-#include "../Playlist.h"
+#include "../Cursor.h"
 #include "../Advertisement.h"
 #include "../RepeatMode.h"
 #include <string>
 
 class Playback {
 private:
-    Playlist& playlist_;
+    Cursor& cursor_;
     Advertisement& advertisement_;
     RepeatMode& repeat_mode_;
 
+    void start();
+
 public:
-    Playback(Playlist& playlist, Advertisement& advertisement, RepeatMode& repeat_mode);
+    Playback(Cursor& cursor, Advertisement& advertisement, RepeatMode& repeat_mode);
 
     void play(int index);
     void pick(const std::string& name);

@@ -1,7 +1,8 @@
 #ifndef SONG_H
 #define SONG_H
 
-#include "IPlaylistVisitor.h"
+#include "ISongVisitor.h"
+#include "IPathVisitor.h"
 #include <string>
 
 class Song {
@@ -14,7 +15,8 @@ private:
 public:
     Song(const std::string& name, const std::string& path);
 
-    void accept(IPlaylistVisitor& visitor) const;
+    void accept(ISongVisitor& visitor) const;
+    void stream(IPathVisitor& visitor) const;
     bool matches(const std::string& query) const;
     bool isEqualTo(const Song& other) const;
     static std::string parse(const std::string& name);

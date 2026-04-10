@@ -2,13 +2,14 @@
 #define SORTING_ALGORITHM_H
 
 #include "Song.h"
-#include "IPlaylistVisitor.h"
+#include "ISongVisitor.h"
+#include "IArrangementStrategy.h"
 #include <vector>
 
-class SortingAlgorithm : public IPlaylistVisitor {
+class SortingAlgorithm : public IArrangementStrategy, public ISongVisitor {
 public:
     ~SortingAlgorithm() override = default;
-    virtual void sort(std::vector<Song>& songs) = 0;
+    void arrange(std::vector<Song>& songs) override = 0;
 };
 
 #endif //SORTING_ALGORITHM_H

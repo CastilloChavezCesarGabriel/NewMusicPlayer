@@ -1,5 +1,7 @@
 #include "RepeatOneMode.h"
 
-RepeatOneMode::RepeatOneMode() : RepeatStrategy(1) {}
+bool RepeatOneMode::apply(Cursor&) { return true; }
 
-bool RepeatOneMode::apply(Playlist&) { return true; }
+RepeatModeKind RepeatOneMode::identify() const {
+    return RepeatModeKind::One;
+}

@@ -27,7 +27,7 @@ void MockPlaybackListener::onCancel() {
     cancels_++;
 }
 
-void MockPlaybackListener::onRepeatChanged(int) {}
+void MockPlaybackListener::onRepeatChanged(RepeatModeKind) {}
 
 void MockPlaybackListener::onFeedback(const std::string& message, bool) {
     feedbacks_.push_back(message);

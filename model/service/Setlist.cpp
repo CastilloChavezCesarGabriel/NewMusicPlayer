@@ -1,24 +1,34 @@
 #include "Setlist.h"
+#include "../ShuffleArrangement.h"
+#include "../ReverseArrangement.h"
 
-Setlist::Setlist(Playlist& playlist, PlaybackNotifier& notifier)
-    : playlist_(playlist), notifier_(notifier) {}
+Setlist::Setlist(Tracklist& tracklist, Cursor& cursor, ILibraryListener& library_events)
+    : tracklist_(tracklist), cursor_(cursor), library_events_(library_events) {}
 
 void Setlist::shuffle() const {
-    playlist_.shuffle();
-    notifier_.onChanged();
+    ShuffleArrangement strategy;
+    run(strategy);
 }
 
 void Setlist::sort(SortingAlgorithm& criteria) const {
-    playlist_.sort(criteria);
-    notifier_.onChanged();
+    run(criteria);
 }
 
 void Setlist::reverse() const {
-    playlist_.reverse();
-    notifier_.onChanged();
+    ReverseArrangement strategy;
+    run(strategy);
 }
 
 void Setlist::restore() const {
-    playlist_.restore();
-    notifier_.onChanged();
+    cursor_.pin([&] {
+        tracklist_.restore();
+    });
+    library_events_.onChanged();
+}
+
+void Setlist::run(IArrangementStrategy& strategy) const {
+    cursor_.pin([&] {
+        tracklist_.arrange(strategy);
+    });
+    library_events_.onChanged();
 }

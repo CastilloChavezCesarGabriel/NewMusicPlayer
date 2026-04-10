@@ -12,7 +12,7 @@ private:
     int divide(std::vector<Song>& songs, const std::pair<int, int> &bounds);
 
 public:
-    void sort(std::vector<Song>& songs) override;
+    void arrange(std::vector<Song>& songs) override;
 };
 
 #endif //QUICK_SORT_H

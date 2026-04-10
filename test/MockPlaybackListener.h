@@ -1,11 +1,17 @@
 #ifndef MOCK_PLAYBACK_LISTENER_H
 #define MOCK_PLAYBACK_LISTENER_H
 
-#include "../model/IPlaybackListener.h"
+#include "../model/ITrackListener.h"
+#include "../model/ILibraryListener.h"
+#include "../model/IAdListener.h"
+#include "../model/IRepeatListener.h"
 #include <string>
 #include <vector>
 
-class MockPlaybackListener final : public IPlaybackListener {
+class MockPlaybackListener final : public ITrackListener,
+                                    public ILibraryListener,
+                                    public IAdListener,
+                                    public IRepeatListener {
 private:
     std::vector<std::string> starts_;
     std::vector<int> selections_;
@@ -18,15 +24,15 @@ private:
 
 public:
     void onStart(const std::string& path) override;
-    void onChanged() override;
     void onSelected(int index) override;
+    void onStopped() override;
+    void onChanged() override;
+    void onFeedback(const std::string& message, bool success) override;
     void onEnabled(bool state) override;
     void onReveal(bool visible) override;
     void onSchedule(int delay) override;
     void onCancel() override;
-    void onRepeatChanged(int mode) override;
-    void onFeedback(const std::string& message, bool success) override;
-    void onStopped() override;
+    void onRepeatChanged(RepeatModeKind kind) override;
 
     bool wasStarted() const;
     bool wasStartedWith(const std::string& path) const;

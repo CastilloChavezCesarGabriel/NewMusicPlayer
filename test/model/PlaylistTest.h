@@ -2,21 +2,22 @@
 #define PLAYLISTTEST_H
 
 #include <gtest/gtest.h>
-#include "../../model/Playlist.h"
-#include "../../model/MusicLibrary.h"
-#include "../../model/PlaybackNotifier.h"
+#include "../../model/Tracklist.h"
+#include "../../model/Cursor.h"
+#include "../../model/TrackBus.h"
 #include "../TestPlaylistVisitor.h"
 #include "../MockPlaybackListener.h"
+#include <memory>
 #include <string>
 
 class PlaylistTest : public ::testing::Test {
 protected:
     std::string test_directory_;
-    MusicLibrary*library_ = nullptr;
-    Playlist*playlist_ = nullptr;
+    std::unique_ptr<Tracklist> tracklist_;
+    std::unique_ptr<Cursor> cursor_;
     TestPlaylistVisitor visitor_;
     MockPlaybackListener listener_;
-    PlaybackNotifier notifier_;
+    TrackBus track_bus_;
 
     void SetUp() override;
     void TearDown() override;

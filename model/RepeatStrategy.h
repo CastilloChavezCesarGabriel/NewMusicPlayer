@@ -1,18 +1,16 @@
 #ifndef REPEAT_STRATEGY_H
 #define REPEAT_STRATEGY_H
 
-#include "Playlist.h"
-#include "IPlaybackListener.h"
+#include "Cursor.h"
+#include "IRepeatListener.h"
+#include "RepeatModeKind.h"
 
 class RepeatStrategy {
-protected:
-    int code_;
-
 public:
-    explicit RepeatStrategy(int code);
     virtual ~RepeatStrategy() = default;
-    virtual bool apply(Playlist& playlist) = 0;
-    void announce(IPlaybackListener& listener) const;
+    virtual bool apply(Cursor& cursor) = 0;
+    virtual RepeatModeKind identify() const = 0;
+    void announce(IRepeatListener& listener) const;
 };
 
 #endif //REPEAT_STRATEGY_H

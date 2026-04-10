@@ -1,12 +1,12 @@
 #ifndef PLAYLIST_RENDERER_H
 #define PLAYLIST_RENDERER_H
 
-#include "../model/IPlaylistVisitor.h"
+#include "../model/ISongVisitor.h"
 #include "../view/IPlayerView.h"
 #include <vector>
 #include <string>
 
-class PlaylistRenderer final : public IPlaylistVisitor {
+class PlaylistRenderer final : public ISongVisitor {
 private:
     IPlayerView& view_;
     std::vector<std::string> names_;

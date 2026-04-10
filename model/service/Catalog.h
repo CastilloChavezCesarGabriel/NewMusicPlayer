@@ -1,19 +1,19 @@
 #ifndef CATALOG_H
 #define CATALOG_H
 
-#include "../Playlist.h"
-#include "../IPlaylistVisitor.h"
+#include "../Tracklist.h"
+#include "../ISongVisitor.h"
 #include <string>
 
 class Catalog {
 private:
-    Playlist& playlist_;
+    Tracklist& tracklist_;
 
 public:
-    explicit Catalog(Playlist& playlist);
+    explicit Catalog(Tracklist& tracklist);
 
-    void accept(IPlaylistVisitor& visitor) const;
-    void search(const std::string& query, IPlaylistVisitor& visitor) const;
+    void accept(ISongVisitor& visitor) const;
+    void search(const std::string& query, ISongVisitor& visitor) const;
 };
 
 #endif //CATALOG_H

@@ -1,17 +1,22 @@
 #ifndef SETLIST_H
 #define SETLIST_H
 
-#include "../Playlist.h"
-#include "../PlaybackNotifier.h"
+#include "../Tracklist.h"
+#include "../Cursor.h"
+#include "../ILibraryListener.h"
 #include "../SortingAlgorithm.h"
+#include "../IArrangementStrategy.h"
 
 class Setlist {
 private:
-    Playlist& playlist_;
-    PlaybackNotifier& notifier_;
+    Tracklist& tracklist_;
+    Cursor& cursor_;
+    ILibraryListener& library_events_;
+
+    void run(IArrangementStrategy& strategy) const;
 
 public:
-    Setlist(Playlist& playlist, PlaybackNotifier& notifier);
+    Setlist(Tracklist& tracklist, Cursor& cursor, ILibraryListener& library_events);
 
     void shuffle() const;
     void sort(SortingAlgorithm& criteria) const;

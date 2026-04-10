@@ -1,102 +1,110 @@
 #include "PlaylistTest.h"
 #include "../../model/DurationSort.h"
 #include "../../model/QuickSort.h"
-#include "../../model/IPlaybackListener.h"
+#include "../../model/ITrackListener.h"
+#include "../../model/ShuffleArrangement.h"
+#include "../../model/ReverseArrangement.h"
 #include <filesystem>
 #include <fstream>
 
 void PlaylistTest::SetUp() {
     test_directory_ = std::filesystem::temp_directory_path().string() + "/playlist_test";
     std::filesystem::create_directories(test_directory_);
-    library_ = new MusicLibrary(test_directory_);
-    notifier_.add(listener_);
-    playlist_ = new Playlist(*library_, notifier_);
+    track_bus_.add(listener_);
+    tracklist_ = std::make_unique<Tracklist>();
+    cursor_ = std::make_unique<Cursor>(*tracklist_, track_bus_);
 }
 
 void PlaylistTest::TearDown() {
-    delete playlist_;
-    delete library_;
+    cursor_.reset();
+    tracklist_.reset();
     std::filesystem::remove_all(test_directory_);
 }
 
 void PlaylistTest::populate(int count) const {
     for (int i = 0; i < count; i++) {
-        playlist_->add(Song("(" + std::to_string(i + 1) + ") Song" + std::to_string(i) + ".mp3",
+        tracklist_->add(Song("(" + std::to_string(i + 1) + ") Song" + std::to_string(i) + ".mp3",
                           test_directory_ + "/song" + std::to_string(i) + ".mp3"));
     }
 }
 
 TEST_F(PlaylistTest, AddSingleSong) {
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->accept(visitor_);
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasSongs(1));
 }
 
 TEST_F(PlaylistTest, AddMultipleSongs) {
     populate(5);
-    playlist_->accept(visitor_);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasSongs(5));
 }
 
 TEST_F(PlaylistTest, AddPreservesOrder) {
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
-    playlist_->accept(visitor_);
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasNameAt(0, "A.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(1, "B.mp3"));
 }
 
 TEST_F(PlaylistTest, RemoveReducesCount) {
     populate(3);
-    playlist_->remove(1);
-    playlist_->accept(visitor_);
+    TestPlaylistVisitor sink;
+    tracklist_->discard(1, sink);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasSongs(2));
 }
 
 TEST_F(PlaylistTest, RemoveFirstSong) {
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
-    playlist_->remove(0);
-    playlist_->accept(visitor_);
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
+    TestPlaylistVisitor sink;
+    tracklist_->discard(0, sink);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasNameAt(0, "B.mp3"));
 }
 
 TEST_F(PlaylistTest, RemoveLastSong) {
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
-    playlist_->remove(1);
-    playlist_->accept(visitor_);
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
+    TestPlaylistVisitor sink;
+    tracklist_->discard(1, sink);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasSongs(1));
     EXPECT_TRUE(visitor_.hasName("A.mp3"));
 }
 
 TEST_F(PlaylistTest, RemoveInvalidNegativeIndex) {
     populate(3);
-    playlist_->remove(-1);
-    playlist_->accept(visitor_);
+    TestPlaylistVisitor sink;
+    tracklist_->discard(-1, sink);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasSongs(3));
 }
 
 TEST_F(PlaylistTest, RemoveInvalidLargeIndex) {
     populate(3);
-    playlist_->remove(100);
-    playlist_->accept(visitor_);
+    TestPlaylistVisitor sink;
+    tracklist_->discard(100, sink);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasSongs(3));
 }
 
 TEST_F(PlaylistTest, RemoveFromEmptyPlaylist) {
-    playlist_->remove(0);
-    playlist_->accept(visitor_);
+    TestPlaylistVisitor sink;
+    tracklist_->discard(0, sink);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.isEmpty());
 }
 
 TEST_F(PlaylistTest, SortByNameAlphabetical) {
-    playlist_->add(Song("C.mp3", "/c"));
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
+    tracklist_->add(Song("C.mp3", "/c"));
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
     QuickSort byName;
-    playlist_->sort(byName);
-    playlist_->accept(visitor_);
+    tracklist_->arrange(byName);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasNameAt(0, "A.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(1, "B.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(2, "C.mp3"));
@@ -109,12 +117,12 @@ TEST_F(PlaylistTest, SortByDurationAscending) {
     std::ofstream(large) << std::string(300, 'x');
     std::ofstream(small) << std::string(100, 'x');
     std::ofstream(medium) << std::string(200, 'x');
-    playlist_->add(Song("large.mp3", large));
-    playlist_->add(Song("small.mp3", small));
-    playlist_->add(Song("medium.mp3", medium));
+    tracklist_->add(Song("large.mp3", large));
+    tracklist_->add(Song("small.mp3", small));
+    tracklist_->add(Song("medium.mp3", medium));
     DurationSort byDuration;
-    playlist_->sort(byDuration);
-    playlist_->accept(visitor_);
+    tracklist_->arrange(byDuration);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasNameAt(0, "small.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(1, "medium.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(2, "large.mp3"));
@@ -122,266 +130,283 @@ TEST_F(PlaylistTest, SortByDurationAscending) {
 
 TEST_F(PlaylistTest, SortEmptyPlaylist) {
     QuickSort byName;
-    playlist_->sort(byName);
-    playlist_->accept(visitor_);
+    tracklist_->arrange(byName);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.isEmpty());
 }
 
 TEST_F(PlaylistTest, SortSingleSong) {
-    playlist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("A.mp3", "/a"));
     QuickSort byName;
-    playlist_->sort(byName);
-    playlist_->accept(visitor_);
+    tracklist_->arrange(byName);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasSongs(1));
 }
 
 TEST_F(PlaylistTest, ShuffleDoesNotChangeCount) {
     populate(10);
-    playlist_->shuffle();
-    playlist_->accept(visitor_);
+    ShuffleArrangement strat;
+    tracklist_->arrange(strat);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasSongs(10));
 }
 
 TEST_F(PlaylistTest, ShufflePreservesSelection) {
     populate(5);
-    playlist_->select(2);
-    playlist_->shuffle();
-    EXPECT_TRUE(playlist_->hasSelected());
+    cursor_->select(2);
+    cursor_->pin([&] {
+        ShuffleArrangement strat;
+        tracklist_->arrange(strat);
+    });
+    EXPECT_TRUE(cursor_->hasSelected());
 }
 
 TEST_F(PlaylistTest, ClearRemovesAllSongs) {
     populate(5);
-    playlist_->clear();
-    playlist_->accept(visitor_);
+    tracklist_->clear();
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.isEmpty());
 }
 
 TEST_F(PlaylistTest, ClearResetsSelection) {
     populate(5);
-    playlist_->select(2);
-    playlist_->clear();
-    EXPECT_FALSE(playlist_->hasSelected());
+    cursor_->select(2);
+    tracklist_->clear();
+    cursor_->clear();
+    EXPECT_FALSE(cursor_->hasSelected());
 }
 
 TEST_F(PlaylistTest, SelectValidIndex) {
     populate(3);
-    playlist_->select(1);
-    EXPECT_TRUE(playlist_->hasSelected());
+    cursor_->select(1);
+    EXPECT_TRUE(cursor_->hasSelected());
     EXPECT_TRUE(listener_.wasSelectedWith(1));
 }
 
 TEST_F(PlaylistTest, SelectInvalidNegativeIndex) {
     populate(3);
-    playlist_->select(-1);
-    EXPECT_FALSE(playlist_->hasSelected());
+    cursor_->select(-1);
+    EXPECT_FALSE(cursor_->hasSelected());
 }
 
 TEST_F(PlaylistTest, SelectInvalidLargeIndex) {
     populate(3);
-    playlist_->select(100);
-    EXPECT_FALSE(playlist_->hasSelected());
+    cursor_->select(100);
+    EXPECT_FALSE(cursor_->hasSelected());
 }
 
 TEST_F(PlaylistTest, AdvanceMovesToNext) {
     populate(3);
-    playlist_->select(0);
-    playlist_->advance();
+    cursor_->select(0);
+    cursor_->advance();
     EXPECT_TRUE(listener_.wasSelectedWith(1));
 }
 
 TEST_F(PlaylistTest, AdvanceAtEndDoesNothing) {
     populate(3);
-    playlist_->select(2);
-    playlist_->advance();
+    cursor_->select(2);
+    cursor_->advance();
     EXPECT_FALSE(listener_.wasSelectedWith(3));
 }
 
 TEST_F(PlaylistTest, RetreatMovesToPrevious) {
     populate(3);
-    playlist_->select(2);
-    playlist_->retreat();
+    cursor_->select(2);
+    cursor_->retreat();
     EXPECT_TRUE(listener_.wasSelectedWith(1));
 }
 
 TEST_F(PlaylistTest, RetreatAtStartDoesNothing) {
     populate(3);
-    playlist_->select(0);
-    playlist_->retreat();
+    cursor_->select(0);
+    cursor_->retreat();
     EXPECT_FALSE(listener_.wasSelectedWith(-1));
 }
 
 TEST_F(PlaylistTest, PlayCurrentSong) {
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->select(0);
-    playlist_->play();
+    tracklist_->add(Song("A.mp3", "/a"));
+    cursor_->select(0);
+    cursor_->play();
     EXPECT_TRUE(listener_.wasStartedWith("/a"));
 }
 
 TEST_F(PlaylistTest, PlayWithNoSelection) {
     populate(3);
-    playlist_->play();
+    cursor_->play();
     EXPECT_FALSE(listener_.wasStarted());
 }
 
 TEST_F(PlaylistTest, SearchFindsMatchingSongs) {
-    playlist_->add(Song("Hello.mp3", "/a"));
-    playlist_->add(Song("Goodbye.mp3", "/b"));
-    playlist_->add(Song("Hello World.mp3", "/c"));
-    playlist_->search("Hello", visitor_);
+    tracklist_->add(Song("Hello.mp3", "/a"));
+    tracklist_->add(Song("Goodbye.mp3", "/b"));
+    tracklist_->add(Song("Hello World.mp3", "/c"));
+    tracklist_->search("Hello", visitor_);
     EXPECT_TRUE(visitor_.hasSongs(2));
 }
 
 TEST_F(PlaylistTest, SearchReturnsEmptyForNoMatch) {
     populate(5);
-    playlist_->search("ZZZZZ", visitor_);
+    tracklist_->search("ZZZZZ", visitor_);
     EXPECT_TRUE(visitor_.isEmpty());
 }
 
 TEST_F(PlaylistTest, SearchEmptyQueryReturnsAll) {
     populate(3);
-    playlist_->search("", visitor_);
+    tracklist_->search("", visitor_);
     EXPECT_TRUE(visitor_.hasSongs(3));
 }
 
 TEST_F(PlaylistTest, HasNextWhenMoreSongsExist) {
     populate(3);
-    playlist_->select(0);
-    EXPECT_TRUE(playlist_->hasNext());
+    cursor_->select(0);
+    EXPECT_TRUE(cursor_->hasNext());
 }
 
 TEST_F(PlaylistTest, HasNextFalseAtEnd) {
     populate(3);
-    playlist_->select(2);
-    EXPECT_FALSE(playlist_->hasNext());
+    cursor_->select(2);
+    EXPECT_FALSE(cursor_->hasNext());
 }
 
 TEST_F(PlaylistTest, HasSelectedFalseInitially) {
     populate(3);
-    EXPECT_FALSE(playlist_->hasSelected());
+    EXPECT_FALSE(cursor_->hasSelected());
 }
 
 TEST_F(PlaylistTest, HasSelectedTrueAfterSelect) {
     populate(3);
-    playlist_->select(1);
-    EXPECT_TRUE(playlist_->hasSelected());
+    cursor_->select(1);
+    EXPECT_TRUE(cursor_->hasSelected());
 }
 
 TEST_F(PlaylistTest, RemoveCurrentSongResetsSelection) {
     populate(3);
-    playlist_->select(1);
-    playlist_->remove(1);
-    EXPECT_FALSE(playlist_->hasSelected());
+    cursor_->select(1);
+    TestPlaylistVisitor sink;
+    tracklist_->discard(1, sink);
+    EXPECT_FALSE(cursor_->hasSelected());
 }
 
 TEST_F(PlaylistTest, RemoveBeforeCurrentAdjustsIndex) {
     populate(5);
-    playlist_->select(3);
-    playlist_->remove(0);
-    playlist_->play();
+    cursor_->select(3);
+    TestPlaylistVisitor sink;
+    tracklist_->discard(0, sink);
+    cursor_->play();
     EXPECT_TRUE(listener_.wasStartedWith(test_directory_ + "/song3.mp3"));
 }
 
 TEST_F(PlaylistTest, AcceptEmptyPlaylist) {
-    playlist_->accept(visitor_);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.isEmpty());
 }
 
 TEST_F(PlaylistTest, AcceptAllSongs) {
     populate(4);
-    playlist_->accept(visitor_);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasSongs(4));
 }
 
 TEST_F(PlaylistTest, SelectNotifiesListener) {
     populate(3);
-    playlist_->select(2);
+    cursor_->select(2);
     EXPECT_TRUE(listener_.wasSelected());
 }
 
 TEST_F(PlaylistTest, AdvanceNotifiesListener) {
     populate(3);
-    playlist_->select(0);
-    playlist_->advance();
+    cursor_->select(0);
+    cursor_->advance();
     EXPECT_TRUE(listener_.wasSelectedWith(1));
 }
 
 TEST_F(PlaylistTest, RetreatNotifiesListener) {
     populate(3);
-    playlist_->select(2);
-    playlist_->retreat();
+    cursor_->select(2);
+    cursor_->retreat();
     EXPECT_TRUE(listener_.wasSelectedWith(1));
 }
 
 TEST_F(PlaylistTest, ReverseInvertsOrder) {
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
-    playlist_->add(Song("C.mp3", "/c"));
-    playlist_->reverse();
-    playlist_->accept(visitor_);
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
+    tracklist_->add(Song("C.mp3", "/c"));
+    ReverseArrangement strat;
+    tracklist_->arrange(strat);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasNameAt(0, "C.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(1, "B.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(2, "A.mp3"));
 }
 
 TEST_F(PlaylistTest, ReverseEmptyPlaylist) {
-    playlist_->reverse();
-    playlist_->accept(visitor_);
+    ReverseArrangement strat;
+    tracklist_->arrange(strat);
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.isEmpty());
 }
 
 TEST_F(PlaylistTest, ReversePreservesCurrentSong) {
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
-    playlist_->add(Song("C.mp3", "/c"));
-    playlist_->select(0);
-    playlist_->reverse();
-    playlist_->retreat();
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
+    tracklist_->add(Song("C.mp3", "/c"));
+    cursor_->select(0);
+    cursor_->pin([&] {
+        ReverseArrangement strat;
+        tracklist_->arrange(strat);
+    });
+    cursor_->retreat();
     EXPECT_TRUE(listener_.wasSelectedWith(1));
 }
 
 TEST_F(PlaylistTest, RestoreReturnsOriginalOrder) {
-    playlist_->add(Song("C.mp3", "/c"));
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
+    tracklist_->add(Song("C.mp3", "/c"));
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
     QuickSort byName;
-    playlist_->sort(byName);
-    playlist_->restore();
-    playlist_->accept(visitor_);
+    tracklist_->arrange(byName);
+    tracklist_->restore();
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasNameAt(0, "C.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(1, "A.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(2, "B.mp3"));
 }
 
 TEST_F(PlaylistTest, RestoreDoesNothingWhenNothingPreserved) {
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
-    playlist_->restore();
-    playlist_->accept(visitor_);
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
+    tracklist_->restore();
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasNameAt(0, "A.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(1, "B.mp3"));
 }
 
 TEST_F(PlaylistTest, RestorePreservesCurrentSong) {
-    playlist_->add(Song("C.mp3", "/c"));
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
-    playlist_->select(0);
+    tracklist_->add(Song("C.mp3", "/c"));
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
+    cursor_->select(0);
     QuickSort byName;
-    playlist_->sort(byName);
-    playlist_->restore();
-    playlist_->advance();
+    cursor_->pin([&] {
+        tracklist_->arrange(byName);
+    });
+    cursor_->pin([&] {
+        tracklist_->restore();
+    });
+    cursor_->advance();
     EXPECT_TRUE(listener_.wasSelectedWith(1));
 }
 
 TEST_F(PlaylistTest, SortReverseRestoreFullCycle) {
-    playlist_->add(Song("C.mp3", "/c"));
-    playlist_->add(Song("A.mp3", "/a"));
-    playlist_->add(Song("B.mp3", "/b"));
+    tracklist_->add(Song("C.mp3", "/c"));
+    tracklist_->add(Song("A.mp3", "/a"));
+    tracklist_->add(Song("B.mp3", "/b"));
     QuickSort byName;
-    playlist_->sort(byName);
-    playlist_->reverse();
-    playlist_->restore();
-    playlist_->accept(visitor_);
+    tracklist_->arrange(byName);
+    ReverseArrangement revStrat;
+    tracklist_->arrange(revStrat);
+    tracklist_->restore();
+    tracklist_->accept(visitor_);
     EXPECT_TRUE(visitor_.hasNameAt(0, "C.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(1, "A.mp3"));
     EXPECT_TRUE(visitor_.hasNameAt(2, "B.mp3"));

@@ -17,7 +17,8 @@ find_package(Qt6 COMPONENTS
 add_executable(NewMusicPlayer main.cpp
         model/Song.cpp
         model/Song.h
-        model/IPlaylistVisitor.h
+        model/ISongVisitor.h
+        model/IPathVisitor.h
         model/SortingAlgorithm.h
         model/ShellSort.cpp
         model/ShellSort.h
@@ -27,19 +28,48 @@ add_executable(NewMusicPlayer main.cpp
         model/DateSort.h
         model/QuickSort.cpp
         model/QuickSort.h
-        model/Playlist.cpp
-        model/Playlist.h
-        model/Arrangement.cpp
-        model/Arrangement.h
-        model/IPlaybackListener.h
+        model/Tracklist.cpp
+        model/Tracklist.h
+        model/TracklistSink.cpp
+        model/TracklistSink.h
+        model/Cursor.cpp
+        model/Cursor.h
+        model/IRemovalListener.h
+        model/IArrangementStrategy.h
+        model/ShuffleArrangement.cpp
+        model/ShuffleArrangement.h
+        model/ReverseArrangement.cpp
+        model/ReverseArrangement.h
+        model/OriginalOrder.cpp
+        model/OriginalOrder.h
+        model/ITrackListener.h
+        model/ILibraryListener.h
+        model/IAdListener.h
+        model/IRepeatListener.h
+        model/RepeatModeKind.h
+        model/TrackBus.cpp
+        model/TrackBus.h
+        model/LibraryBus.cpp
+        model/LibraryBus.h
+        model/AdBus.cpp
+        model/AdBus.h
+        model/RepeatBus.cpp
+        model/RepeatBus.h
+        model/RepeatListener.cpp
+        model/RepeatListener.h
         model/Advertisement.cpp
         model/Advertisement.h
-        model/MusicLibrary.cpp
-        model/MusicLibrary.h
+        model/IAdPolicy.h
+        model/RandomAdPolicy.cpp
+        model/RandomAdPolicy.h
+        model/MusicDirectory.cpp
+        model/MusicDirectory.h
+        model/FormatRegistry.cpp
+        model/FormatRegistry.h
+        model/FileEraser.cpp
+        model/FileEraser.h
         model/Channel.cpp
         model/Channel.h
-        model/PlaybackNotifier.cpp
-        model/PlaybackNotifier.h
         model/RepeatStrategy.cpp
         model/RepeatStrategy.h
         model/NoRepeatMode.cpp
@@ -153,7 +183,6 @@ add_executable(NewMusicPlayerTests
         test/model/SongTest.cpp
         test/model/PlaylistTest.cpp
         test/model/AdvertisementTest.cpp
-        test/model/MusicLibraryTest.cpp
         test/model/SortingTest.cpp
         test/model/ModelTest.cpp
         test/RegressionTest.cpp
@@ -171,8 +200,22 @@ add_executable(NewMusicPlayerTests
         test/use_cases/NavigatePlaylistUseCaseTest.h
         model/Song.cpp
         model/Song.h
-        model/IPlaylistVisitor.h
-        model/IPlaybackListener.h
+        model/ISongVisitor.h
+        model/ITrackListener.h
+        model/ILibraryListener.h
+        model/IAdListener.h
+        model/IRepeatListener.h
+        model/RepeatModeKind.h
+        model/TrackBus.cpp
+        model/TrackBus.h
+        model/LibraryBus.cpp
+        model/LibraryBus.h
+        model/AdBus.cpp
+        model/AdBus.h
+        model/RepeatBus.cpp
+        model/RepeatBus.h
+        model/RepeatListener.cpp
+        model/RepeatListener.h
         model/SortingAlgorithm.h
         model/ShellSort.cpp
         model/ShellSort.h
@@ -182,18 +225,33 @@ add_executable(NewMusicPlayerTests
         model/DateSort.h
         model/QuickSort.cpp
         model/QuickSort.h
-        model/Playlist.cpp
-        model/Playlist.h
-        model/Arrangement.cpp
-        model/Arrangement.h
+        model/Tracklist.cpp
+        model/Tracklist.h
+        model/TracklistSink.cpp
+        model/TracklistSink.h
+        model/Cursor.cpp
+        model/Cursor.h
+        model/IRemovalListener.h
+        model/IArrangementStrategy.h
+        model/ShuffleArrangement.cpp
+        model/ShuffleArrangement.h
+        model/ReverseArrangement.cpp
+        model/ReverseArrangement.h
+        model/OriginalOrder.cpp
+        model/OriginalOrder.h
         model/Advertisement.cpp
         model/Advertisement.h
-        model/MusicLibrary.cpp
-        model/MusicLibrary.h
+        model/IAdPolicy.h
+        model/RandomAdPolicy.cpp
+        model/RandomAdPolicy.h
+        model/MusicDirectory.cpp
+        model/MusicDirectory.h
+        model/FormatRegistry.cpp
+        model/FormatRegistry.h
+        model/FileEraser.cpp
+        model/FileEraser.h
         model/Channel.cpp
         model/Channel.h
-        model/PlaybackNotifier.cpp
-        model/PlaybackNotifier.h
         model/RepeatStrategy.cpp
         model/RepeatStrategy.h
         model/NoRepeatMode.cpp
