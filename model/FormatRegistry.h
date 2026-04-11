@@ -10,7 +10,7 @@ private:
 
 public:
     FormatRegistry();
-    bool isSupported(const std::string& filename) const;
+    bool supports(const std::string& filename) const;
 };
 
 #endif //FORMAT_REGISTRY_H

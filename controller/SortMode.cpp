@@ -1,6 +1,6 @@
 #include "SortMode.h"
 
-SortMode::SortMode(const std::string& label, ISortingAlgorithm* criteria)
+SortMode::SortMode(const std::string& label, IArrangementStrategy* criteria)
     : label_(label), criteria_(criteria) {}
 
 void SortMode::apply(Setlist& setlist) {

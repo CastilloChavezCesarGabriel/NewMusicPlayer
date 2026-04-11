@@ -9,6 +9,7 @@
 #include "IRemovalListener.h"
 #include <vector>
 #include <string>
+#include <functional>
 
 class Tracklist {
 private:
@@ -28,8 +29,9 @@ public:
     void search(const std::string& query, ISongVisitor& visitor) const;
     void feed(int index, ISongVisitor& visitor) const;
     void stream(int index, IPathVisitor& visitor) const;
-    bool hasAt(int index) const;
-    bool hasAfter(int index) const;
+    int pin(int index, const std::function<void()>& operation);
+    bool hasSelected(int index) const;
+    bool hasNext(int index) const;
     int find(const std::string& name) const;
     void subscribe(IRemovalListener& listener);
 };

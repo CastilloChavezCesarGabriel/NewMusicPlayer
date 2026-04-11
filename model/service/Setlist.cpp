@@ -10,7 +10,7 @@ void Setlist::shuffle() const {
     run(strategy);
 }
 
-void Setlist::sort(ISortingAlgorithm& criteria) const {
+void Setlist::sort(IArrangementStrategy& criteria) const {
     run(criteria);
 }
 

@@ -1,18 +1,5 @@
 #include "Cursor.h"
 #include "Channel.h"
-#include "ISongVisitor.h"
-
-namespace {
-    class NameCapture final : public ISongVisitor {
-    private:
-        std::string& target_;
-    public:
-        explicit NameCapture(std::string& target) : target_(target) {}
-        void visit(const std::string& name, const std::string&) override {
-            target_ = name;
-        }
-    };
-}
 
 Cursor::Cursor(Tracklist& tracklist, ITrackListener& tracks)
     : tracklist_(tracklist), tracks_(tracks) {
@@ -20,7 +7,7 @@ Cursor::Cursor(Tracklist& tracklist, ITrackListener& tracks)
 }
 
 void Cursor::select(const int index) {
-    if (tracklist_.hasAt(index)) {
+    if (tracklist_.hasSelected(index)) {
         index_ = index;
         notify();
     }
@@ -55,23 +42,15 @@ void Cursor::play() const {
 }
 
 bool Cursor::hasNext() const {
-    return tracklist_.hasAfter(index_);
+    return tracklist_.hasNext(index_);
 }
 
 bool Cursor::hasSelected() const {
-    return tracklist_.hasAt(index_);
+    return tracklist_.hasSelected(index_);
 }
 
 void Cursor::pin(const std::function<void()>& operation) {
-    if (!hasSelected()) {
-        operation();
-        return;
-    }
-    std::string current_name;
-    NameCapture capture(current_name);
-    tracklist_.feed(index_, capture);
-    operation();
-    index_ = tracklist_.find(current_name);
+    index_ = tracklist_.pin(index_, operation);
 }
 
 void Cursor::clear() {
@@ -80,7 +59,7 @@ void Cursor::clear() {
 
 void Cursor::onRemoved(const int index) {
     if (index == index_) {
-        index_ = -1;
+        clear();
     } else if (index < index_) {
         index_--;
     }

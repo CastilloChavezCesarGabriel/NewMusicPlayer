@@ -15,20 +15,20 @@ TEST_F(FileMetadataTest, StampReturnsNonZeroForExistingFile) {
     EXPECT_GT(FileMetadata(test_directory_ + "/present.mp3").stamp(), 0);
 }
 
-TEST_F(FileMetadataTest, LastReturnsZeroForMissingFile) {
-    EXPECT_EQ(0, FileMetadata("/nonexistent/path/file.mp3").last());
+TEST_F(FileMetadataTest, SizeReturnsZeroForMissingFile) {
+    EXPECT_EQ(0, FileMetadata("/nonexistent/path/file.mp3").size());
 }
 
-TEST_F(FileMetadataTest, LastReturnsFileSize) {
+TEST_F(FileMetadataTest, SizeReturnsFileSize) {
     const std::string path = test_directory_ + "/sized.mp3";
     std::ofstream(path) << std::string(123, 'x');
-    EXPECT_EQ(123, FileMetadata(path).last());
+    EXPECT_EQ(123, FileMetadata(path).size());
 }
 
-TEST_F(FileMetadataTest, LastDistinguishesFileSizes) {
+TEST_F(FileMetadataTest, SizeDistinguishesFileSizes) {
     const std::string small = test_directory_ + "/small.mp3";
     const std::string large = test_directory_ + "/large.mp3";
     std::ofstream(small) << std::string(50, 'x');
     std::ofstream(large) << std::string(500, 'x');
-    EXPECT_LT(FileMetadata(small).last(), FileMetadata(large).last());
+    EXPECT_LT(FileMetadata(small).size(), FileMetadata(large).size());
 }

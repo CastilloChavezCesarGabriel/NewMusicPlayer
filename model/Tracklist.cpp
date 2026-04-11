@@ -43,22 +43,37 @@ void Tracklist::search(const std::string& query, ISongVisitor& visitor) const {
 }
 
 void Tracklist::feed(const int index, ISongVisitor& visitor) const {
-    if (hasAt(index)) {
+    if (hasSelected(index)) {
         songs_[index].accept(visitor);
     }
 }
 
 void Tracklist::stream(const int index, IPathVisitor& visitor) const {
-    if (hasAt(index)) {
+    if (hasSelected(index)) {
         songs_[index].stream(visitor);
     }
 }
 
-bool Tracklist::hasAt(const int index) const {
+int Tracklist::pin(const int index, const std::function<void()>& operation) {
+    if (!hasSelected(index)) {
+        operation();
+        return -1;
+    }
+    const Song current = songs_[index];
+    operation();
+    for (int i = 0; i < static_cast<int>(songs_.size()); i++) {
+        if (songs_[i].identifies(current)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+bool Tracklist::hasSelected(const int index) const {
     return index >= 0 && index < static_cast<int>(songs_.size());
 }
 
-bool Tracklist::hasAfter(const int index) const {
+bool Tracklist::hasNext(const int index) const {
     return index + 1 < static_cast<int>(songs_.size());
 }
 

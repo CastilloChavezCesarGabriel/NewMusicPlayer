@@ -19,7 +19,6 @@ add_executable(NewMusicPlayer main.cpp
         model/Song.h
         model/ISongVisitor.h
         model/IPathVisitor.h
-        model/ISortingAlgorithm.h
         model/ShellSort.cpp
         model/ShellSort.h
         model/DurationSort.cpp
@@ -47,6 +46,7 @@ add_executable(NewMusicPlayer main.cpp
         model/IAdListener.h
         model/IRepeatListener.h
         model/RepeatModeKind.h
+        model/Bus.h
         model/TrackBus.cpp
         model/TrackBus.h
         model/LibraryBus.cpp
@@ -256,6 +256,7 @@ add_executable(NewMusicPlayerTests
         model/IAdListener.h
         model/IRepeatListener.h
         model/RepeatModeKind.h
+        model/Bus.h
         model/TrackBus.cpp
         model/TrackBus.h
         model/LibraryBus.cpp
@@ -266,7 +267,6 @@ add_executable(NewMusicPlayerTests
         model/RepeatBus.h
         model/RepeatListener.cpp
         model/RepeatListener.h
-        model/ISortingAlgorithm.h
         model/ShellSort.cpp
         model/ShellSort.h
         model/DurationSort.cpp

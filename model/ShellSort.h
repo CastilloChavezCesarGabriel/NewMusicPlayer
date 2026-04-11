@@ -1,8 +1,10 @@
 #ifndef SHELL_SORT_H
 #define SHELL_SORT_H
-#include "ISortingAlgorithm.h"
 
-class ShellSort : public ISortingAlgorithm {
+#include "IArrangementStrategy.h"
+#include "ISongVisitor.h"
+
+class ShellSort : public IArrangementStrategy, public ISongVisitor {
 protected:
     long long key_ = 0;
 

@@ -5,17 +5,17 @@
 #include <memory>
 #include "../model/service/Setlist.h"
 #include "../view/ISortDisplay.h"
-#include "../model/ISortingAlgorithm.h"
+#include "../model/IArrangementStrategy.h"
 
 class SortMode {
 private:
     std::string label_;
 
 protected:
-    std::unique_ptr<ISortingAlgorithm> criteria_;
+    std::unique_ptr<IArrangementStrategy> criteria_;
 
 public:
-    SortMode(const std::string& label, ISortingAlgorithm* criteria);
+    SortMode(const std::string& label, IArrangementStrategy* criteria);
     virtual ~SortMode() = default;
     virtual void apply(Setlist& setlist);
     void display(ISortDisplay& sort_display) const;

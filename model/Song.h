@@ -18,7 +18,7 @@ public:
     void accept(ISongVisitor& visitor) const;
     void stream(IPathVisitor& visitor) const;
     bool matches(const std::string& query) const;
-    bool isEqualTo(const Song& other) const;
+    bool identifies(const Song& other) const;
     static std::string parse(const std::string& name);
 };
 

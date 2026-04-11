@@ -1,17 +1,11 @@
 #ifndef REPEAT_BUS_H
 #define REPEAT_BUS_H
 
+#include "Bus.h"
 #include "IRepeatListener.h"
-#include <vector>
-#include <functional>
 
-class RepeatBus final : public IRepeatListener {
-private:
-    std::vector<IRepeatListener*> listeners_;
-    void notify(const std::function<void(IRepeatListener*)>& action) const;
-
+class RepeatBus final : public Bus<IRepeatListener>, public IRepeatListener {
 public:
-    void add(IRepeatListener& listener);
     void onRepeatChanged(RepeatModeKind kind) override;
 };
 

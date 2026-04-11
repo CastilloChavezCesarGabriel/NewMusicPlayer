@@ -13,7 +13,7 @@ long long FileMetadata::stamp() const {
     return time.time_since_epoch().count();
 }
 
-int FileMetadata::last() const {
+int FileMetadata::size() const {
     if (!exists()) return 0;
     return static_cast<int>(std::filesystem::file_size(path_));
 }

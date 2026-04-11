@@ -3,7 +3,7 @@
 
 FormatRegistry::FormatRegistry() : extensions_{".mp3", ".wav"} {}
 
-bool FormatRegistry::isSupported(const std::string& filename) const {
+bool FormatRegistry::supports(const std::string& filename) const {
     const std::string extension = std::filesystem::path(filename).extension().string();
     return extensions_.contains(extension);
 }

@@ -30,14 +30,14 @@ std::string MusicDirectory::store(const std::string& sourcePath) const {
 }
 
 bool MusicDirectory::accepts(const std::string& filename) const {
-    return formats_.isSupported(filename);
+    return formats_.supports(filename);
 }
 
 std::vector<std::string> MusicDirectory::scan() const {
     std::vector<std::string> result;
     if (!std::filesystem::exists(path_)) return result;
     for (const auto& entry : std::filesystem::directory_iterator(path_)) {
-        if (entry.is_regular_file() && formats_.isSupported(entry.path().string())) {
+        if (entry.is_regular_file() && formats_.supports(entry.path().string())) {
             result.push_back(entry.path().string());
         }
     }

@@ -12,7 +12,7 @@ private:
 public:
     explicit FileMetadata(const std::string& path);
     long long stamp() const;
-    int last() const;
+    int size() const;
 };
 
 #endif //FILE_METADATA_H
