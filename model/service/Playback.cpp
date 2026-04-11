@@ -36,6 +36,7 @@ void Playback::end() const {
         cursor_.play();
         return;
     }
+
     if (repeat_mode_.apply()) {
         cursor_.play();
     } else {
