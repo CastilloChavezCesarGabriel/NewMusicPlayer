@@ -11,7 +11,7 @@
 #include <string>
 #include <functional>
 
-class Tracklist {
+class Tracklist final : public ISongVisitor {
 private:
     std::vector<Song> songs_;
     OriginalOrder original_order_;
@@ -26,12 +26,13 @@ public:
     void arrange(IArrangementStrategy& strategy);
     void restore();
     void accept(ISongVisitor& visitor) const;
+    void visit(const std::string& name, const std::string& path) override;
     void search(const std::string& query, ISongVisitor& visitor) const;
     void feed(int index, ISongVisitor& visitor) const;
     void stream(int index, IPathVisitor& visitor) const;
     int pin(int index, const std::function<void()>& operation);
-    bool hasSelected(int index) const;
-    bool hasNext(int index) const;
+    bool hasAt(int index) const;
+    bool hasAfter(int index) const;
     int find(const std::string& name) const;
     void subscribe(IRemovalListener& listener);
 };

@@ -34,8 +34,7 @@ int main(int argc, char *argv[]) {
     // Music collection
     auto musicDirectory = CollectionFactory::createDirectory(base + "/resources/music");
     auto tracklist = CollectionFactory::createTracklist();
-    auto sink = CollectionFactory::createSink(tracklist);
-    musicDirectory.load(*sink);
+    musicDirectory.load(tracklist);
     auto cursor = CollectionFactory::createCursor(tracklist, trackBus);
     auto initialShuffle = CollectionFactory::createShuffle();
     tracklist.arrange(initialShuffle);

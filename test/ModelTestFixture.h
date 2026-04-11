@@ -11,7 +11,6 @@
 #include "../model/RepeatListener.h"
 #include "../model/MusicDirectory.h"
 #include "../model/Tracklist.h"
-#include "../model/TracklistSink.h"
 #include "../model/Cursor.h"
 #include "../model/ShuffleArrangement.h"
 #include "../model/Advertisement.h"
@@ -42,7 +41,6 @@ protected:
     std::unique_ptr<RepeatListener> repeat_listener_;
     std::unique_ptr<MusicDirectory> directory_;
     std::unique_ptr<Tracklist> tracklist_;
-    std::unique_ptr<TracklistSink> sink_;
     std::unique_ptr<Cursor> cursor_;
     std::unique_ptr<Advertisement> advertisement_;
     std::unique_ptr<RepeatMode> repeat_mode_;

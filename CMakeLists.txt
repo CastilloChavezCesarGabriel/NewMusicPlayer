@@ -29,8 +29,6 @@ add_executable(NewMusicPlayer main.cpp
         model/QuickSort.h
         model/Tracklist.cpp
         model/Tracklist.h
-        model/TracklistSink.cpp
-        model/TracklistSink.h
         model/Cursor.cpp
         model/Cursor.h
         model/IRemovalListener.h
@@ -277,8 +275,6 @@ add_executable(NewMusicPlayerTests
         model/QuickSort.h
         model/Tracklist.cpp
         model/Tracklist.h
-        model/TracklistSink.cpp
-        model/TracklistSink.h
         model/Cursor.cpp
         model/Cursor.h
         model/IRemovalListener.h

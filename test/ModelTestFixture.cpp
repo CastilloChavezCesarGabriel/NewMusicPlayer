@@ -29,8 +29,7 @@ void ModelTestFixture::createAd(const std::string& name) const {
 void ModelTestFixture::build() {
     directory_ = std::make_unique<MusicDirectory>(music_directory_);
     tracklist_ = std::make_unique<Tracklist>();
-    sink_ = std::make_unique<TracklistSink>(*tracklist_);
-    directory_->load(*sink_);
+    directory_->load(*tracklist_);
     cursor_ = std::make_unique<Cursor>(*tracklist_, track_bus_);
 
     ShuffleArrangement initial;

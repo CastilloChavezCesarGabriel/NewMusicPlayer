@@ -7,7 +7,7 @@ Cursor::Cursor(Tracklist& tracklist, ITrackListener& tracks)
 }
 
 void Cursor::select(const int index) {
-    if (tracklist_.hasSelected(index)) {
+    if (tracklist_.hasAt(index)) {
         index_ = index;
         notify();
     }
@@ -42,11 +42,11 @@ void Cursor::play() const {
 }
 
 bool Cursor::hasNext() const {
-    return tracklist_.hasNext(index_);
+    return tracklist_.hasAfter(index_);
 }
 
 bool Cursor::hasSelected() const {
-    return tracklist_.hasSelected(index_);
+    return tracklist_.hasAt(index_);
 }
 
 void Cursor::pin(const std::function<void()>& operation) {
