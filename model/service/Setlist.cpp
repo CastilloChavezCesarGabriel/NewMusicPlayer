@@ -2,7 +2,7 @@
 #include "../tracklist/ShuffleArrangement.h"
 #include "../tracklist/ReverseArrangement.h"
 
-Setlist::Setlist(Tracklist& tracklist, Cursor& cursor, ILibraryListener& library_events)
+Setlist::Setlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& library_events)
     : tracklist_(tracklist), cursor_(cursor), library_events_(library_events) {}
 
 void Setlist::shuffle() const {

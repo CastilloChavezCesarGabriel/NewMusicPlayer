@@ -8,10 +8,10 @@
 #include "../model/event/LibraryBus.h"
 #include "../model/event/AdBus.h"
 #include "../model/event/RepeatBus.h"
-#include "../model/playback/RepeatListener.h"
+#include "../model/playback/RepeatCoordinator.h"
 #include "../model/library/MusicDirectory.h"
 #include "../model/tracklist/Tracklist.h"
-#include "../model/tracklist/Cursor.h"
+#include "../model/tracklist/TrackCursor.h"
 #include "../model/tracklist/ShuffleArrangement.h"
 #include "../model/playback/Advertisement.h"
 #include "../model/playback/RepeatMode.h"
@@ -38,10 +38,10 @@ protected:
     LibraryBus library_bus_;
     AdBus ad_bus_;
     RepeatBus repeat_bus_;
-    std::unique_ptr<RepeatListener> repeat_listener_;
+    std::unique_ptr<RepeatCoordinator> repeat_listener_;
     std::unique_ptr<MusicDirectory> directory_;
     std::unique_ptr<Tracklist> tracklist_;
-    std::unique_ptr<Cursor> cursor_;
+    std::unique_ptr<TrackCursor> cursor_;
     std::unique_ptr<Advertisement> advertisement_;
     std::unique_ptr<RepeatMode> repeat_mode_;
     std::unique_ptr<PlaybackService> playback_;

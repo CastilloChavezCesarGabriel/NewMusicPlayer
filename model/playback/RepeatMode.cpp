@@ -3,7 +3,7 @@
 #include "RepeatOneMode.h"
 #include "RepeatAllMode.h"
 
-RepeatMode::RepeatMode(Cursor& cursor, RepeatListener& listener)
+RepeatMode::RepeatMode(TrackCursor& cursor, RepeatCoordinator& listener)
     : cursor_(cursor), listener_(listener) {
     modes_.push_back(std::make_unique<NoRepeatMode>());
     modes_.push_back(std::make_unique<RepeatOneMode>());

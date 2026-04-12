@@ -12,10 +12,10 @@ std::unique_ptr<Advertisement> PlaybackFactory::createAdvertisement(IAdPolicy& p
     return std::make_unique<Advertisement>(policy, adBus, trackBus);
 }
 
-std::unique_ptr<RepeatListener> PlaybackFactory::createRepeatListener(IRepeatListener& repeatBus, ITrackListener& trackBus) {
-    return std::make_unique<RepeatListener>(repeatBus, trackBus);
+std::unique_ptr<RepeatCoordinator> PlaybackFactory::createRepeatCoordinator(IRepeatListener& repeatBus, ITrackListener& trackBus) {
+    return std::make_unique<RepeatCoordinator>(repeatBus, trackBus);
 }
 
-std::unique_ptr<RepeatMode> PlaybackFactory::createRepeatMode(Cursor& cursor, RepeatListener& listener) {
+std::unique_ptr<RepeatMode> PlaybackFactory::createRepeatMode(TrackCursor& cursor, RepeatCoordinator& listener) {
     return std::make_unique<RepeatMode>(cursor, listener);
 }

@@ -2,20 +2,20 @@
 #define REPEAT_MODE_H
 
 #include "RepeatStrategy.h"
-#include "../tracklist/Cursor.h"
-#include "RepeatListener.h"
+#include "../tracklist/TrackCursor.h"
+#include "RepeatCoordinator.h"
 #include <vector>
 #include <memory>
 
 class RepeatMode {
 private:
-    Cursor& cursor_;
-    RepeatListener& listener_;
+    TrackCursor& cursor_;
+    RepeatCoordinator& listener_;
     std::vector<std::unique_ptr<RepeatStrategy>> modes_;
     int index_ = 0;
 
 public:
-    RepeatMode(Cursor& cursor, RepeatListener& listener);
+    RepeatMode(TrackCursor& cursor, RepeatCoordinator& listener);
     void advance();
     bool apply() const;
     void stop() const;

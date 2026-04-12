@@ -1,21 +1,21 @@
 #ifndef PLAYBACK_SERVICE_H
 #define PLAYBACK_SERVICE_H
 
-#include "../tracklist/Cursor.h"
+#include "../tracklist/TrackCursor.h"
 #include "../playback/Advertisement.h"
 #include "../playback/RepeatMode.h"
 #include <string>
 
 class PlaybackService {
 private:
-    Cursor& cursor_;
+    TrackCursor& cursor_;
     Advertisement& advertisement_;
     RepeatMode& repeat_mode_;
 
     void start() const;
 
 public:
-    PlaybackService(Cursor& cursor, Advertisement& advertisement, RepeatMode& repeat_mode);
+    PlaybackService(TrackCursor& cursor, Advertisement& advertisement, RepeatMode& repeat_mode);
 
     void play(int index) const;
     void pick(const std::string& name) const;

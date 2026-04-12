@@ -1,6 +1,6 @@
 #include "RepeatAllMode.h"
 
-bool RepeatAllMode::apply(Cursor& cursor) {
+bool RepeatAllMode::apply(TrackCursor& cursor) {
     if (cursor.hasNext()) {
         cursor.advance();
     } else {

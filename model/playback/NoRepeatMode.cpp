@@ -1,6 +1,6 @@
 #include "NoRepeatMode.h"
 
-bool NoRepeatMode::apply(Cursor& cursor) {
+bool NoRepeatMode::apply(TrackCursor& cursor) {
     if (!cursor.hasNext()) return false;
     cursor.advance();
     return true;

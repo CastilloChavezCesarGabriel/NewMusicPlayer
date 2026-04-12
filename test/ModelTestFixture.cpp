@@ -30,7 +30,7 @@ void ModelTestFixture::build() {
     directory_ = std::make_unique<MusicDirectory>(music_directory_);
     tracklist_ = std::make_unique<Tracklist>();
     directory_->load(*tracklist_);
-    cursor_ = std::make_unique<Cursor>(*tracklist_, track_bus_);
+    cursor_ = std::make_unique<TrackCursor>(*tracklist_, track_bus_);
 
     ShuffleArrangement initial;
     tracklist_->arrange(initial);
@@ -39,7 +39,7 @@ void ModelTestFixture::build() {
     advertisement_ = std::make_unique<Advertisement>(*ad_policy_, ad_bus_, track_bus_);
     advertisement_->load(ads_directory_);
 
-    repeat_listener_ = std::make_unique<RepeatListener>(repeat_bus_, track_bus_);
+    repeat_listener_ = std::make_unique<RepeatCoordinator>(repeat_bus_, track_bus_);
     repeat_mode_ = std::make_unique<RepeatMode>(*cursor_, *repeat_listener_);
 
     playback_ = std::make_unique<PlaybackService>(*cursor_, *advertisement_, *repeat_mode_);

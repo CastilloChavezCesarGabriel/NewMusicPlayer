@@ -1,5 +1,5 @@
-#ifndef CURSOR_H
-#define CURSOR_H
+#ifndef TRACK_CURSOR_H
+#define TRACK_CURSOR_H
 
 #include "Tracklist.h"
 #include "../event/ITrackListener.h"
@@ -7,7 +7,7 @@
 #include <functional>
 #include <string>
 
-class Cursor final : public IRemovalListener {
+class TrackCursor final : public IRemovalListener {
 private:
     Tracklist& tracklist_;
     ITrackListener& tracks_;
@@ -16,7 +16,7 @@ private:
     void notify() const;
 
 public:
-    Cursor(Tracklist& tracklist, ITrackListener& tracks);
+    TrackCursor(Tracklist& tracklist, ITrackListener& tracks);
 
     void select(int index);
     void pick(const std::string& name);
@@ -30,4 +30,4 @@ public:
     void onRemoved(int index) override;
 };
 
-#endif //CURSOR_H
+#endif //TRACK_CURSOR_H

@@ -2,20 +2,20 @@
 #define SETLIST_H
 
 #include "../tracklist/Tracklist.h"
-#include "../tracklist/Cursor.h"
+#include "../tracklist/TrackCursor.h"
 #include "../event/ILibraryListener.h"
 #include "../tracklist/IArrangementStrategy.h"
 
 class Setlist {
 private:
     Tracklist& tracklist_;
-    Cursor& cursor_;
+    TrackCursor& cursor_;
     ILibraryListener& library_events_;
 
     void run(IArrangementStrategy& strategy) const;
 
 public:
-    Setlist(Tracklist& tracklist, Cursor& cursor, ILibraryListener& library_events);
+    Setlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& library_events);
 
     void shuffle() const;
     void sort(IArrangementStrategy& criteria) const;

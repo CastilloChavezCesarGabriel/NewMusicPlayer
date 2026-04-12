@@ -20,7 +20,7 @@
 #include "adapters/qt/connection/QtClearConnection.h"
 #include "adapters/qt/connection/QtSortConnection.h"
 #include "adapters/qt/connection/QtRemoveConnection.h"
-#include "controller/EnableGroup.h"
+#include "controller/EnableCoordinator.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     auto musicDirectory = CollectionFactory::createDirectory(base + "/resources/music");
     auto tracklist = CollectionFactory::createTracklist();
     musicDirectory.load(tracklist);
-    auto cursor = CollectionFactory::createCursor(tracklist, trackBus);
+    auto cursor = CollectionFactory::createTrackCursor(tracklist, trackBus);
     auto initialShuffle = CollectionFactory::createShuffle();
     tracklist.arrange(initialShuffle);
 
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     auto adPolicy = PlaybackFactory::createAdPolicy(dice);
     auto advertisement = PlaybackFactory::createAdvertisement(*adPolicy, adBus, trackBus);
     advertisement->load(base + "/resources/announcements");
-    auto repeatListener = PlaybackFactory::createRepeatListener(repeatBus, trackBus);
+    auto repeatListener = PlaybackFactory::createRepeatCoordinator(repeatBus, trackBus);
     auto repeatMode = PlaybackFactory::createRepeatMode(*cursor, *repeatListener);
 
     // Services
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
     QtRemoveConnection removeConnection(*toolbar, *display);
 
     // Enable broadcast
-    EnableGroup enableGroup;
+    EnableCoordinator enableGroup;
     enableGroup.add(*transport);
     enableGroup.add(*shuffleButton);
     enableGroup.add(*repeatButton);

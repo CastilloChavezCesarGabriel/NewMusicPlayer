@@ -1,6 +1,6 @@
 #include "PlaybackService.h"
 
-PlaybackService::PlaybackService(Cursor& cursor, Advertisement& advertisement, RepeatMode& repeat_mode)
+PlaybackService::PlaybackService(TrackCursor& cursor, Advertisement& advertisement, RepeatMode& repeat_mode)
     : cursor_(cursor), advertisement_(advertisement), repeat_mode_(repeat_mode) {}
 
 void PlaybackService::start() const {

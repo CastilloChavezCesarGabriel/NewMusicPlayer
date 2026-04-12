@@ -1,7 +1,7 @@
 #include "RegressionTest.h"
 #include "../model/song/Song.h"
 #include "../model/tracklist/Tracklist.h"
-#include "../model/tracklist/Cursor.h"
+#include "../model/tracklist/TrackCursor.h"
 #include "../model/event/TrackBus.h"
 #include "../model/event/AdBus.h"
 #include "../model/library/Dice.h"
@@ -86,7 +86,7 @@ TEST_F(RegressionTest, RetreatUpdatesSelection) {
 TEST_F(RegressionTest, RemoveBeforeCurrentAdjustsSelection) {
     TrackBus trackBus;
     Tracklist tracklist;
-    Cursor cursor(tracklist, trackBus);
+    TrackCursor cursor(tracklist, trackBus);
     tracklist.add(Song("A.mp3", "/a"));
     tracklist.add(Song("B.mp3", "/b"));
     tracklist.add(Song("C.mp3", "/c"));
@@ -170,14 +170,14 @@ TEST_F(RegressionTest, RemoveNegativeIndexDoesNotCrash) {
 TEST_F(RegressionTest, SelectInvalidIndexDoesNotCrash) {
     TrackBus trackBus;
     Tracklist tracklist;
-    Cursor cursor(tracklist, trackBus);
+    TrackCursor cursor(tracklist, trackBus);
     EXPECT_NO_THROW(cursor.select(999));
 }
 
 TEST_F(RegressionTest, PlayWithNoSelectionDoesNotCrash) {
     TrackBus trackBus;
     Tracklist tracklist;
-    Cursor cursor(tracklist, trackBus);
+    TrackCursor cursor(tracklist, trackBus);
     tracklist.add(Song("A.mp3", "/a"));
     EXPECT_NO_THROW(cursor.play());
 }

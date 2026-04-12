@@ -5,7 +5,7 @@
 
 class RepeatOneMode final : public RepeatStrategy {
 public:
-    bool apply(Cursor& cursor) override;
+    bool apply(TrackCursor& cursor) override;
     RepeatModeKind identify() const override;
 };
 

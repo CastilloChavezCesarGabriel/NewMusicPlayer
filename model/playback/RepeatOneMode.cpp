@@ -1,6 +1,6 @@
 #include "RepeatOneMode.h"
 
-bool RepeatOneMode::apply(Cursor&) { return true; }
+bool RepeatOneMode::apply(TrackCursor&) { return true; }
 
 RepeatModeKind RepeatOneMode::identify() const {
     return RepeatModeKind::One;

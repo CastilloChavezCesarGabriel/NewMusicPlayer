@@ -29,8 +29,8 @@ add_executable(NewMusicPlayer main.cpp
         model/tracklist/QuickSort.h
         model/tracklist/Tracklist.cpp
         model/tracklist/Tracklist.h
-        model/tracklist/Cursor.cpp
-        model/tracklist/Cursor.h
+        model/tracklist/TrackCursor.cpp
+        model/tracklist/TrackCursor.h
         model/tracklist/IRemovalListener.h
         model/tracklist/IArrangementStrategy.h
         model/tracklist/ShuffleArrangement.cpp
@@ -53,8 +53,8 @@ add_executable(NewMusicPlayer main.cpp
         model/event/AdBus.h
         model/event/RepeatBus.cpp
         model/event/RepeatBus.h
-        model/playback/RepeatListener.cpp
-        model/playback/RepeatListener.h
+        model/playback/RepeatCoordinator.cpp
+        model/playback/RepeatCoordinator.h
         model/playback/Advertisement.cpp
         model/playback/Advertisement.h
         model/playback/IAdPolicy.h
@@ -126,8 +126,8 @@ add_executable(NewMusicPlayer main.cpp
         controller/AdRelay.h
         controller/RepeatRelay.cpp
         controller/RepeatRelay.h
-        controller/EnableGroup.cpp
-        controller/EnableGroup.h
+        controller/EnableCoordinator.cpp
+        controller/EnableCoordinator.h
         controller/TransportController.cpp
         controller/TransportController.h
         controller/LibraryController.cpp
@@ -271,8 +271,8 @@ add_executable(NewMusicPlayerTests
         model/event/AdBus.h
         model/event/RepeatBus.cpp
         model/event/RepeatBus.h
-        model/playback/RepeatListener.cpp
-        model/playback/RepeatListener.h
+        model/playback/RepeatCoordinator.cpp
+        model/playback/RepeatCoordinator.h
         model/tracklist/ShellSort.cpp
         model/tracklist/ShellSort.h
         model/tracklist/DurationSort.cpp
@@ -283,8 +283,8 @@ add_executable(NewMusicPlayerTests
         model/tracklist/QuickSort.h
         model/tracklist/Tracklist.cpp
         model/tracklist/Tracklist.h
-        model/tracklist/Cursor.cpp
-        model/tracklist/Cursor.h
+        model/tracklist/TrackCursor.cpp
+        model/tracklist/TrackCursor.h
         model/tracklist/IRemovalListener.h
         model/tracklist/IArrangementStrategy.h
         model/tracklist/ShuffleArrangement.cpp

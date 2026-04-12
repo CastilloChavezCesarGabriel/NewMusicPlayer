@@ -1,6 +1,6 @@
 #include "ServiceFactory.h"
 
-std::unique_ptr<PlaybackService> ServiceFactory::createPlayback(Cursor& cursor, Advertisement& ad, RepeatMode& repeat) {
+std::unique_ptr<PlaybackService> ServiceFactory::createPlayback(TrackCursor& cursor, Advertisement& ad, RepeatMode& repeat) {
     return std::make_unique<PlaybackService>(cursor, ad, repeat);
 }
 
@@ -8,7 +8,7 @@ std::unique_ptr<LibraryService> ServiceFactory::createLibrary(MusicDirectory& di
     return std::make_unique<LibraryService>(dir, tracklist, bus);
 }
 
-std::unique_ptr<Setlist> ServiceFactory::createSetlist(Tracklist& tracklist, Cursor& cursor, ILibraryListener& bus) {
+std::unique_ptr<Setlist> ServiceFactory::createSetlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& bus) {
     return std::make_unique<Setlist>(tracklist, cursor, bus);
 }
 

@@ -8,8 +8,8 @@ Tracklist CollectionFactory::createTracklist() {
     return Tracklist();
 }
 
-std::unique_ptr<Cursor> CollectionFactory::createCursor(Tracklist& tracklist, ITrackListener& trackBus) {
-    return std::make_unique<Cursor>(tracklist, trackBus);
+std::unique_ptr<TrackCursor> CollectionFactory::createTrackCursor(Tracklist& tracklist, ITrackListener& trackBus) {
+    return std::make_unique<TrackCursor>(tracklist, trackBus);
 }
 
 ShuffleArrangement CollectionFactory::createShuffle() {

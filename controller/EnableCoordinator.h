@@ -1,10 +1,10 @@
-#ifndef ENABLE_GROUP_H
-#define ENABLE_GROUP_H
+#ifndef ENABLE_COORDINATOR_H
+#define ENABLE_COORDINATOR_H
 
 #include "../view/IEnableable.h"
 #include <vector>
 
-class EnableGroup final : public IEnableable {
+class EnableCoordinator final : public IEnableable {
 private:
     std::vector<IEnableable*> targets_;
 

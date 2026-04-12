@@ -12,7 +12,7 @@ void PlaylistTest::SetUp() {
     std::filesystem::create_directories(test_directory_);
     track_bus_.add(listener_);
     tracklist_ = std::make_unique<Tracklist>();
-    cursor_ = std::make_unique<Cursor>(*tracklist_, track_bus_);
+    cursor_ = std::make_unique<TrackCursor>(*tracklist_, track_bus_);
 }
 
 void PlaylistTest::TearDown() {
