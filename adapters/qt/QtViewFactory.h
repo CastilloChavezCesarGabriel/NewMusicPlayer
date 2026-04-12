@@ -6,7 +6,8 @@
 #include "QtSortHeader.h"
 #include "QtSearchOverlay.h"
 #include "QtTransportPanel.h"
-#include "QtArrangementPanel.h"
+#include "QtShuffleButton.h"
+#include "QtRepeatButton.h"
 #include "QtVolumePanel.h"
 #include "QtToolbar.h"
 #include "QtNotification.h"
@@ -22,7 +23,8 @@ public:
     static QtSortHeader* createSortHeader(QWidget* parent = nullptr);
     static QtSearchOverlay* createSearchOverlay(QWidget* parent = nullptr);
     static QtTransportPanel* createTransport(IPlaybackControl& playback, QWidget* parent = nullptr);
-    static QtArrangementPanel* createArrangement(IArrangementControl& arrangement, QWidget* parent = nullptr);
+    static QtShuffleButton* createShuffleButton(IArrangementControl& arrangement, QWidget* parent = nullptr);
+    static QtRepeatButton* createRepeatButton(IArrangementControl& arrangement, QWidget* parent = nullptr);
     static QtVolumePanel* createVolume(IPlaybackControl& playback, QWidget* parent = nullptr);
     static QtToolbar* createToolbar(IPlaybackControl& playback, ILibraryControl& library, QWidget* parent = nullptr);
     static QtNotification* createNotification(QWidget* parent = nullptr);

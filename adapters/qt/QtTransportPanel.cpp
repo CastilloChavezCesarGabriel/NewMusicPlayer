@@ -19,6 +19,7 @@ void QtTransportPanel::setup() {
     layout->addWidget(previous_button_);
     layout->addWidget(toggle_button_);
     layout->addWidget(next_button_);
+    QtLayoutUtil::flatten(layout);
     QtLayoutUtil::center(layout);
 
     enable(false);

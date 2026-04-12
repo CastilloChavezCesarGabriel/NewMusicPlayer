@@ -12,6 +12,7 @@ private:
 public:
     explicit QtView(QWidget* parent = nullptr);
     void place(QWidget& widget);
+    void align(QWidget& left, QWidget& center, QWidget& right);
     void attach(QWidget& widget);
 };
 

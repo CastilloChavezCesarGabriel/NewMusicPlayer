@@ -65,25 +65,26 @@ int main(int argc, char *argv[]) {
     auto* dialog = QtViewFactory::createDialog(&view);
 
     // Controllers
-    auto transportCtrl = ControllerFactory::createTransport(*playback, *audio, *searchOverlay);
-    auto libraryCtrl = ControllerFactory::createLibrary(*library, *dialog);
-    auto arrangementCtrl = ControllerFactory::createArrangement(*setlist, *repeatSwitch, *sortHeader);
-    auto searchCtrl = ControllerFactory::createSearch(*catalog, *playback, *searchOverlay);
+    auto transportController = ControllerFactory::createTransport(*playback, *audio, *searchOverlay);
+    auto libraryController = ControllerFactory::createLibrary(*library, *dialog);
+    auto arrangementController = ControllerFactory::createArrangement(*setlist, *repeatSwitch, *sortHeader);
+    auto searchController = ControllerFactory::createSearch(*catalog, *playback, *searchOverlay);
 
     // Active widgets
-    auto* display = QtViewFactory::createDisplay(*transportCtrl, *libraryCtrl);
-    QtSearchField searchField;
-    auto* transport = QtViewFactory::createTransport(*transportCtrl);
-    auto* arrangement = QtViewFactory::createArrangement(*arrangementCtrl);
-    auto* volume = QtViewFactory::createVolume(*transportCtrl);
-    auto* toolbar = QtViewFactory::createToolbar(*transportCtrl, *libraryCtrl);
+    auto* display = QtViewFactory::createDisplay(*transportController, *libraryController);
+    auto* transport = QtViewFactory::createTransport(*transportController);
+    auto* shuffleButton = QtViewFactory::createShuffleButton(*arrangementController);
+    auto* repeatButton = QtViewFactory::createRepeatButton(*arrangementController);
+    auto* volume = QtViewFactory::createVolume(*transportController);
+    auto* toolbar = QtViewFactory::createToolbar(*transportController, *libraryController);
 
     // Connections (cross-layer)
-    QtEndConnection endConnection(*audio, *transportCtrl);
-    QtSearchFieldConnection searchFieldConnection(searchField, *searchCtrl);
-    QtPickConnection pickConnection(*searchOverlay, *searchCtrl);
+    QtSearchField searchField;
+    QtEndConnection endConnection(*audio, *transportController);
+    QtSearchFieldConnection searchFieldConnection(searchField, *searchController);
+    QtPickConnection pickConnection(*searchOverlay, *searchController);
     QtClearConnection clearConnection(*searchOverlay, searchField);
-    QtSortConnection sortConnection(*sortHeader, *arrangementCtrl);
+    QtSortConnection sortConnection(*sortHeader, *arrangementController);
 
     // Connections (adapter-to-adapter)
     QtToggleConnection toggleConnection(*audio, *transport);
@@ -93,7 +94,8 @@ int main(int argc, char *argv[]) {
     // Enable broadcast
     EnableGroup enableGroup;
     enableGroup.add(*transport);
-    enableGroup.add(*arrangement);
+    enableGroup.add(*shuffleButton);
+    enableGroup.add(*repeatButton);
     enableGroup.add(*toolbar);
     enableGroup.add(*audio);
 
@@ -101,7 +103,7 @@ int main(int argc, char *argv[]) {
     auto trackRelay = RelayFactory::createTrackRelay(*audio, *display, enableGroup);
     auto libraryRelay = RelayFactory::createLibraryRelay(*catalog, *display, *notification);
     auto adRelay = RelayFactory::createAdRelay(enableGroup, *audio, *toolbar);
-    auto repeatRelay = RelayFactory::createRepeatRelay(*arrangement);
+    auto repeatRelay = RelayFactory::createRepeatRelay(*repeatButton);
 
     trackBus.add(*trackRelay);
     libraryBus.add(*libraryRelay);
@@ -113,8 +115,7 @@ int main(int argc, char *argv[]) {
     view.place(*sortHeader);
     view.place(*display);
     view.place(*audio);
-    view.place(*transport);
-    view.place(*arrangement);
+    view.align(*shuffleButton, *transport, *repeatButton);
     view.place(*volume);
     view.place(*toolbar);
     view.attach(*searchOverlay);

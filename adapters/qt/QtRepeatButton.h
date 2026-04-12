@@ -1,5 +1,5 @@
-#ifndef QT_ARRANGEMENT_PANEL_H
-#define QT_ARRANGEMENT_PANEL_H
+#ifndef QT_REPEAT_BUTTON_H
+#define QT_REPEAT_BUTTON_H
 
 #include <QWidget>
 #include <QPushButton>
@@ -8,19 +8,18 @@
 #include "../../view/IEnableable.h"
 #include "IWidgetSetup.h"
 
-class QtArrangementPanel final : public QWidget, public IWidgetSetup, public IRepeatDisplay, public IEnableable {
+class QtRepeatButton final : public QWidget, public IWidgetSetup, public IRepeatDisplay, public IEnableable {
     Q_OBJECT
 private:
     IArrangementControl& arrangement_;
-    QPushButton* shuffle_;
-    QPushButton* repeat_;
+    QPushButton* button_;
 
 public:
-    explicit QtArrangementPanel(IArrangementControl& arrangement, QWidget* parent = nullptr);
+    explicit QtRepeatButton(IArrangementControl& arrangement, QWidget* parent = nullptr);
     void setup() override;
     void wire() override;
     void enable(bool state) override;
     void repeat(int mode) override;
 };
 
-#endif
+#endif //QT_REPEAT_BUTTON_H

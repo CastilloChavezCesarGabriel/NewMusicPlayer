@@ -20,8 +20,12 @@ QtTransportPanel* QtViewFactory::createTransport(IPlaybackControl& playback, QWi
     return new QtTransportPanel(playback, parent);
 }
 
-QtArrangementPanel* QtViewFactory::createArrangement(IArrangementControl& arrangement, QWidget* parent) {
-    return new QtArrangementPanel(arrangement, parent);
+QtShuffleButton* QtViewFactory::createShuffleButton(IArrangementControl& arrangement, QWidget* parent) {
+    return new QtShuffleButton(arrangement, parent);
+}
+
+QtRepeatButton* QtViewFactory::createRepeatButton(IArrangementControl& arrangement, QWidget* parent) {
+    return new QtRepeatButton(arrangement, parent);
 }
 
 QtVolumePanel* QtViewFactory::createVolume(IPlaybackControl& playback, QWidget* parent) {

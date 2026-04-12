@@ -138,8 +138,10 @@ add_executable(NewMusicPlayer main.cpp
         adapters/qt/QtLayoutUtil.h
         adapters/qt/QtTransportPanel.cpp
         adapters/qt/QtTransportPanel.h
-        adapters/qt/QtArrangementPanel.cpp
-        adapters/qt/QtArrangementPanel.h
+        adapters/qt/QtShuffleButton.cpp
+        adapters/qt/QtShuffleButton.h
+        adapters/qt/QtRepeatButton.cpp
+        adapters/qt/QtRepeatButton.h
         adapters/qt/QtVolumePanel.cpp
         adapters/qt/QtVolumePanel.h
         adapters/qt/QtToolbar.cpp
