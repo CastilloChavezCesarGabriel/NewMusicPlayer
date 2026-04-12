@@ -1,8 +1,8 @@
 #ifndef TEST_PLAYLIST_VISITOR_H
 #define TEST_PLAYLIST_VISITOR_H
 
-#include "../model/ISongVisitor.h"
-#include "../model/IPathVisitor.h"
+#include "../model/song/ISongVisitor.h"
+#include "../model/song/IPathVisitor.h"
 #include <string>
 #include <vector>
 

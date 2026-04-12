@@ -1,7 +1,7 @@
 #include "LibraryRelay.h"
 #include "PlaylistRenderer.h"
 
-LibraryRelay::LibraryRelay(Catalog& catalog, IPlaylistPanel& panel, INotification& notification)
+LibraryRelay::LibraryRelay(TrackCatalog& catalog, IPlaylistPanel& panel, INotification& notification)
     : catalog_(catalog), panel_(panel), notification_(notification) {
     onChanged();
 }

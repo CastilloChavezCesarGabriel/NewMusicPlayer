@@ -2,24 +2,24 @@
 #define MODEL_TEST_FIXTURE_H
 
 #include <gtest/gtest.h>
-#include "../model/Dice.h"
-#include "../model/RandomAdPolicy.h"
-#include "../model/TrackBus.h"
-#include "../model/LibraryBus.h"
-#include "../model/AdBus.h"
-#include "../model/RepeatBus.h"
-#include "../model/RepeatListener.h"
-#include "../model/MusicDirectory.h"
-#include "../model/Tracklist.h"
-#include "../model/Cursor.h"
-#include "../model/ShuffleArrangement.h"
-#include "../model/Advertisement.h"
-#include "../model/RepeatMode.h"
-#include "../model/service/Playback.h"
-#include "../model/service/Library.h"
+#include "../model/library/Dice.h"
+#include "../model/playback/RandomAdPolicy.h"
+#include "../model/event/TrackBus.h"
+#include "../model/event/LibraryBus.h"
+#include "../model/event/AdBus.h"
+#include "../model/event/RepeatBus.h"
+#include "../model/playback/RepeatListener.h"
+#include "../model/library/MusicDirectory.h"
+#include "../model/tracklist/Tracklist.h"
+#include "../model/tracklist/Cursor.h"
+#include "../model/tracklist/ShuffleArrangement.h"
+#include "../model/playback/Advertisement.h"
+#include "../model/playback/RepeatMode.h"
+#include "../model/service/PlaybackService.h"
+#include "../model/service/LibraryService.h"
 #include "../model/service/Setlist.h"
-#include "../model/service/Catalog.h"
-#include "../model/service/RepeatSwitch.h"
+#include "../model/service/TrackCatalog.h"
+#include "../model/service/RepeatModeCommand.h"
 #include "MockPlaybackListener.h"
 #include "TestPlaylistVisitor.h"
 #include <memory>
@@ -44,11 +44,11 @@ protected:
     std::unique_ptr<Cursor> cursor_;
     std::unique_ptr<Advertisement> advertisement_;
     std::unique_ptr<RepeatMode> repeat_mode_;
-    std::unique_ptr<Playback> playback_;
-    std::unique_ptr<Library> library_;
+    std::unique_ptr<PlaybackService> playback_;
+    std::unique_ptr<LibraryService> library_;
     std::unique_ptr<Setlist> setlist_;
-    std::unique_ptr<Catalog> catalog_;
-    std::unique_ptr<RepeatSwitch> repeat_switch_;
+    std::unique_ptr<TrackCatalog> catalog_;
+    std::unique_ptr<RepeatModeCommand> repeat_switch_;
 
     void SetUp() override;
     void TearDown() override;

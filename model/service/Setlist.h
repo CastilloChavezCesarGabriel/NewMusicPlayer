@@ -1,10 +1,10 @@
 #ifndef SETLIST_H
 #define SETLIST_H
 
-#include "../Tracklist.h"
-#include "../Cursor.h"
-#include "../ILibraryListener.h"
-#include "../IArrangementStrategy.h"
+#include "../tracklist/Tracklist.h"
+#include "../tracklist/Cursor.h"
+#include "../event/ILibraryListener.h"
+#include "../tracklist/IArrangementStrategy.h"
 
 class Setlist {
 private:

@@ -1,7 +1,7 @@
 #ifndef AD_RELAY_H
 #define AD_RELAY_H
 
-#include "../model/IAdListener.h"
+#include "../model/playback/IAdListener.h"
 #include "../view/IEnableable.h"
 #include "../view/ITimingPanel.h"
 #include "../view/IToolbarDisplay.h"

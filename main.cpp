@@ -1,25 +1,25 @@
 #include <filesystem>
-#include "core/EventFactory.h"
-#include "core/CollectionFactory.h"
-#include "core/PlaybackFactory.h"
-#include "core/ServiceFactory.h"
-#include "core/ControllerFactory.h"
-#include "core/RelayFactory.h"
+#include "model/factory/EventFactory.h"
+#include "model/factory/CollectionFactory.h"
+#include "model/factory/PlaybackFactory.h"
+#include "model/factory/ServiceFactory.h"
+#include "controller/factory/ControllerFactory.h"
+#include "controller/factory/RelayFactory.h"
 #include "adapters/qt/QtView.h"
-#include "adapters/qt/QtStyler.h"
-#include "adapters/qt/QtPlaybackFactory.h"
-#include "adapters/qt/QtArrangementFactory.h"
-#include "adapters/qt/QtDisplayFactory.h"
-#include "adapters/qt/QtDialogFactory.h"
-#include "adapters/qt/QtSearchField.h"
-#include "adapters/qt/QtEndConnection.h"
-#include "adapters/qt/QtToggleConnection.h"
-#include "adapters/qt/QtRevealConnection.h"
-#include "adapters/qt/QtSearchFieldConnection.h"
-#include "adapters/qt/QtPickConnection.h"
-#include "adapters/qt/QtClearConnection.h"
-#include "adapters/qt/QtSortConnection.h"
-#include "adapters/qt/QtRemoveConnection.h"
+#include "adapters/qt/style/QtStyler.h"
+#include "adapters/qt/factory/QtPlaybackFactory.h"
+#include "adapters/qt/factory/QtArrangementFactory.h"
+#include "adapters/qt/factory/QtDisplayFactory.h"
+#include "adapters/qt/factory/QtDialogFactory.h"
+#include "adapters/qt/widget/QtSearchField.h"
+#include "adapters/qt/connection/QtEndConnection.h"
+#include "adapters/qt/connection/QtToggleConnection.h"
+#include "adapters/qt/connection/QtRevealConnection.h"
+#include "adapters/qt/connection/QtSearchFieldConnection.h"
+#include "adapters/qt/connection/QtPickConnection.h"
+#include "adapters/qt/connection/QtClearConnection.h"
+#include "adapters/qt/connection/QtSortConnection.h"
+#include "adapters/qt/connection/QtRemoveConnection.h"
 #include "controller/EnableGroup.h"
 
 int main(int argc, char *argv[]) {
@@ -54,8 +54,8 @@ int main(int argc, char *argv[]) {
     auto playback = ServiceFactory::createPlayback(*cursor, *advertisement, *repeatMode);
     auto library = ServiceFactory::createLibrary(musicDirectory, tracklist, libraryBus);
     auto setlist = ServiceFactory::createSetlist(tracklist, *cursor, libraryBus);
-    auto catalog = ServiceFactory::createCatalog(tracklist);
-    auto repeatSwitch = ServiceFactory::createRepeatSwitch(*repeatMode);
+    auto catalog = ServiceFactory::createTrackCatalog(tracklist);
+    auto repeatSwitch = ServiceFactory::createRepeatModeCommand(*repeatMode);
 
     // Layout shell (created early so it can parent notification/dialog)
     QtView view;

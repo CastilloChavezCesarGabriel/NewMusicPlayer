@@ -1,5 +1,5 @@
 #include "AddSongUseCaseTest.h"
-#include "../../model/QuickSort.h"
+#include "../../model/tracklist/QuickSort.h"
 #include "../TestPlaylistVisitor.h"
 #include <filesystem>
 #include <fstream>

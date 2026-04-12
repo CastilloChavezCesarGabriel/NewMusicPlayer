@@ -2,9 +2,9 @@
 #define PLAYLISTTEST_H
 
 #include <gtest/gtest.h>
-#include "../../model/Tracklist.h"
-#include "../../model/Cursor.h"
-#include "../../model/TrackBus.h"
+#include "../../model/tracklist/Tracklist.h"
+#include "../../model/tracklist/Cursor.h"
+#include "../../model/event/TrackBus.h"
 #include "../TestPlaylistVisitor.h"
 #include "../MockPlaybackListener.h"
 #include <memory>

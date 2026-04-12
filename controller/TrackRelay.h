@@ -1,7 +1,7 @@
 #ifndef TRACK_RELAY_H
 #define TRACK_RELAY_H
 
-#include "../model/ITrackListener.h"
+#include "../model/event/ITrackListener.h"
 #include "../view/IAudioPlayer.h"
 #include "../view/IPlaylistPanel.h"
 #include "../view/IEnableable.h"

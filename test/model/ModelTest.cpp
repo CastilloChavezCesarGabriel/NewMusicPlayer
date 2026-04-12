@@ -1,8 +1,8 @@
 #include "ModelTest.h"
 #include "../TestPlaylistVisitor.h"
-#include "../../model/QuickSort.h"
-#include "../../model/DurationSort.h"
-#include "../../model/DateSort.h"
+#include "../../model/tracklist/QuickSort.h"
+#include "../../model/tracklist/DurationSort.h"
+#include "../../model/tracklist/DateSort.h"
 #include <filesystem>
 #include <fstream>
 

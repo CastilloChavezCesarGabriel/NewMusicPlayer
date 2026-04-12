@@ -3,10 +3,10 @@
 
 #include "../DirectoryTestFixture.h"
 #include "../MockPlaybackListener.h"
-#include "../../model/Dice.h"
-#include "../../model/RandomAdPolicy.h"
-#include "../../model/AdBus.h"
-#include "../../model/TrackBus.h"
+#include "../../model/library/Dice.h"
+#include "../../model/playback/RandomAdPolicy.h"
+#include "../../model/event/AdBus.h"
+#include "../../model/event/TrackBus.h"
 
 class AdvertisementTest : public DirectoryTestFixture {
 protected:

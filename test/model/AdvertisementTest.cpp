@@ -1,5 +1,5 @@
 #include "AdvertisementTest.h"
-#include "../../model/Advertisement.h"
+#include "../../model/playback/Advertisement.h"
 #include <fstream>
 
 void AdvertisementTest::SetUp() {

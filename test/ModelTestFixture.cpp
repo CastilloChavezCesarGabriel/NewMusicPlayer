@@ -42,9 +42,9 @@ void ModelTestFixture::build() {
     repeat_listener_ = std::make_unique<RepeatListener>(repeat_bus_, track_bus_);
     repeat_mode_ = std::make_unique<RepeatMode>(*cursor_, *repeat_listener_);
 
-    playback_ = std::make_unique<Playback>(*cursor_, *advertisement_, *repeat_mode_);
-    library_ = std::make_unique<Library>(*directory_, *tracklist_, library_bus_);
+    playback_ = std::make_unique<PlaybackService>(*cursor_, *advertisement_, *repeat_mode_);
+    library_ = std::make_unique<LibraryService>(*directory_, *tracklist_, library_bus_);
     setlist_ = std::make_unique<Setlist>(*tracklist_, *cursor_, library_bus_);
-    catalog_ = std::make_unique<Catalog>(*tracklist_);
-    repeat_switch_ = std::make_unique<RepeatSwitch>(*repeat_mode_);
+    catalog_ = std::make_unique<TrackCatalog>(*tracklist_);
+    repeat_switch_ = std::make_unique<RepeatModeCommand>(*repeat_mode_);
 }

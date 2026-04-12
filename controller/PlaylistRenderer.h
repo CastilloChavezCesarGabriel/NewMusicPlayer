@@ -1,7 +1,7 @@
 #ifndef PLAYLIST_RENDERER_H
 #define PLAYLIST_RENDERER_H
 
-#include "../model/ISongVisitor.h"
+#include "../model/song/ISongVisitor.h"
 #include "../view/IPlaylistPanel.h"
 #include "../view/ISearchPanel.h"
 #include <vector>

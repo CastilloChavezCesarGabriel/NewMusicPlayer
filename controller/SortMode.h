@@ -5,7 +5,7 @@
 #include <memory>
 #include "../model/service/Setlist.h"
 #include "../view/ISortDisplay.h"
-#include "../model/IArrangementStrategy.h"
+#include "../model/tracklist/IArrangementStrategy.h"
 
 class SortMode {
 private:

@@ -1,10 +1,10 @@
 #ifndef MOCK_PLAYBACK_LISTENER_H
 #define MOCK_PLAYBACK_LISTENER_H
 
-#include "../model/ITrackListener.h"
-#include "../model/ILibraryListener.h"
-#include "../model/IAdListener.h"
-#include "../model/IRepeatListener.h"
+#include "../model/event/ITrackListener.h"
+#include "../model/event/ILibraryListener.h"
+#include "../model/playback/IAdListener.h"
+#include "../model/playback/IRepeatListener.h"
 #include <string>
 #include <vector>
 

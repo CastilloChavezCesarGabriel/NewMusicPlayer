@@ -1,9 +1,9 @@
 #include "PlaylistTest.h"
-#include "../../model/DurationSort.h"
-#include "../../model/QuickSort.h"
-#include "../../model/ITrackListener.h"
-#include "../../model/ShuffleArrangement.h"
-#include "../../model/ReverseArrangement.h"
+#include "../../model/tracklist/DurationSort.h"
+#include "../../model/tracklist/QuickSort.h"
+#include "../../model/event/ITrackListener.h"
+#include "../../model/tracklist/ShuffleArrangement.h"
+#include "../../model/tracklist/ReverseArrangement.h"
 #include <filesystem>
 #include <fstream>
 

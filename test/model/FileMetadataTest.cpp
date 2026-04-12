@@ -1,5 +1,5 @@
 #include "FileMetadataTest.h"
-#include "../../model/FileMetadata.h"
+#include "../../model/song/FileMetadata.h"
 #include <fstream>
 
 std::string FileMetadataTest::identify() const {

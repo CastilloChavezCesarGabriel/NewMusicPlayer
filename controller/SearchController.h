@@ -1,20 +1,20 @@
 #ifndef SEARCH_CONTROLLER_H
 #define SEARCH_CONTROLLER_H
 
-#include "../model/service/Catalog.h"
-#include "../model/service/Playback.h"
+#include "../model/service/TrackCatalog.h"
+#include "../model/service/PlaybackService.h"
 #include "../view/IDisplayControl.h"
 #include "../view/ISearchPanel.h"
 #include <string>
 
 class SearchController final : public IDisplayControl {
 private:
-    Catalog& catalog_;
-    Playback& playback_;
+    TrackCatalog& catalog_;
+    PlaybackService& playback_;
     ISearchPanel& search_;
 
 public:
-    SearchController(Catalog& catalog, Playback& playback, ISearchPanel& search);
+    SearchController(TrackCatalog& catalog, PlaybackService& playback, ISearchPanel& search);
     void onSearch(const std::string& query) override;
     void onPick(const std::string& name) override;
 };

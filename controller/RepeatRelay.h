@@ -1,7 +1,7 @@
 #ifndef REPEAT_RELAY_H
 #define REPEAT_RELAY_H
 
-#include "../model/IRepeatListener.h"
+#include "../model/playback/IRepeatListener.h"
 #include "../view/IRepeatDisplay.h"
 
 class RepeatRelay final : public IRepeatListener {
