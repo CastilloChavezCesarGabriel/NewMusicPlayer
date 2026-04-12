@@ -52,6 +52,10 @@ void QtPlaylistDisplay::remove() {
     }
 }
 
+void QtPlaylistDisplay::enable(const bool state) {
+    playlist_->setEnabled(state);
+}
+
 void QtPlaylistDisplay::dragEnterEvent(QDragEnterEvent* event) {
     QtDragDrop::accept(event);
 }

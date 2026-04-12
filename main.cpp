@@ -101,6 +101,8 @@ int main(int argc, char *argv[]) {
     enableGroup.add(*repeatButton);
     enableGroup.add(*toolbar);
     enableGroup.add(*audio);
+    enableGroup.add(*display);
+    enableGroup.add(*searchOverlay);
 
     // Relays
     auto trackRelay = RelayFactory::createTrackRelay(*audio, *display, enableGroup);

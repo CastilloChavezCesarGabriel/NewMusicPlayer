@@ -4,12 +4,13 @@
 #include "../../../view/IPlaylistPanel.h"
 #include "../../../view/IPlaybackControl.h"
 #include "../../../view/ILibraryControl.h"
+#include "../../../view/IEnableable.h"
 #include <QListView>
 #include <QStringListModel>
 #include <string>
 #include <vector>
 
-class QtPlaylistDisplay final : public QWidget, public IPlaylistPanel {
+class QtPlaylistDisplay final : public QWidget, public IPlaylistPanel, public IEnableable {
     Q_OBJECT
 private:
     QListView* playlist_;
@@ -24,6 +25,7 @@ public:
     void refresh(const std::vector<std::string>& names) override;
     void highlight(int index) override;
     void remove();
+    void enable(bool state) override;
 
 protected:
     void dragEnterEvent(QDragEnterEvent* event) override;

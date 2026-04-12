@@ -44,3 +44,7 @@ void QtSearchOverlay::dismiss() {
     results_->clear();
     setVisible(false);
 }
+
+void QtSearchOverlay::enable(const bool state) {
+    results_->setEnabled(state);
+}
