@@ -7,7 +7,10 @@
 #include "core/RelayFactory.h"
 #include "adapters/qt/QtView.h"
 #include "adapters/qt/QtStyler.h"
-#include "adapters/qt/QtViewFactory.h"
+#include "adapters/qt/QtPlaybackFactory.h"
+#include "adapters/qt/QtArrangementFactory.h"
+#include "adapters/qt/QtDisplayFactory.h"
+#include "adapters/qt/QtDialogFactory.h"
 #include "adapters/qt/QtSearchField.h"
 #include "adapters/qt/QtEndConnection.h"
 #include "adapters/qt/QtToggleConnection.h"
@@ -58,11 +61,11 @@ int main(int argc, char *argv[]) {
     QtView view;
 
     // Passive widgets
-    auto* audio = QtViewFactory::createAudio();
-    auto* sortHeader = QtViewFactory::createSortHeader();
-    auto* searchOverlay = QtViewFactory::createSearchOverlay();
-    auto* notification = QtViewFactory::createNotification(&view);
-    auto* dialog = QtViewFactory::createDialog(&view);
+    auto* audio = QtPlaybackFactory::createAudio();
+    auto* sortHeader = QtDisplayFactory::createSortHeader();
+    auto* searchOverlay = QtDisplayFactory::createSearchOverlay();
+    auto* notification = QtDialogFactory::createNotification(&view);
+    auto* dialog = QtDialogFactory::createDialog(&view);
 
     // Controllers
     auto transportController = ControllerFactory::createTransport(*playback, *audio, *searchOverlay);
@@ -71,12 +74,12 @@ int main(int argc, char *argv[]) {
     auto searchController = ControllerFactory::createSearch(*catalog, *playback, *searchOverlay);
 
     // Active widgets
-    auto* display = QtViewFactory::createDisplay(*transportController, *libraryController);
-    auto* transport = QtViewFactory::createTransport(*transportController);
-    auto* shuffleButton = QtViewFactory::createShuffleButton(*arrangementController);
-    auto* repeatButton = QtViewFactory::createRepeatButton(*arrangementController);
-    auto* volume = QtViewFactory::createVolume(*transportController);
-    auto* toolbar = QtViewFactory::createToolbar(*transportController, *libraryController);
+    auto* display = QtDisplayFactory::createDisplay(*transportController, *libraryController);
+    auto* transport = QtPlaybackFactory::createTransport(*transportController);
+    auto* shuffleButton = QtArrangementFactory::createShuffleButton(*arrangementController);
+    auto* repeatButton = QtArrangementFactory::createRepeatButton(*arrangementController);
+    auto* volume = QtPlaybackFactory::createVolume(*transportController);
+    auto* toolbar = QtDisplayFactory::createToolbar(*transportController, *libraryController);
 
     // Connections (cross-layer)
     QtSearchField searchField;

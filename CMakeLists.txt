@@ -164,8 +164,14 @@ add_executable(NewMusicPlayer main.cpp
         adapters/qt/QtDragDrop.h
         adapters/qt/QtIconPainter.cpp
         adapters/qt/QtIconPainter.h
-        adapters/qt/QtViewFactory.cpp
-        adapters/qt/QtViewFactory.h
+        adapters/qt/QtPlaybackFactory.cpp
+        adapters/qt/QtPlaybackFactory.h
+        adapters/qt/QtArrangementFactory.cpp
+        adapters/qt/QtArrangementFactory.h
+        adapters/qt/QtDisplayFactory.cpp
+        adapters/qt/QtDisplayFactory.h
+        adapters/qt/QtDialogFactory.cpp
+        adapters/qt/QtDialogFactory.h
         adapters/qt/QtStyler.cpp
         adapters/qt/QtStyler.h
         adapters/qt/QtSearchField.cpp
