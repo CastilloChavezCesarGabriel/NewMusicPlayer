@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     auto musicDirectory = CollectionFactory::createDirectory(base + "/resources/music");
     auto tracklist = CollectionFactory::createTracklist();
     musicDirectory.load(tracklist);
-    auto cursor = CollectionFactory::createTrackCursor(tracklist, trackBus);
+    auto trackCursor = CollectionFactory::createTrackCursor(tracklist, trackBus);
     auto initialShuffle = CollectionFactory::createShuffle();
     tracklist.arrange(initialShuffle);
 
@@ -48,16 +48,16 @@ int main(int argc, char *argv[]) {
     auto advertisement = PlaybackFactory::createAdvertisement(*adPolicy, adBus, trackBus);
     advertisement->load(base + "/resources/announcements");
     auto repeatListener = PlaybackFactory::createRepeatCoordinator(repeatBus, trackBus);
-    auto repeatMode = PlaybackFactory::createRepeatMode(*cursor, *repeatListener);
+    auto repeatMode = PlaybackFactory::createRepeatMode(*trackCursor, *repeatListener);
 
     // Services
-    auto playback = ServiceFactory::createPlayback(*cursor, *advertisement, *repeatMode);
+    auto playback = ServiceFactory::createPlayback(*trackCursor, *advertisement, *repeatMode);
     auto library = ServiceFactory::createLibrary(musicDirectory, tracklist, libraryBus);
-    auto setlist = ServiceFactory::createSetlist(tracklist, *cursor, libraryBus);
+    auto setlist = ServiceFactory::createSetlist(tracklist, *trackCursor, libraryBus);
     auto catalog = ServiceFactory::createTrackCatalog(tracklist);
     auto repeatSwitch = ServiceFactory::createRepeatModeCommand(*repeatMode);
 
-    // Layout shell (created early so it can parent notification/dialog)
+    // Layout shell (Created early to parent the notifications and dialogs)
     QtView view;
 
     // Passive widgets
@@ -95,19 +95,19 @@ int main(int argc, char *argv[]) {
     QtRemoveConnection removeConnection(*toolbar, *display);
 
     // Enable broadcast
-    EnableCoordinator enableGroup;
-    enableGroup.add(*transport);
-    enableGroup.add(*shuffleButton);
-    enableGroup.add(*repeatButton);
-    enableGroup.add(*toolbar);
-    enableGroup.add(*audio);
-    enableGroup.add(*display);
-    enableGroup.add(*searchOverlay);
+    EnableCoordinator enableCoordinator;
+    enableCoordinator.add(*transport);
+    enableCoordinator.add(*shuffleButton);
+    enableCoordinator.add(*repeatButton);
+    enableCoordinator.add(*toolbar);
+    enableCoordinator.add(*audio);
+    enableCoordinator.add(*display);
+    enableCoordinator.add(*searchOverlay);
 
     // Relays
-    auto trackRelay = RelayFactory::createTrackRelay(*audio, *display, enableGroup);
+    auto trackRelay = RelayFactory::createTrackRelay(*audio, *display, enableCoordinator);
     auto libraryRelay = RelayFactory::createLibraryRelay(*catalog, *display, *notification);
-    auto adRelay = RelayFactory::createAdRelay(enableGroup, *audio, *toolbar);
+    auto adRelay = RelayFactory::createAdRelay(enableCoordinator, *audio, *toolbar);
     auto repeatRelay = RelayFactory::createRepeatRelay(*repeatButton);
 
     trackBus.add(*trackRelay);

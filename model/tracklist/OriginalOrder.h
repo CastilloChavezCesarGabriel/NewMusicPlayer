@@ -11,6 +11,7 @@ private:
 public:
     void preserve(const std::vector<Song>& songs);
     void restore(std::vector<Song>& songs);
+    void invalidate();
 };
 
 #endif //ORIGINAL_ORDER_H

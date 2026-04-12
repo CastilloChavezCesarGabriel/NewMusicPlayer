@@ -11,3 +11,7 @@ void OriginalOrder::restore(std::vector<Song>& songs) {
     songs = snapshot_;
     snapshot_.clear();
 }
+
+void OriginalOrder::invalidate() {
+    snapshot_.clear();
+}

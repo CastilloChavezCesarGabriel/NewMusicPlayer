@@ -8,12 +8,14 @@ void Tracklist::visit(const std::string& name, const std::string& path) {
 
 void Tracklist::add(const Song& song) {
     songs_.push_back(song);
+    original_order_.invalidate();
 }
 
 void Tracklist::discard(const int index, IPathVisitor& receiver) {
     if (index < 0 || index >= static_cast<int>(songs_.size())) return;
     songs_[index].stream(receiver);
     songs_.erase(songs_.begin() + index);
+    original_order_.invalidate();
     for (IRemovalListener* listener : removal_listeners_) {
         listener->onRemoved(index);
     }
