@@ -79,7 +79,8 @@ int main(int argc, char *argv[]) {
     auto* shuffleButton = QtArrangementFactory::createShuffleButton(*arrangementController);
     auto* repeatButton = QtArrangementFactory::createRepeatButton(*arrangementController);
     auto* volume = QtPlaybackFactory::createVolume(*transportController);
-    auto* toolbar = QtDisplayFactory::createToolbar(*transportController, *libraryController);
+    auto* libraryBar = QtDisplayFactory::createLibraryBar(*libraryController);
+    auto* skipButton = QtPlaybackFactory::createSkipButton(*transportController);
 
     // Connections (cross-layer)
     QtSearchField searchField;
@@ -91,26 +92,32 @@ int main(int argc, char *argv[]) {
 
     // Connections (adapter-to-adapter)
     QtToggleConnection toggleConnection(*audio, *transport);
-    QtRevealConnection revealConnection(*audio, *toolbar);
-    QtRemoveConnection removeConnection(*toolbar, *display);
+    QtRevealConnection revealConnection(*audio, *skipButton);
+    QtRemoveConnection removeConnection(*libraryBar, *display);
 
     // Enable broadcast
-    EnableCoordinator enableCoordinator;
-    enableCoordinator.add(*transport);
-    enableCoordinator.add(*shuffleButton);
-    enableCoordinator.add(*repeatButton);
-    enableCoordinator.add(*toolbar);
-    enableCoordinator.add(*audio);
-    enableCoordinator.add(*display);
-    enableCoordinator.add(*searchOverlay);
+    EnableCoordinator playbackControls;
+    playbackControls.add(*transport);
+    playbackControls.add(*shuffleButton);
+    playbackControls.add(*repeatButton);
+    playbackControls.add(*skipButton);
+    playbackControls.add(*audio);
+
+    EnableCoordinator adControls;
+    adControls.add(playbackControls);
+    adControls.add(*libraryBar);
+    adControls.add(*display);
+    adControls.add(*searchOverlay);
 
     // Relays
-    auto trackRelay = RelayFactory::createTrackRelay(*audio, *display, enableCoordinator);
+    auto trackRelay = RelayFactory::createTrackRelay(*audio, *display, playbackControls);
+    auto arrangementRelay = RelayFactory::createArrangementRelay(*arrangementController);
     auto libraryRelay = RelayFactory::createLibraryRelay(*catalog, *display, *notification);
-    auto adRelay = RelayFactory::createAdRelay(enableCoordinator, *audio, *toolbar);
+    auto adRelay = RelayFactory::createAdRelay(adControls, *audio, *skipButton);
     auto repeatRelay = RelayFactory::createRepeatRelay(*repeatButton);
 
     trackBus.add(*trackRelay);
+    libraryBus.add(*arrangementRelay);
     libraryBus.add(*libraryRelay);
     adBus.add(*adRelay);
     repeatBus.add(*repeatRelay);
@@ -122,7 +129,8 @@ int main(int argc, char *argv[]) {
     view.place(*audio);
     view.align(*shuffleButton, *transport, *repeatButton);
     view.place(*volume);
-    view.place(*toolbar);
+    view.place(*libraryBar);
+    view.place(*skipButton);
     view.attach(*searchOverlay);
 
     view.show();

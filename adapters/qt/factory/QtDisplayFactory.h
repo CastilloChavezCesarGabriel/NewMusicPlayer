@@ -4,7 +4,7 @@
 #include "../widget/QtPlaylistDisplay.h"
 #include "../widget/QtSortHeader.h"
 #include "../widget/QtSearchOverlay.h"
-#include "../widget/QtToolbar.h"
+#include "../widget/QtLibraryBar.h"
 #include "../../../view/IPlaybackControl.h"
 #include "../../../view/ILibraryControl.h"
 #include <QWidget>
@@ -14,7 +14,7 @@ public:
     static QtPlaylistDisplay* createDisplay(IPlaybackControl& playback, ILibraryControl& library, QWidget* parent = nullptr);
     static QtSortHeader* createSortHeader(QWidget* parent = nullptr);
     static QtSearchOverlay* createSearchOverlay(QWidget* parent = nullptr);
-    static QtToolbar* createToolbar(IPlaybackControl& playback, ILibraryControl& library, QWidget* parent = nullptr);
+    static QtLibraryBar* createLibraryBar(ILibraryControl& library, QWidget* parent = nullptr);
 };
 
 #endif //QT_DISPLAY_FACTORY_H

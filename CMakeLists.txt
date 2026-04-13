@@ -134,6 +134,9 @@ add_executable(NewMusicPlayer main.cpp
         controller/LibraryController.h
         controller/ArrangementController.cpp
         controller/ArrangementController.h
+        controller/ArrangementRelay.cpp
+        controller/ArrangementRelay.h
+        view/IRefreshable.h
         adapters/qt/QtLayoutUtil.cpp
         adapters/qt/QtLayoutUtil.h
         adapters/qt/widget/QtTransportPanel.cpp
@@ -144,8 +147,10 @@ add_executable(NewMusicPlayer main.cpp
         adapters/qt/widget/QtRepeatButton.h
         adapters/qt/widget/QtVolumePanel.cpp
         adapters/qt/widget/QtVolumePanel.h
-        adapters/qt/widget/QtToolbar.cpp
-        adapters/qt/widget/QtToolbar.h
+        adapters/qt/widget/QtLibraryBar.cpp
+        adapters/qt/widget/QtLibraryBar.h
+        adapters/qt/widget/QtSkipButton.cpp
+        adapters/qt/widget/QtSkipButton.h
         adapters/qt/widget/QtProgressPanel.cpp
         adapters/qt/widget/QtProgressPanel.h
         adapters/qt/widget/QtSortHeader.cpp

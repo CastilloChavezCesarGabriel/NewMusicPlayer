@@ -18,6 +18,7 @@ public:
     SortMode(const std::string& label, IArrangementStrategy* criteria);
     virtual ~SortMode() = default;
     virtual void apply(Setlist& setlist);
+    virtual void reapply(Setlist& setlist);
     void display(ISortDisplay& sort_display) const;
 };
 

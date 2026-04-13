@@ -30,7 +30,7 @@ public:
     void search(const std::string& query, ISongVisitor& visitor) const;
     void feed(int index, ISongVisitor& visitor) const;
     void stream(int index, IPathVisitor& visitor) const;
-    int pin(int index, const std::function<void()>& operation);
+    int pin(int index, const std::function<void()>& operation) const;
     bool hasAt(int index) const;
     bool hasAfter(int index) const;
     int find(const std::string& name) const;

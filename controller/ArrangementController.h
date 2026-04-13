@@ -7,9 +7,10 @@
 #include "../model/service/Setlist.h"
 #include "../model/service/RepeatModeCommand.h"
 #include "../view/IArrangementControl.h"
+#include "../view/IRefreshable.h"
 #include "../view/ISortDisplay.h"
 
-class ArrangementController final : public IArrangementControl {
+class ArrangementController final : public IArrangementControl, public IRefreshable {
 private:
     Setlist& setlist_;
     RepeatModeCommand& repeat_switch_;
@@ -18,10 +19,11 @@ private:
     int index_ = -1;
 
 public:
-    ArrangementController(Setlist& setlist, RepeatModeCommand& repeat_switch, ISortDisplay& sort_display);
+    ArrangementController(Setlist& setlist, RepeatModeCommand& repeat_command, ISortDisplay& sort_display);
     void onSort() override;
     void onShuffle() override;
     void onRepeat() override;
+    void refresh() override;
 };
 
 #endif //ARRANGEMENT_CONTROLLER_H

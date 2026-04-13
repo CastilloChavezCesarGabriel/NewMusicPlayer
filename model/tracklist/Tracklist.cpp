@@ -60,7 +60,7 @@ void Tracklist::stream(const int index, IPathVisitor& visitor) const {
     }
 }
 
-int Tracklist::pin(const int index, const std::function<void()>& operation) {
+int Tracklist::pin(const int index, const std::function<void()>& operation) const {
     if (!hasAt(index)) {
         operation();
         return -1;

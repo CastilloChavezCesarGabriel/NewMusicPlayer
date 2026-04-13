@@ -7,6 +7,7 @@ class TitleDescending final : public SortMode {
 public:
     TitleDescending();
     void apply(Setlist& setlist) override;
+    void reapply(Setlist& setlist) override;
 };
 
 #endif //TITLE_DESCENDING_H

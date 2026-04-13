@@ -7,6 +7,7 @@ class CustomMode final : public SortMode {
 public:
     CustomMode();
     void apply(Setlist& setlist) override;
+    void reapply(Setlist& setlist) override;
 };
 
 #endif //CUSTOM_MODE_H

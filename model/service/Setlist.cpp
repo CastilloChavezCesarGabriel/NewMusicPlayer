@@ -26,9 +26,13 @@ void Setlist::restore() const {
     library_events_.onChanged();
 }
 
-void Setlist::run(IArrangementStrategy& strategy) const {
+void Setlist::rearrange(IArrangementStrategy& criteria) const {
     cursor_.pin([&] {
-        tracklist_.arrange(strategy);
+        tracklist_.arrange(criteria);
     });
+}
+
+void Setlist::run(IArrangementStrategy& strategy) const {
+    rearrange(strategy);
     library_events_.onChanged();
 }

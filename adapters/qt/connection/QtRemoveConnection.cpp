@@ -1,5 +1,5 @@
 #include "QtRemoveConnection.h"
 
-QtRemoveConnection::QtRemoveConnection(QtToolbar& toolbar, QtPlaylistDisplay& display) {
-    connect(&toolbar, &QtToolbar::removeClicked, &display, &QtPlaylistDisplay::remove);
+QtRemoveConnection::QtRemoveConnection(QtLibraryBar& libraryBar, QtPlaylistDisplay& display) {
+    connect(&libraryBar, &QtLibraryBar::removeClicked, &display, &QtPlaylistDisplay::remove);
 }

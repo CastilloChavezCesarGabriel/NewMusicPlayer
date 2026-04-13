@@ -21,6 +21,7 @@ public:
     void sort(IArrangementStrategy& criteria) const;
     void reverse() const;
     void restore() const;
+    void rearrange(IArrangementStrategy& criteria) const;
 };
 
 #endif //SETLIST_H

@@ -12,6 +12,6 @@ QtSearchOverlay* QtDisplayFactory::createSearchOverlay(QWidget* parent) {
     return new QtSearchOverlay(parent);
 }
 
-QtToolbar* QtDisplayFactory::createToolbar(IPlaybackControl& playback, ILibraryControl& library, QWidget* parent) {
-    return new QtToolbar(playback, library, parent);
+QtLibraryBar* QtDisplayFactory::createLibraryBar(ILibraryControl& library, QWidget* parent) {
+    return new QtLibraryBar(library, parent);
 }

@@ -8,6 +8,10 @@ std::unique_ptr<LibraryRelay> RelayFactory::createLibraryRelay(TrackCatalog& cat
     return std::make_unique<LibraryRelay>(catalog, display, notification);
 }
 
+std::unique_ptr<ArrangementRelay> RelayFactory::createArrangementRelay(IRefreshable& arrangement) {
+    return std::make_unique<ArrangementRelay>(arrangement);
+}
+
 std::unique_ptr<AdRelay> RelayFactory::createAdRelay(IEnableable& enable, ITimingPanel& timing, IToolbarDisplay& toolbar) {
     return std::make_unique<AdRelay>(enable, timing, toolbar);
 }
