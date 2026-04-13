@@ -10,6 +10,6 @@ int RandomAdPolicy::clock() {
     return (dice_.roll(6) + 4) * 1000;
 }
 
-int RandomAdPolicy::pick(const int max) {
-    return dice_.roll(max) - 1;
+int RandomAdPolicy::pick(const int totalAds) {
+    return dice_.roll(totalAds) - 1;
 }

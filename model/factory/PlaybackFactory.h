@@ -12,7 +12,7 @@ class PlaybackFactory {
 public:
     static Dice createDice();
     static std::unique_ptr<RandomAdPolicy> createAdPolicy(IDice& dice);
-    static std::unique_ptr<Advertisement> createAdvertisement(IAdPolicy& policy, IAdListener& adBus, ITrackListener& trackBus);
+    static std::unique_ptr<Advertisement> createAdvertisement(IAdPolicy& adPolicy, IAdListener& adBus, ITrackListener& trackBus);
     static std::unique_ptr<RepeatCoordinator> createRepeatCoordinator(IRepeatListener& repeatBus, ITrackListener& trackBus);
     static std::unique_ptr<RepeatMode> createRepeatMode(TrackCursor& cursor, RepeatCoordinator& listener);
 };

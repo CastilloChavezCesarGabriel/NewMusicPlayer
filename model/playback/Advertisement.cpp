@@ -1,8 +1,8 @@
 #include "Advertisement.h"
 #include "../library/MusicDirectory.h"
 
-Advertisement::Advertisement(IAdPolicy& policy, IAdListener& ads_events, ITrackListener& tracks)
-    : policy_(policy), ads_events_(ads_events), tracks_(tracks) {
+Advertisement::Advertisement(IAdPolicy& policy, IAdListener& adsEvents, ITrackListener& tracks)
+    : policy_(policy), ads_events_(adsEvents), tracks_(tracks) {
 }
 
 void Advertisement::load(const std::string& adsPath) {

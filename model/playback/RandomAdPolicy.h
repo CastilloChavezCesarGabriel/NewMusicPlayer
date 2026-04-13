@@ -12,7 +12,7 @@ public:
     explicit RandomAdPolicy(IDice& dice);
     bool decide() override;
     int clock() override;
-    int pick(int max) override;
+    int pick(int totalAds) override;
 };
 
 #endif //RANDOM_AD_POLICY_H

@@ -15,7 +15,7 @@ private:
     void start() const;
 
 public:
-    PlaybackService(TrackCursor& cursor, Advertisement& advertisement, RepeatMode& repeat_mode);
+    PlaybackService(TrackCursor& cursor, Advertisement& advertisement, RepeatMode& repeatMode);
 
     void play(int index) const;
     void pick(const std::string& name) const;

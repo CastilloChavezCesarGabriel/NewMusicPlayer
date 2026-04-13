@@ -13,7 +13,7 @@ private:
     ILibraryListener& library_events_;
 
 public:
-    LibraryService(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& library_events);
+    LibraryService(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& libraryEvents);
 
     void insert(const std::string& filePath) const;
     void remove(int index) const;

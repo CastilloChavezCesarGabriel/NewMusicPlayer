@@ -15,7 +15,7 @@ private:
     void run(IArrangementStrategy& strategy) const;
 
 public:
-    Setlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& library_events);
+    Setlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& libraryEvents);
 
     void shuffle() const;
     void sort(IArrangementStrategy& criteria) const;

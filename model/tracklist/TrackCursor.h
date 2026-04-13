@@ -11,7 +11,7 @@ class TrackCursor final : public IRemovalListener {
 private:
     Tracklist& tracklist_;
     ITrackListener& tracks_;
-    int index_ = -1;
+    int track_index_ = -1;
 
     void notify() const;
 

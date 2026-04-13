@@ -11,12 +11,12 @@ RepeatMode::RepeatMode(TrackCursor& cursor, RepeatCoordinator& listener)
 }
 
 void RepeatMode::advance() {
-    index_ = (index_ + 1) % static_cast<int>(modes_.size());
-    modes_[index_]->announce(listener_);
+    mode_index_ = (mode_index_ + 1) % static_cast<int>(modes_.size());
+    modes_[mode_index_]->announce(listener_);
 }
 
 bool RepeatMode::apply() const {
-    return modes_[index_]->apply(cursor_);
+    return modes_[mode_index_]->apply(cursor_);
 }
 
 void RepeatMode::stop() const {

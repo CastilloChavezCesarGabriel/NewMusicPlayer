@@ -16,7 +16,7 @@ private:
     bool is_playing_ = false;
 
 public:
-    Advertisement(IAdPolicy& policy, IAdListener& ads_events, ITrackListener& tracks);
+    Advertisement(IAdPolicy& policy, IAdListener& adsEvents, ITrackListener& tracks);
 
     void load(const std::string& adsPath);
     bool interrupt();

@@ -16,10 +16,10 @@ private:
     RepeatModeCommand& repeat_switch_;
     ISortDisplay& sort_display_;
     std::vector<std::unique_ptr<SortMode>> modes_;
-    int index_ = -1;
+    int mode_index_ = -1;
 
 public:
-    ArrangementController(Setlist& setlist, RepeatModeCommand& repeat_command, ISortDisplay& sort_display);
+    ArrangementController(Setlist& setlist, RepeatModeCommand& repeatCommand, ISortDisplay& sortDisplay);
     void onSort() override;
     void onShuffle() override;
     void onRepeat() override;

@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     // Event buses
     auto trackBus = EventFactory::createTrackBus();
     auto libraryBus = EventFactory::createLibraryBus();
-    auto adBus = EventFactory::createAdBus();
+    auto advertisementBus = EventFactory::createAdBus();
     auto repeatBus = EventFactory::createRepeatBus();
 
     // Music collection
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
 
     // Playback system
     auto dice = PlaybackFactory::createDice();
-    auto adPolicy = PlaybackFactory::createAdPolicy(dice);
-    auto advertisement = PlaybackFactory::createAdvertisement(*adPolicy, adBus, trackBus);
+    auto advertisementPolicy = PlaybackFactory::createAdPolicy(dice);
+    auto advertisement = PlaybackFactory::createAdvertisement(*advertisementPolicy, advertisementBus, trackBus);
     advertisement->load(base + "/resources/announcements");
     auto repeatListener = PlaybackFactory::createRepeatCoordinator(repeatBus, trackBus);
     auto repeatMode = PlaybackFactory::createRepeatMode(*trackCursor, *repeatListener);
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
     trackBus.add(*trackRelay);
     libraryBus.add(*arrangementRelay);
     libraryBus.add(*libraryRelay);
-    adBus.add(*adRelay);
+    advertisementBus.add(*adRelay);
     repeatBus.add(*repeatRelay);
 
     // Layout

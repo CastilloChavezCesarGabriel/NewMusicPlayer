@@ -8,7 +8,7 @@ TrackCursor::TrackCursor(Tracklist& tracklist, ITrackListener& tracks)
 
 void TrackCursor::select(const int index) {
     if (tracklist_.hasAt(index)) {
-        index_ = index;
+        track_index_ = index;
         notify();
     }
 }
@@ -22,14 +22,14 @@ void TrackCursor::pick(const std::string& name) {
 
 void TrackCursor::advance() {
     if (hasNext()) {
-        index_++;
+        track_index_++;
         notify();
     }
 }
 
 void TrackCursor::retreat() {
-    if (index_ > 0) {
-        index_--;
+    if (track_index_ > 0) {
+        track_index_--;
         notify();
     }
 }
@@ -37,34 +37,34 @@ void TrackCursor::retreat() {
 void TrackCursor::play() const {
     if (hasSelected()) {
         Channel channel(tracks_);
-        tracklist_.stream(index_, channel);
+        tracklist_.stream(track_index_, channel);
     }
 }
 
 bool TrackCursor::hasNext() const {
-    return tracklist_.hasAfter(index_);
+    return tracklist_.hasAfter(track_index_);
 }
 
 bool TrackCursor::hasSelected() const {
-    return tracklist_.hasAt(index_);
+    return tracklist_.hasAt(track_index_);
 }
 
 void TrackCursor::pin(const std::function<void()>& operation) {
-    index_ = tracklist_.pin(index_, operation);
+    track_index_ = tracklist_.pin(track_index_, operation);
 }
 
 void TrackCursor::clear() {
-    index_ = -1;
+    track_index_ = -1;
 }
 
 void TrackCursor::onRemoved(const int index) {
-    if (index == index_) {
+    if (index == track_index_) {
         clear();
-    } else if (index < index_) {
-        index_--;
+    } else if (index < track_index_) {
+        track_index_--;
     }
 }
 
 void TrackCursor::notify() const {
-    tracks_.onSelected(index_);
+    tracks_.onSelected(track_index_);
 }

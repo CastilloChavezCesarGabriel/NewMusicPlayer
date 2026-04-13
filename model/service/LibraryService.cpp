@@ -3,8 +3,8 @@
 #include "../song/Song.h"
 #include <filesystem>
 
-LibraryService::LibraryService(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& library_events)
-    : directory_(directory), tracklist_(tracklist), library_events_(library_events) {}
+LibraryService::LibraryService(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& libraryEvents)
+    : directory_(directory), tracklist_(tracklist), library_events_(libraryEvents) {}
 
 void LibraryService::insert(const std::string& filePath) const {
     if (filePath.empty() || !directory_.accepts(filePath)) {

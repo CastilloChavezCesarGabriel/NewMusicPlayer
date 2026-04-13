@@ -12,7 +12,7 @@ private:
     TrackCursor& cursor_;
     RepeatCoordinator& listener_;
     std::vector<std::unique_ptr<RepeatStrategy>> modes_;
-    int index_ = 0;
+    int mode_index_ = 0;
 
 public:
     RepeatMode(TrackCursor& cursor, RepeatCoordinator& listener);

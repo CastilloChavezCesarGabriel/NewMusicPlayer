@@ -8,7 +8,7 @@ private:
     RepeatMode& repeat_mode_;
 
 public:
-    explicit RepeatModeCommand(RepeatMode& repeat_mode);
+    explicit RepeatModeCommand(RepeatMode& repeatMode);
 
     void cycle() const;
 };

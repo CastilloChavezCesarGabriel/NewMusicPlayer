@@ -5,8 +5,8 @@
 #include "../model/tracklist/DurationSort.h"
 #include "../model/tracklist/DateSort.h"
 
-ArrangementController::ArrangementController(Setlist& setlist, RepeatModeCommand& repeat_command, ISortDisplay& sort_display)
-    : setlist_(setlist), repeat_switch_(repeat_command), sort_display_(sort_display) {
+ArrangementController::ArrangementController(Setlist& setlist, RepeatModeCommand& repeatCommand, ISortDisplay& sortDisplay)
+    : setlist_(setlist), repeat_switch_(repeatCommand), sort_display_(sortDisplay) {
     modes_.push_back(std::make_unique<SortMode>("Title \xe2\x96\xb2", new QuickSort()));
     modes_.push_back(std::make_unique<TitleDescending>());
     modes_.push_back(std::make_unique<SortMode>("Duration \xe2\x96\xb2", new DurationSort()));
@@ -15,9 +15,9 @@ ArrangementController::ArrangementController(Setlist& setlist, RepeatModeCommand
 }
 
 void ArrangementController::onSort() {
-    index_ = (index_ + 1) % static_cast<int>(modes_.size());
-    modes_[index_]->apply(setlist_);
-    modes_[index_]->display(sort_display_);
+    mode_index_ = (mode_index_ + 1) % static_cast<int>(modes_.size());
+    modes_[mode_index_]->apply(setlist_);
+    modes_[mode_index_]->display(sort_display_);
 }
 
 void ArrangementController::onShuffle() {
@@ -29,7 +29,7 @@ void ArrangementController::onRepeat() {
 }
 
 void ArrangementController::refresh() {
-    if (index_ >= 0) {
-        modes_[index_]->reapply(setlist_);
+    if (mode_index_ >= 0) {
+        modes_[mode_index_]->reapply(setlist_);
     }
 }
