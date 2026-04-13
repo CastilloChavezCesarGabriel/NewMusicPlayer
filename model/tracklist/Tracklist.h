@@ -22,13 +22,11 @@ public:
 
     void add(const Song& song);
     void discard(int index, IPathVisitor& receiver);
-    void clear();
     void arrange(IArrangementStrategy& strategy);
     void restore();
     void accept(ISongVisitor& visitor) const;
     void visit(const std::string& name, const std::string& path) override;
     void search(const std::string& query, ISongVisitor& visitor) const;
-    void feed(int index, ISongVisitor& visitor) const;
     void stream(int index, IPathVisitor& visitor) const;
     int pin(int index, const std::function<void()>& operation) const;
     bool hasAt(int index) const;

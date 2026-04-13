@@ -100,7 +100,6 @@ int main(int argc, char *argv[]) {
     playbackControls.add(*transport);
     playbackControls.add(*shuffleButton);
     playbackControls.add(*repeatButton);
-    playbackControls.add(*skipButton);
     playbackControls.add(*audio);
 
     EnableCoordinator adControls;

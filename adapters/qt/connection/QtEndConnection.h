@@ -2,15 +2,15 @@
 #define QT_END_CONNECTION_H
 
 #include "../widget/QtAudioEngine.h"
-#include "../../../view/IPlaybackControl.h"
+#include "../../../view/IAudioControl.h"
 #include <QObject>
 
 class QtEndConnection final : public QObject {
 private:
-    IPlaybackControl& playback_control_;
+    IAudioControl& playback_control_;
 
 public:
-    QtEndConnection(QtAudioEngine& audio, IPlaybackControl& playback);
+    QtEndConnection(QtAudioEngine& audio, IAudioControl& playback);
 
 private slots:
     void relay() const;

@@ -2,7 +2,7 @@
 #include "../QtLayoutUtil.h"
 #include <QHBoxLayout>
 
-QtSkipButton::QtSkipButton(IPlaybackControl& playback, QWidget* parent)
+QtSkipButton::QtSkipButton(IAudioControl& playback, QWidget* parent)
     : QWidget(parent), playback_control_(playback) {
     setup();
     wire();

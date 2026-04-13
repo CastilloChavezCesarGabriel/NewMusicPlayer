@@ -8,10 +8,10 @@ QtTransportPanel* QtPlaybackFactory::createTransport(IPlaybackControl& playback,
     return new QtTransportPanel(playback, parent);
 }
 
-QtVolumePanel* QtPlaybackFactory::createVolume(IPlaybackControl& playback, QWidget* parent) {
-    return new QtVolumePanel(playback, parent);
+QtVolumePanel* QtPlaybackFactory::createVolume(IAudioControl& audio, QWidget* parent) {
+    return new QtVolumePanel(audio, parent);
 }
 
-QtSkipButton* QtPlaybackFactory::createSkipButton(IPlaybackControl& playback, QWidget* parent) {
-    return new QtSkipButton(playback, parent);
+QtSkipButton* QtPlaybackFactory::createSkipButton(IAudioControl& audio, QWidget* parent) {
+    return new QtSkipButton(audio, parent);
 }

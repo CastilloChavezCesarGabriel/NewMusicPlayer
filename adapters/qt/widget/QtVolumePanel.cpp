@@ -1,7 +1,7 @@
 #include "QtVolumePanel.h"
 #include <QHBoxLayout>
 
-QtVolumePanel::QtVolumePanel(IPlaybackControl& playback, QWidget* parent)
+QtVolumePanel::QtVolumePanel(IAudioControl& playback, QWidget* parent)
     : QWidget(parent), playback_control_(playback) {
 
     auto* layout = new QHBoxLayout(this);

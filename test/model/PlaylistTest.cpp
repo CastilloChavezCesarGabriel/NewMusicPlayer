@@ -161,21 +161,6 @@ TEST_F(PlaylistTest, ShufflePreservesSelection) {
     EXPECT_TRUE(cursor_->hasSelected());
 }
 
-TEST_F(PlaylistTest, ClearRemovesAllSongs) {
-    populate(5);
-    tracklist_->clear();
-    tracklist_->accept(visitor_);
-    EXPECT_TRUE(visitor_.isEmpty());
-}
-
-TEST_F(PlaylistTest, ClearResetsSelection) {
-    populate(5);
-    cursor_->select(2);
-    tracklist_->clear();
-    cursor_->clear();
-    EXPECT_FALSE(cursor_->hasSelected());
-}
-
 TEST_F(PlaylistTest, SelectValidIndex) {
     populate(3);
     cursor_->select(1);

@@ -1,7 +1,7 @@
 #ifndef QT_SKIP_BUTTON_H
 #define QT_SKIP_BUTTON_H
 
-#include "../../../view/IPlaybackControl.h"
+#include "../../../view/IAudioControl.h"
 #include "../../../view/IToolbarDisplay.h"
 #include "../../../view/IEnableable.h"
 #include "IWidgetSetup.h"
@@ -12,10 +12,10 @@ class QtSkipButton final : public QWidget, public IWidgetSetup, public IToolbarD
     Q_OBJECT
 private:
     QPushButton* button_;
-    IPlaybackControl& playback_control_;
+    IAudioControl& playback_control_;
 
 public:
-    QtSkipButton(IPlaybackControl& playback, QWidget* parent = nullptr);
+    QtSkipButton(IAudioControl& playback, QWidget* parent = nullptr);
     void setup() override;
     void wire() override;
     void enable(bool state) override;

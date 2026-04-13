@@ -3,10 +3,11 @@
 
 #include "../model/service/PlaybackService.h"
 #include "../view/IPlaybackControl.h"
+#include "../view/IAudioControl.h"
 #include "../view/IAudioPlayer.h"
 #include "../view/ISearchPanel.h"
 
-class TransportController final : public IPlaybackControl {
+class TransportController final : public IPlaybackControl, public IAudioControl {
 private:
     PlaybackService& playback_;
     IAudioPlayer& audio_;

@@ -21,10 +21,6 @@ void Tracklist::discard(const int index, IPathVisitor& receiver) {
     }
 }
 
-void Tracklist::clear() {
-    songs_.clear();
-}
-
 void Tracklist::arrange(IArrangementStrategy& strategy) {
     original_order_.preserve(songs_);
     strategy.arrange(songs_);
@@ -45,12 +41,6 @@ void Tracklist::search(const std::string& query, ISongVisitor& visitor) const {
         if (song.matches(query)) {
             song.accept(visitor);
         }
-    }
-}
-
-void Tracklist::feed(const int index, ISongVisitor& visitor) const {
-    if (hasAt(index)) {
-        songs_[index].accept(visitor);
     }
 }
 

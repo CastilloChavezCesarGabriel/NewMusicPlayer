@@ -8,9 +8,6 @@ public:
     virtual void onToggle() = 0;
     virtual void onAdvance() = 0;
     virtual void onRetreat() = 0;
-    virtual void onSkip() = 0;
-    virtual void onEnd() = 0;
-    virtual void onAdjust(int volume) = 0;
 };
 
 #endif //I_PLAYBACK_CONTROL_H
