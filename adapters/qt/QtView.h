@@ -2,7 +2,7 @@
 #define QT_VIEW_H
 
 #include <QWidget>
-#include "QVBoxLayout"
+#include <QVBoxLayout>
 
 class QtView final : public QWidget {
     Q_OBJECT
