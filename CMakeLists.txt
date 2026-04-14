@@ -86,6 +86,7 @@ add_executable(NewMusicPlayer main.cpp
         model/service/Setlist.h
         model/service/TrackCatalog.cpp
         model/service/TrackCatalog.h
+        model/service/ISearchProvider.h
         model/service/RepeatModeCommand.cpp
         model/service/RepeatModeCommand.h
         model/library/IDice.h
@@ -330,6 +331,7 @@ add_executable(NewMusicPlayerTests
         model/service/Setlist.h
         model/service/TrackCatalog.cpp
         model/service/TrackCatalog.h
+        model/service/ISearchProvider.h
         model/service/RepeatModeCommand.cpp
         model/service/RepeatModeCommand.h
         model/library/IDice.h

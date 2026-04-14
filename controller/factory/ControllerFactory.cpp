@@ -12,6 +12,6 @@ std::unique_ptr<ArrangementController> ControllerFactory::createArrangement(Setl
     return std::make_unique<ArrangementController>(setlist, repeat, sort);
 }
 
-std::unique_ptr<SearchController> ControllerFactory::createSearch(TrackCatalog& catalog, PlaybackService& playback, ISearchPanel& search) {
-    return std::make_unique<SearchController>(catalog, playback, search);
+std::unique_ptr<SearchController> ControllerFactory::createSearch(ISearchProvider& provider, PlaybackService& playback, ISearchPanel& search) {
+    return std::make_unique<SearchController>(provider, playback, search);
 }

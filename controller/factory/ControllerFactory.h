@@ -12,7 +12,7 @@ public:
     static std::unique_ptr<TransportController> createTransport(PlaybackService& playback, IAudioPlayer& audio, ISearchPanel& search);
     static std::unique_ptr<LibraryController> createLibrary(LibraryService& library, IDialog& dialog);
     static std::unique_ptr<ArrangementController> createArrangement(Setlist& setlist, RepeatModeCommand& repeat, ISortDisplay& sort);
-    static std::unique_ptr<SearchController> createSearch(TrackCatalog& catalog, PlaybackService& playback, ISearchPanel& search);
+    static std::unique_ptr<SearchController> createSearch(ISearchProvider& provider, PlaybackService& playback, ISearchPanel& search);
 };
 
 #endif //CONTROLLER_FACTORY_H
