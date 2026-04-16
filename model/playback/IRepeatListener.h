@@ -6,7 +6,7 @@
 class IRepeatListener {
 public:
     virtual ~IRepeatListener() = default;
-    virtual void onRepeatChanged(RepeatModeKind kind) = 0;
+    virtual void onChanged(RepeatModeKind kind) = 0;
 };
 
 #endif //I_REPEAT_LISTENER_H

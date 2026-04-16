@@ -14,7 +14,7 @@ bool Advertisement::interrupt() {
     if (ads_.empty() || !policy_.decide()) return false;
 
     is_playing_ = true;
-    ads_events_.onEnabled(false);
+    ads_events_.onEnable(false);
     ads_events_.onSchedule(policy_.clock());
     tracks_.onStart(ads_.at(policy_.pick(static_cast<int>(ads_.size()))));
     return true;
@@ -25,6 +25,6 @@ bool Advertisement::conclude() {
     is_playing_ = false;
     ads_events_.onCancel();
     ads_events_.onReveal(false);
-    ads_events_.onEnabled(true);
+    ads_events_.onEnable(true);
     return true;
 }

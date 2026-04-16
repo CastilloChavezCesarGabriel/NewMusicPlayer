@@ -9,11 +9,11 @@ void MockPlaybackListener::onChanged() {
     changes_++;
 }
 
-void MockPlaybackListener::onSelected(const int index) {
+void MockPlaybackListener::onSelect(const int index) {
     selections_.push_back(index);
 }
 
-void MockPlaybackListener::onEnabled(bool) {
+void MockPlaybackListener::onEnable(bool) {
     enables_++;
 }
 
@@ -27,13 +27,13 @@ void MockPlaybackListener::onCancel() {
     cancels_++;
 }
 
-void MockPlaybackListener::onRepeatChanged(RepeatModeKind) {}
+void MockPlaybackListener::onChanged(RepeatModeKind) {}
 
 void MockPlaybackListener::onFeedback(const std::string& message, bool) {
     feedbacks_.push_back(message);
 }
 
-void MockPlaybackListener::onStopped() {
+void MockPlaybackListener::onStop() {
     stops_++;
 }
 

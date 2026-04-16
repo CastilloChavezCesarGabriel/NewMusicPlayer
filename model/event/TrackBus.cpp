@@ -4,10 +4,10 @@ void TrackBus::onStart(const std::string& path) {
     broadcast([&](ITrackListener& listener) { listener.onStart(path); });
 }
 
-void TrackBus::onSelected(const int index) {
-    broadcast([&](ITrackListener& listener) { listener.onSelected(index); });
+void TrackBus::onSelect(const int index) {
+    broadcast([&](ITrackListener& listener) { listener.onSelect(index); });
 }
 
-void TrackBus::onStopped() {
-    broadcast([](ITrackListener& listener) { listener.onStopped(); });
+void TrackBus::onStop() {
+    broadcast([](ITrackListener& listener) { listener.onStop(); });
 }

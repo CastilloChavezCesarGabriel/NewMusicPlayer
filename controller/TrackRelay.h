@@ -15,8 +15,8 @@ private:
 public:
     TrackRelay(IAudioPlayer& audio, IPlaylistPanel& panel, IEnableable& enable);
     void onStart(const std::string& path) override;
-    void onSelected(int index) override;
-    void onStopped() override;
+    void onSelect(int index) override;
+    void onStop() override;
 };
 
 #endif //TRACK_RELAY_H

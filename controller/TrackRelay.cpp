@@ -7,12 +7,12 @@ void TrackRelay::onStart(const std::string& path) {
     audio_.play(path);
 }
 
-void TrackRelay::onSelected(const int index) {
+void TrackRelay::onSelect(const int index) {
     panel_.highlight(index);
     enable_.enable(true);
 }
 
-void TrackRelay::onStopped() {
+void TrackRelay::onStop() {
     enable_.enable(false);
     audio_.pause();
     panel_.highlight(-1);

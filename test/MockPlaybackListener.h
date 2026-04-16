@@ -24,15 +24,15 @@ private:
 
 public:
     void onStart(const std::string& path) override;
-    void onSelected(int index) override;
-    void onStopped() override;
+    void onSelect(int index) override;
+    void onStop() override;
     void onChanged() override;
     void onFeedback(const std::string& message, bool success) override;
-    void onEnabled(bool state) override;
+    void onEnable(bool state) override;
     void onReveal(bool visible) override;
     void onSchedule(int delay) override;
     void onCancel() override;
-    void onRepeatChanged(RepeatModeKind kind) override;
+    void onChanged(RepeatModeKind kind) override;
 
     bool wasStarted() const;
     bool wasStartedWith(const std::string& path) const;

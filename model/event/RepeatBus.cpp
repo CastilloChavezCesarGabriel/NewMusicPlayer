@@ -1,5 +1,5 @@
 #include "RepeatBus.h"
 
-void RepeatBus::onRepeatChanged(const RepeatModeKind kind) {
-    broadcast([&](IRepeatListener& listener) { listener.onRepeatChanged(kind); });
+void RepeatBus::onChanged(const RepeatModeKind kind) {
+    broadcast([&](IRepeatListener& listener) { listener.onChanged(kind); });
 }

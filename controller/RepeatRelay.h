@@ -10,7 +10,7 @@ private:
 
 public:
     explicit RepeatRelay(IRepeatDisplay& display);
-    void onRepeatChanged(RepeatModeKind kind) override;
+    void onChanged(RepeatModeKind kind) override;
 };
 
 #endif

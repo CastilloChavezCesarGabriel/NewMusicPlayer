@@ -6,7 +6,7 @@
 
 class RepeatBus final : public Bus<IRepeatListener>, public IRepeatListener {
 public:
-    void onRepeatChanged(RepeatModeKind kind) override;
+    void onChanged(RepeatModeKind kind) override;
 };
 
 #endif //REPEAT_BUS_H

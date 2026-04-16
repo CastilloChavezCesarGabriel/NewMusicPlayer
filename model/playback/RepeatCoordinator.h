@@ -12,7 +12,7 @@ private:
 
 public:
     RepeatCoordinator(IRepeatListener& repeats, ITrackListener& tracks);
-    void onRepeatChanged(RepeatModeKind kind) override;
+    void onChanged(RepeatModeKind kind) override;
     void stop() const;
 };
 

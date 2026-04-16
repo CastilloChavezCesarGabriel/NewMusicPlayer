@@ -4,7 +4,7 @@
 class IAdListener {
 public:
     virtual ~IAdListener() = default;
-    virtual void onEnabled(bool state) = 0;
+    virtual void onEnable(bool state) = 0;
     virtual void onSchedule(int delay) = 0;
     virtual void onCancel() = 0;
     virtual void onReveal(bool visible) = 0;

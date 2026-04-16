@@ -66,5 +66,5 @@ void TrackCursor::onRemoved(const int index) {
 }
 
 void TrackCursor::notify() const {
-    tracks_.onSelected(track_index_);
+    tracks_.onSelect(track_index_);
 }

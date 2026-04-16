@@ -14,7 +14,7 @@ private:
 
 public:
     AdRelay(IEnableable& enable, ITimingPanel& timing, IToolbarDisplay& toolbar);
-    void onEnabled(bool state) override;
+    void onEnable(bool state) override;
     void onSchedule(int delay) override;
     void onCancel() override;
     void onReveal(bool visible) override;

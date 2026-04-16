@@ -3,7 +3,7 @@
 AdRelay::AdRelay(IEnableable& enable, ITimingPanel& timing, IToolbarDisplay& toolbar)
     : enable_(enable), timing_(timing), toolbar_(toolbar) {}
 
-void AdRelay::onEnabled(const bool state) {
+void AdRelay::onEnable(const bool state) {
     enable_.enable(state);
 }
 

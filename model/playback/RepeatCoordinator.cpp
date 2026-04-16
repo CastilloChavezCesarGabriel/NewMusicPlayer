@@ -3,10 +3,10 @@
 RepeatCoordinator::RepeatCoordinator(IRepeatListener& repeats, ITrackListener& tracks)
     : repeats_(repeats), tracks_(tracks) {}
 
-void RepeatCoordinator::onRepeatChanged(const RepeatModeKind kind) {
-    repeats_.onRepeatChanged(kind);
+void RepeatCoordinator::onChanged(const RepeatModeKind kind) {
+    repeats_.onChanged(kind);
 }
 
 void RepeatCoordinator::stop() const {
-    tracks_.onStopped();
+    tracks_.onStop();
 }

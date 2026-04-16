@@ -1,7 +1,7 @@
 #include "AdBus.h"
 
-void AdBus::onEnabled(const bool state) {
-    broadcast([&](IAdListener& listener) { listener.onEnabled(state); });
+void AdBus::onEnable(const bool state) {
+    broadcast([&](IAdListener& listener) { listener.onEnable(state); });
 }
 
 void AdBus::onSchedule(const int delay) {

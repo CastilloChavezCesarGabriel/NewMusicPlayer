@@ -7,8 +7,8 @@
 class TrackBus final : public Bus<ITrackListener>, public ITrackListener {
 public:
     void onStart(const std::string& path) override;
-    void onSelected(int index) override;
-    void onStopped() override;
+    void onSelect(int index) override;
+    void onStop() override;
 };
 
 #endif //TRACK_BUS_H

@@ -6,7 +6,7 @@
 
 class AdBus final : public Bus<IAdListener>, public IAdListener {
 public:
-    void onEnabled(bool state) override;
+    void onEnable(bool state) override;
     void onSchedule(int delay) override;
     void onCancel() override;
     void onReveal(bool visible) override;
