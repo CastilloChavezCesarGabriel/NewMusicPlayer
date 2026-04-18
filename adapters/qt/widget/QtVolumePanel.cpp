@@ -15,10 +15,12 @@ QtVolumePanel::QtVolumePanel(IAudioControl& playback, QWidget* parent)
     layout->addWidget(label_);
     layout->addWidget(slider_);
 
-    connect(slider_, &QSlider::valueChanged, this, [this](const int value) {
-        adjust(value);
-        playback_control_.onAdjust(value);
-    });
+    connect(slider_, &QSlider::valueChanged, this, [this](const int value) { slide(value); });
+}
+
+void QtVolumePanel::slide(const int volume) const {
+    adjust(volume);
+    playback_control_.onAdjust(volume);
 }
 
 void QtVolumePanel::adjust(const int volume) const {

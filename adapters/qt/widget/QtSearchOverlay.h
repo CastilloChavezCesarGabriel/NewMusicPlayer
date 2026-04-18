@@ -15,6 +15,7 @@ private:
 
     void setup();
     void align();
+    void pick(const QListWidgetItem* item);
 
 public:
     explicit QtSearchOverlay(QWidget* parent = nullptr);

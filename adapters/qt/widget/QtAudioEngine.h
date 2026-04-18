@@ -9,7 +9,6 @@
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QAudioOutput>
-#include <QMediaDevices>
 #include <QTimer>
 #include <string>
 
@@ -23,6 +22,9 @@ private:
 
     void monitor();
     void start() const;
+    void detect(QMediaPlayer::MediaStatus status);
+    void announce(QMediaPlayer::PlaybackState state);
+    void adopt() const;
 
 public:
     explicit QtAudioEngine(QWidget* parent = nullptr);

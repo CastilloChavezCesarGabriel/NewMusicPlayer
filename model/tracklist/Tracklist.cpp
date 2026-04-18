@@ -17,7 +17,7 @@ void Tracklist::discard(const int index, IPathVisitor& receiver) {
     songs_.erase(songs_.begin() + index);
     original_order_.invalidate();
     for (IRemovalListener* listener : removal_listeners_) {
-        listener->onRemoved(index);
+        listener->onRemove(index);
     }
 }
 

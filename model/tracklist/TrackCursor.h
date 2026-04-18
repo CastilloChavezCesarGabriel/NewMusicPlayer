@@ -27,7 +27,7 @@ public:
     bool hasSelected() const;
     void pin(const std::function<void()>& operation);
     void clear();
-    void onRemoved(int index) override;
+    void onRemove(int index) override;
 };
 
 #endif //TRACK_CURSOR_H

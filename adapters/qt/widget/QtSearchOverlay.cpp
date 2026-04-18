@@ -16,9 +16,11 @@ void QtSearchOverlay::setup() {
     QtLayoutUtil::flatten(layout);
     layout->addWidget(results_);
 
-    connect(results_, &QListWidget::itemDoubleClicked, this, [this](const QListWidgetItem* item) {
-        emit selectRequested(item->text().toStdString());
-    });
+    connect(results_, &QListWidget::itemDoubleClicked, this, &QtSearchOverlay::pick);
+}
+
+void QtSearchOverlay::pick(const QListWidgetItem* item) {
+    emit selectRequested(item->text().toStdString());
 }
 
 void QtSearchOverlay::align() {

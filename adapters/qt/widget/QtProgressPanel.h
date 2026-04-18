@@ -5,7 +5,6 @@
 #include <QSlider>
 #include <QLabel>
 #include <QMediaPlayer>
-
 #include "IWidgetSetup.h"
 
 class QtProgressPanel final : public QWidget, public IWidgetSetup {
@@ -17,6 +16,9 @@ private:
     QLabel* total_time_;
 
     static QString format(qint64 milliseconds);
+    void reflect(qint64 position) const;
+    void resize(qint64 duration) const;
+    void seek() const;
 
 public:
     explicit QtProgressPanel(QMediaPlayer& media, QWidget* parent = nullptr);

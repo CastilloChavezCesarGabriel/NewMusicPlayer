@@ -12,6 +12,8 @@ private:
     QSlider* slider_;
     QLabel* label_;
 
+    void slide(int volume) const;
+
 public:
     explicit QtVolumePanel(IAudioControl& playback, QWidget* parent = nullptr);
     void adjust(int volume) const;

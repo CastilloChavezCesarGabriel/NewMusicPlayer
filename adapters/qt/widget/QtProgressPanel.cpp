@@ -23,21 +23,28 @@ void QtProgressPanel::setup() {
 }
 
 void QtProgressPanel::wire() {
-    connect(&media_, &QMediaPlayer::positionChanged, this, [this](const qint64 position) {
-        if (!progress_bar_->isSliderDown()) {
-            progress_bar_->setValue(static_cast<int>(position));
-        }
-        elapsed_time_->setText(format(position));
-    });
+    connect(&media_, &QMediaPlayer::positionChanged, this,
+            [this](const qint64 position) { reflect(position); });
+    connect(&media_, &QMediaPlayer::durationChanged, this,
+            [this](const qint64 duration) { resize(duration); });
+    connect(progress_bar_, &QSlider::sliderReleased, this,
+            [this] { seek(); });
+}
 
-    connect(&media_, &QMediaPlayer::durationChanged, this, [this](const qint64 duration) {
-        progress_bar_->setMaximum(static_cast<int>(duration));
-        total_time_->setText(format(duration));
-    });
+void QtProgressPanel::reflect(const qint64 position) const {
+    if (!progress_bar_->isSliderDown()) {
+        progress_bar_->setValue(static_cast<int>(position));
+    }
+    elapsed_time_->setText(format(position));
+}
 
-    connect(progress_bar_, &QSlider::sliderReleased, this, [this]() {
-        media_.setPosition(progress_bar_->value());
-    });
+void QtProgressPanel::resize(const qint64 duration) const {
+    progress_bar_->setMaximum(static_cast<int>(duration));
+    total_time_->setText(format(duration));
+}
+
+void QtProgressPanel::seek() const {
+    media_.setPosition(progress_bar_->value());
 }
 
 void QtProgressPanel::enable(const bool state) const {

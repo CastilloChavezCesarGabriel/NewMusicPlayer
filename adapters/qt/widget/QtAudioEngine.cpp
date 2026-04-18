@@ -1,4 +1,5 @@
 #include "QtAudioEngine.h"
+#include <QMediaDevices>
 #include "../QtLayoutUtil.h"
 #include <QVBoxLayout>
 #include <QAudioDevice>
@@ -26,28 +27,31 @@ void QtAudioEngine::setup() {
 }
 
 void QtAudioEngine::wire() {
-    connect(media_player_, &QMediaPlayer::mediaStatusChanged, this, [this]
-        (const QMediaPlayer::MediaStatus status) {
-        if (status == QMediaPlayer::EndOfMedia) {
-            emit endRequested();
-        }
-    });
-
-    connect(media_player_, &QMediaPlayer::playbackStateChanged, this, [this]
-        (const QMediaPlayer::PlaybackState state) {
-        emit toggleRequested(state == QMediaPlayer::PlayingState);
-    });
-
-    connect(ad_timer_, &QTimer::timeout, this, [this]() {
-        emit revealRequested();
-    });
+    connect(media_player_, &QMediaPlayer::mediaStatusChanged, this,
+            [this](const QMediaPlayer::MediaStatus status) { detect(status); });
+    connect(media_player_, &QMediaPlayer::playbackStateChanged, this,
+            [this](const QMediaPlayer::PlaybackState state) { announce(state); });
+    connect(ad_timer_, &QTimer::timeout, this,
+            [this] { emit revealRequested(); });
 }
 
 void QtAudioEngine::monitor() {
     const auto* devices = new QMediaDevices(this);
-    connect(devices, &QMediaDevices::audioOutputsChanged, this, [this]() {
-        audio_output_->setDevice(QMediaDevices::defaultAudioOutput());
-    });
+    connect(devices, &QMediaDevices::audioOutputsChanged, this, [this] { adopt(); });
+}
+
+void QtAudioEngine::detect(const QMediaPlayer::MediaStatus status) {
+    if (status == QMediaPlayer::EndOfMedia) {
+        emit endRequested();
+    }
+}
+
+void QtAudioEngine::announce(const QMediaPlayer::PlaybackState state) {
+    emit toggleRequested(state == QMediaPlayer::PlayingState);
+}
+
+void QtAudioEngine::adopt() const {
+    audio_output_->setDevice(QMediaDevices::defaultAudioOutput());
 }
 
 void QtAudioEngine::start() const {

@@ -6,6 +6,9 @@
 
 class QtSearchField final : public QLineEdit {
     Q_OBJECT
+private:
+    void broadcast(const QString& text);
+
 public:
     explicit QtSearchField(QWidget* parent = nullptr);
 

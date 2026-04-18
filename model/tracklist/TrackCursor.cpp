@@ -57,7 +57,7 @@ void TrackCursor::clear() {
     track_index_ = -1;
 }
 
-void TrackCursor::onRemoved(const int index) {
+void TrackCursor::onRemove(const int index) {
     if (index == track_index_) {
         clear();
     } else if (index < track_index_) {
