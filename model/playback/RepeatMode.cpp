@@ -1,13 +1,10 @@
 #include "RepeatMode.h"
-#include "NoRepeatMode.h"
-#include "RepeatOneMode.h"
-#include "RepeatAllMode.h"
 
 RepeatMode::RepeatMode(TrackCursor& cursor, RepeatCoordinator& listener)
-    : cursor_(cursor), listener_(listener) {
-    modes_.push_back(std::make_unique<NoRepeatMode>());
-    modes_.push_back(std::make_unique<RepeatOneMode>());
-    modes_.push_back(std::make_unique<RepeatAllMode>());
+    : cursor_(cursor), listener_(listener) {}
+
+void RepeatMode::add(std::unique_ptr<RepeatStrategy> strategy) {
+    modes_.push_back(std::move(strategy));
 }
 
 void RepeatMode::advance() {

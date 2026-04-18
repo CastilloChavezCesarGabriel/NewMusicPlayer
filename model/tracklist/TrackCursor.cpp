@@ -1,5 +1,5 @@
 #include "TrackCursor.h"
-#include "../song/Channel.h"
+#include "../song/SongStartAnnouncer.h"
 
 TrackCursor::TrackCursor(Tracklist& tracklist, ITrackListener& tracks)
     : tracklist_(tracklist), tracks_(tracks) {
@@ -36,8 +36,8 @@ void TrackCursor::retreat() {
 
 void TrackCursor::play() const {
     if (hasSelected()) {
-        Channel channel(tracks_);
-        tracklist_.stream(track_index_, channel);
+        SongStartAnnouncer announcer(tracks_);
+        tracklist_.stream(track_index_, announcer);
     }
 }
 

@@ -64,10 +64,10 @@ add_executable(NewMusicPlayer main.cpp
         model/library/MusicDirectory.h
         model/library/AudioFormatRegistry.cpp
         model/library/AudioFormatRegistry.h
-        model/song/FileEraser.cpp
-        model/song/FileEraser.h
-        model/song/Channel.cpp
-        model/song/Channel.h
+        model/song/SongFileDeleter.cpp
+        model/song/SongFileDeleter.h
+        model/song/SongStartAnnouncer.cpp
+        model/song/SongStartAnnouncer.h
         model/playback/RepeatStrategy.cpp
         model/playback/RepeatStrategy.h
         model/playback/NoRepeatMode.cpp
@@ -311,10 +311,10 @@ add_executable(NewMusicPlayerTests
         model/library/MusicDirectory.h
         model/library/AudioFormatRegistry.cpp
         model/library/AudioFormatRegistry.h
-        model/song/FileEraser.cpp
-        model/song/FileEraser.h
-        model/song/Channel.cpp
-        model/song/Channel.h
+        model/song/SongFileDeleter.cpp
+        model/song/SongFileDeleter.h
+        model/song/SongStartAnnouncer.cpp
+        model/song/SongStartAnnouncer.h
         model/playback/RepeatStrategy.cpp
         model/playback/RepeatStrategy.h
         model/playback/NoRepeatMode.cpp

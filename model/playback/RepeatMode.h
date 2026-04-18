@@ -16,6 +16,7 @@ private:
 
 public:
     RepeatMode(TrackCursor& cursor, RepeatCoordinator& listener);
+    void add(std::unique_ptr<RepeatStrategy> strategy);
     void advance();
     bool apply() const;
     void stop() const;

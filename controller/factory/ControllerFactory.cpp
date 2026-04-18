@@ -1,4 +1,9 @@
 #include "ControllerFactory.h"
+#include "../TitleDescending.h"
+#include "../CustomMode.h"
+#include "../../model/tracklist/QuickSort.h"
+#include "../../model/tracklist/DurationSort.h"
+#include "../../model/tracklist/DateSort.h"
 
 std::unique_ptr<TransportController> ControllerFactory::createTransport(PlaybackService& playback, IAudioPlayer& audio, ISearchPanel& search) {
     return std::make_unique<TransportController>(playback, audio, search);
@@ -9,7 +14,13 @@ std::unique_ptr<LibraryController> ControllerFactory::createLibrary(LibraryServi
 }
 
 std::unique_ptr<ArrangementController> ControllerFactory::createArrangement(Setlist& setlist, RepeatModeCommand& repeat, ISortDisplay& sort) {
-    return std::make_unique<ArrangementController>(setlist, repeat, sort);
+    auto controller = std::make_unique<ArrangementController>(setlist, repeat, sort);
+    controller->add(std::make_unique<SortMode>("Title \xe2\x96\xb2", new QuickSort()));
+    controller->add(std::make_unique<TitleDescending>());
+    controller->add(std::make_unique<SortMode>("Duration \xe2\x96\xb2", new DurationSort()));
+    controller->add(std::make_unique<SortMode>("Date \xe2\x96\xb2", new DateSort()));
+    controller->add(std::make_unique<CustomMode>());
+    return controller;
 }
 
 std::unique_ptr<SearchController> ControllerFactory::createSearch(ISearchProvider& provider, PlaybackService& playback, ISearchPanel& search) {

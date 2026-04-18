@@ -1,5 +1,5 @@
 #include "LibraryService.h"
-#include "../song/FileEraser.h"
+#include "../song/SongFileDeleter.h"
 #include "../song/Song.h"
 #include <filesystem>
 
@@ -25,7 +25,7 @@ void LibraryService::insert(const std::string& filePath) const {
 }
 
 void LibraryService::remove(const int index) const {
-    FileEraser eraser(directory_);
-    tracklist_.discard(index, eraser);
+    SongFileDeleter deleter(directory_);
+    tracklist_.discard(index, deleter);
     library_events_.onChanged();
 }

@@ -20,6 +20,7 @@ private:
 
 public:
     ArrangementController(Setlist& setlist, RepeatModeCommand& repeatCommand, ISortDisplay& sortDisplay);
+    void add(std::unique_ptr<SortMode> mode);
     void onSort() override;
     void onShuffle() override;
     void onRepeat() override;

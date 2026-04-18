@@ -1,4 +1,7 @@
 #include "ModelTestFixture.h"
+#include "../model/playback/NoRepeatMode.h"
+#include "../model/playback/RepeatOneMode.h"
+#include "../model/playback/RepeatAllMode.h"
 #include <filesystem>
 #include <fstream>
 
@@ -41,6 +44,9 @@ void ModelTestFixture::build() {
 
     repeat_listener_ = std::make_unique<RepeatCoordinator>(repeat_bus_, track_bus_);
     repeat_mode_ = std::make_unique<RepeatMode>(*cursor_, *repeat_listener_);
+    repeat_mode_->add(std::make_unique<NoRepeatMode>());
+    repeat_mode_->add(std::make_unique<RepeatOneMode>());
+    repeat_mode_->add(std::make_unique<RepeatAllMode>());
 
     playback_ = std::make_unique<PlaybackService>(*cursor_, *advertisement_, *repeat_mode_);
     library_ = std::make_unique<LibraryService>(*directory_, *tracklist_, library_bus_);

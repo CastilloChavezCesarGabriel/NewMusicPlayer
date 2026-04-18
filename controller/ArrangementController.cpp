@@ -1,17 +1,10 @@
 #include "ArrangementController.h"
-#include "TitleDescending.h"
-#include "CustomMode.h"
-#include "../model/tracklist/QuickSort.h"
-#include "../model/tracklist/DurationSort.h"
-#include "../model/tracklist/DateSort.h"
 
 ArrangementController::ArrangementController(Setlist& setlist, RepeatModeCommand& repeatCommand, ISortDisplay& sortDisplay)
-    : setlist_(setlist), repeat_switch_(repeatCommand), sort_display_(sortDisplay) {
-    modes_.push_back(std::make_unique<SortMode>("Title \xe2\x96\xb2", new QuickSort()));
-    modes_.push_back(std::make_unique<TitleDescending>());
-    modes_.push_back(std::make_unique<SortMode>("Duration \xe2\x96\xb2", new DurationSort()));
-    modes_.push_back(std::make_unique<SortMode>("Date \xe2\x96\xb2", new DateSort()));
-    modes_.push_back(std::make_unique<CustomMode>());
+    : setlist_(setlist), repeat_switch_(repeatCommand), sort_display_(sortDisplay) {}
+
+void ArrangementController::add(std::unique_ptr<SortMode> mode) {
+    modes_.push_back(std::move(mode));
 }
 
 void ArrangementController::onSort() {

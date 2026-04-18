@@ -1,4 +1,7 @@
 #include "PlaybackFactory.h"
+#include "../playback/NoRepeatMode.h"
+#include "../playback/RepeatOneMode.h"
+#include "../playback/RepeatAllMode.h"
 
 Dice PlaybackFactory::createDice() {
     return Dice();
@@ -17,5 +20,9 @@ std::unique_ptr<RepeatCoordinator> PlaybackFactory::createRepeatCoordinator(IRep
 }
 
 std::unique_ptr<RepeatMode> PlaybackFactory::createRepeatMode(TrackCursor& cursor, RepeatCoordinator& listener) {
-    return std::make_unique<RepeatMode>(cursor, listener);
+    auto mode = std::make_unique<RepeatMode>(cursor, listener);
+    mode->add(std::make_unique<NoRepeatMode>());
+    mode->add(std::make_unique<RepeatOneMode>());
+    mode->add(std::make_unique<RepeatAllMode>());
+    return mode;
 }
