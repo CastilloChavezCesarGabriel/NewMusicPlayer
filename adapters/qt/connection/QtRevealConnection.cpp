@@ -1,8 +1,8 @@
 #include "QtRevealConnection.h"
 
-QtRevealConnection::QtRevealConnection(QtAudioEngine& audio, IToolbarDisplay& toolbar)
+QtRevealConnection::QtRevealConnection(QtAdTimer& timer, IToolbarDisplay& toolbar)
     : toolbar_display_(toolbar) {
-    connect(&audio, &QtAudioEngine::revealRequested, this, &QtRevealConnection::relay);
+    connect(&timer, &QtAdTimer::revealRequested, this, &QtRevealConnection::relay);
 }
 
 void QtRevealConnection::relay() const {

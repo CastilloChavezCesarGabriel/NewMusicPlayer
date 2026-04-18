@@ -163,6 +163,8 @@ add_executable(NewMusicPlayer main.cpp
         adapters/qt/widget/QtSearchOverlay.h
         adapters/qt/widget/QtAudioEngine.cpp
         adapters/qt/widget/QtAudioEngine.h
+        adapters/qt/widget/QtAdTimer.cpp
+        adapters/qt/widget/QtAdTimer.h
         adapters/qt/widget/QtNotification.cpp
         adapters/qt/widget/QtNotification.h
         adapters/qt/widget/QtDialog.cpp

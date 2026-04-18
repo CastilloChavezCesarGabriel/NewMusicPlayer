@@ -17,8 +17,6 @@ void QtAudioEngine::setup() {
     audio_output_->setVolume(0.5);
     media_player_->setAudioOutput(audio_output_);
 
-    ad_timer_ = new QTimer(this);
-    ad_timer_->setSingleShot(true);
     progress_bar_ = new QtProgressPanel(*media_player_, this);
 
     auto* layout = new QVBoxLayout(this);
@@ -31,13 +29,11 @@ void QtAudioEngine::wire() {
             [this](const QMediaPlayer::MediaStatus status) { detect(status); });
     connect(media_player_, &QMediaPlayer::playbackStateChanged, this,
             [this](const QMediaPlayer::PlaybackState state) { announce(state); });
-    connect(ad_timer_, &QTimer::timeout, this,
-            [this] { emit revealRequested(); });
 }
 
 void QtAudioEngine::monitor() {
     const auto* devices = new QMediaDevices(this);
-    connect(devices, &QMediaDevices::audioOutputsChanged, this, [this] { adopt(); });
+    connect(devices, &QMediaDevices::audioOutputsChanged, this, [this] { route(); });
 }
 
 void QtAudioEngine::detect(const QMediaPlayer::MediaStatus status) {
@@ -50,7 +46,7 @@ void QtAudioEngine::announce(const QMediaPlayer::PlaybackState state) {
     emit toggleRequested(state == QMediaPlayer::PlayingState);
 }
 
-void QtAudioEngine::adopt() const {
+void QtAudioEngine::route() const {
     audio_output_->setDevice(QMediaDevices::defaultAudioOutput());
 }
 
@@ -78,15 +74,6 @@ void QtAudioEngine::stop() {
 
 void QtAudioEngine::adjust(const int volume) {
     audio_output_->setVolume(volume / 100.0);
-}
-
-void QtAudioEngine::schedule(const int milliseconds) {
-    ad_timer_->stop();
-    ad_timer_->start(milliseconds);
-}
-
-void QtAudioEngine::cancel() {
-    ad_timer_->stop();
 }
 
 void QtAudioEngine::enable(const bool state) {

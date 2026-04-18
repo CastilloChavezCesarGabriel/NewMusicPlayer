@@ -4,27 +4,24 @@
 #include "QtProgressPanel.h"
 #include "IWidgetSetup.h"
 #include "../../../view/IAudioPlayer.h"
-#include "../../../view/ITimingPanel.h"
 #include "../../../view/IEnableable.h"
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QAudioOutput>
-#include <QTimer>
 #include <string>
 
-class QtAudioEngine final : public QWidget, public IWidgetSetup, public IAudioPlayer, public ITimingPanel, public IEnableable {
+class QtAudioEngine final : public QWidget, public IWidgetSetup, public IAudioPlayer, public IEnableable {
     Q_OBJECT
 private:
     QMediaPlayer* media_player_;
     QAudioOutput* audio_output_;
-    QTimer* ad_timer_;
     QtProgressPanel* progress_bar_;
 
     void monitor();
     void start() const;
     void detect(QMediaPlayer::MediaStatus status);
     void announce(QMediaPlayer::PlaybackState state);
-    void adopt() const;
+    void route() const;
 
 public:
     explicit QtAudioEngine(QWidget* parent = nullptr);
@@ -35,13 +32,10 @@ public:
     void pause() override;
     void stop() override;
     void adjust(int volume) override;
-    void schedule(int milliseconds) override;
-    void cancel() override;
     void enable(bool state) override;
 
 signals:
     void endRequested();
-    void revealRequested();
     void toggleRequested(bool playing);
 };
 

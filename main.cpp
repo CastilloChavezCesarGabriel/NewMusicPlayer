@@ -62,6 +62,7 @@ int main(int argc, char *argv[]) {
 
     // Passive widgets
     auto* audio = QtPlaybackFactory::createAudio();
+    auto* adTimer = QtPlaybackFactory::createAdTimer(&view);
     auto* sortHeader = QtDisplayFactory::createSortHeader();
     auto* searchOverlay = QtDisplayFactory::createSearchOverlay();
     auto* notification = QtDialogFactory::createNotification(&view);
@@ -92,7 +93,7 @@ int main(int argc, char *argv[]) {
 
     // Connections (adapter-to-adapter)
     QtToggleConnection toggleConnection(*audio, *transport);
-    QtRevealConnection revealConnection(*audio, *skipButton);
+    QtRevealConnection revealConnection(*adTimer, *skipButton);
     QtRemoveConnection removeConnection(*libraryBar, *display);
 
     // Enable broadcast
@@ -112,7 +113,7 @@ int main(int argc, char *argv[]) {
     auto trackRelay = RelayFactory::createTrackRelay(*audio, *display, playbackControls);
     auto arrangementRelay = RelayFactory::createArrangementRelay(*arrangementController);
     auto libraryRelay = RelayFactory::createLibraryRelay(*catalog, *display, *notification);
-    auto adRelay = RelayFactory::createAdRelay(adControls, *audio, *skipButton);
+    auto adRelay = RelayFactory::createAdRelay(adControls, *adTimer, *skipButton);
     auto repeatRelay = RelayFactory::createRepeatRelay(*repeatButton);
 
     trackBus.add(*trackRelay);

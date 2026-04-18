@@ -4,6 +4,10 @@ QtAudioEngine* QtPlaybackFactory::createAudio(QWidget* parent) {
     return new QtAudioEngine(parent);
 }
 
+QtAdTimer* QtPlaybackFactory::createAdTimer(QObject* parent) {
+    return new QtAdTimer(parent);
+}
+
 QtTransportPanel* QtPlaybackFactory::createTransport(IPlaybackControl& playback, QWidget* parent) {
     return new QtTransportPanel(playback, parent);
 }

@@ -53,7 +53,8 @@ void QtPlaylistDisplay::remove() {
 }
 
 void QtPlaylistDisplay::enable(const bool state) {
-    playlist_->setSelectionMode(state ? QAbstractItemView::SingleSelection : QAbstractItemView::NoSelection);
+    playlist_->blockSignals(!state);
+    setAcceptDrops(state);
 }
 
 void QtPlaylistDisplay::dragEnterEvent(QDragEnterEvent* event) {
