@@ -36,7 +36,7 @@ void ModelTestFixture::build() {
     cursor_ = std::make_unique<TrackCursor>(*tracklist_, track_bus_);
 
     ShuffleArrangement initial;
-    tracklist_->arrange(initial);
+    tracklist_->reorder(initial);
 
     ad_policy_ = std::make_unique<RandomAdPolicy>(dice_);
     advertisement_ = std::make_unique<Advertisement>(*ad_policy_, ad_bus_, track_bus_);
@@ -52,5 +52,4 @@ void ModelTestFixture::build() {
     library_ = std::make_unique<LibraryService>(*directory_, *tracklist_, library_bus_);
     setlist_ = std::make_unique<Setlist>(*tracklist_, *cursor_, library_bus_);
     catalog_ = std::make_unique<TrackCatalog>(*tracklist_);
-    repeat_switch_ = std::make_unique<RepeatModeCommand>(*repeat_mode_);
 }

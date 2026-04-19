@@ -1,7 +1,7 @@
 #include "ArrangementController.h"
 
-ArrangementController::ArrangementController(Setlist& setlist, RepeatModeCommand& repeatCommand, ISortDisplay& sortDisplay)
-    : setlist_(setlist), repeat_switch_(repeatCommand), sort_display_(sortDisplay) {}
+ArrangementController::ArrangementController(Setlist& setlist, RepeatMode& repeatMode, ISortDisplay& sortDisplay)
+    : setlist_(setlist), repeat_mode_(repeatMode), sort_display_(sortDisplay) {}
 
 void ArrangementController::add(std::unique_ptr<SortMode> mode) {
     modes_.push_back(std::move(mode));
@@ -18,7 +18,7 @@ void ArrangementController::onShuffle() {
 }
 
 void ArrangementController::onRepeat() {
-    repeat_switch_.cycle();
+    repeat_mode_.advance();
 }
 
 void ArrangementController::refresh() {

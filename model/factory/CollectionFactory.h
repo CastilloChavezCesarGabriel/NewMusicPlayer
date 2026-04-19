@@ -10,10 +10,10 @@
 
 class CollectionFactory {
 public:
-    static MusicDirectory createDirectory(const std::string& path);
+    static MusicDirectory createMusicDirectory(const std::string& path);
     static Tracklist createTracklist();
     static std::unique_ptr<TrackCursor> createTrackCursor(Tracklist& tracklist, ITrackListener& trackBus);
-    static ShuffleArrangement createShuffle();
+    static ShuffleArrangement createShuffleArrangement();
 };
 
 #endif //COLLECTION_FACTORY_H

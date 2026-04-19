@@ -15,7 +15,3 @@ std::unique_ptr<Setlist> ServiceFactory::createSetlist(Tracklist& tracklist, Tra
 std::unique_ptr<TrackCatalog> ServiceFactory::createTrackCatalog(Tracklist& tracklist) {
     return std::make_unique<TrackCatalog>(tracklist);
 }
-
-std::unique_ptr<RepeatModeCommand> ServiceFactory::createRepeatModeCommand(RepeatMode& repeatMode) {
-    return std::make_unique<RepeatModeCommand>(repeatMode);
-}

@@ -1,7 +1,5 @@
 #include "SongTest.h"
 #include "../../model/song/Song.h"
-#include <filesystem>
-#include <fstream>
 
 TEST_F(SongTest, AcceptPassesNameToVisitor) {
     Song song("(1) First Song.mp3", "/music/(1) First Song.mp3");
@@ -45,26 +43,6 @@ TEST_F(SongTest, MatchEmptyQueryMatchesAll) {
     EXPECT_TRUE(song.matches(""));
 }
 
-TEST_F(SongTest, ParseExtractsNameFromNumberedFormat) {
-    EXPECT_EQ("First Song.mp3", Song::parse("(1) First Song.mp3"));
-}
-
-TEST_F(SongTest, ParseReturnsOriginalWhenNoNumber) {
-    EXPECT_EQ("Hello.wav", Song::parse("Hello.wav"));
-}
-
-TEST_F(SongTest, ParseTrimsWhitespace) {
-    EXPECT_EQ("Song.mp3", Song::parse("  Song.mp3  "));
-}
-
-TEST_F(SongTest, ParseHandlesMultiDigitNumbers) {
-    EXPECT_EQ("Tenth Song.mp3", Song::parse("(10) Tenth Song.mp3"));
-}
-
-TEST_F(SongTest, ParseReturnsEmptyForWhitespaceOnly) {
-    EXPECT_EQ("", Song::parse("   "));
-}
-
 TEST_F(SongTest, AcceptMultipleSongsToSameVisitor) {
     Song first("A.mp3", "/a");
     Song second("B.mp3", "/b");
@@ -98,8 +76,3 @@ TEST_F(SongTest, ConstructionWithEmptyPath) {
     song.accept(visitor_);
     EXPECT_TRUE(visitor_.hasPath(""));
 }
-
-TEST_F(SongTest, ParseHandlesEmptyString) {
-    EXPECT_EQ("", Song::parse(""));
-}
-

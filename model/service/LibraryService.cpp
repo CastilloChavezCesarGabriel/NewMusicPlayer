@@ -26,6 +26,6 @@ void LibraryService::insert(const std::string& filePath) const {
 
 void LibraryService::remove(const int index) const {
     SongFileDeleter deleter(directory_);
-    tracklist_.discard(index, deleter);
+    tracklist_.remove(index, deleter);
     library_events_.onChanged();
 }

@@ -5,7 +5,6 @@
 #include "../service/LibraryService.h"
 #include "../service/Setlist.h"
 #include "../service/TrackCatalog.h"
-#include "../service/RepeatModeCommand.h"
 #include <memory>
 
 class ServiceFactory {
@@ -14,7 +13,6 @@ public:
     static std::unique_ptr<LibraryService> createLibrary(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& libraryEvents);
     static std::unique_ptr<Setlist> createSetlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& libraryEvents);
     static std::unique_ptr<TrackCatalog> createTrackCatalog(Tracklist& tracklist);
-    static std::unique_ptr<RepeatModeCommand> createRepeatModeCommand(RepeatMode& repeatMode);
 };
 
 #endif //SERVICE_FACTORY_H

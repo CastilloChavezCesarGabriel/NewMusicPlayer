@@ -2,14 +2,14 @@
 #define ARRANGEMENT_RELAY_H
 
 #include "../model/event/ILibraryListener.h"
-#include "../view/IRefreshable.h"
+#include "ArrangementController.h"
 
 class ArrangementRelay final : public ILibraryListener {
 private:
-    IRefreshable& arrangement_;
+    ArrangementController& arrangement_;
 
 public:
-    explicit ArrangementRelay(IRefreshable& arrangement);
+    explicit ArrangementRelay(ArrangementController& arrangement);
     void onChanged() override;
     void onFeedback(const std::string& message, bool success) override;
 };

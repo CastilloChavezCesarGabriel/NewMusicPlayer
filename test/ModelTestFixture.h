@@ -19,7 +19,6 @@
 #include "../model/service/LibraryService.h"
 #include "../model/service/Setlist.h"
 #include "../model/service/TrackCatalog.h"
-#include "../model/service/RepeatModeCommand.h"
 #include "MockPlaybackListener.h"
 #include "TestPlaylistVisitor.h"
 #include <memory>
@@ -48,7 +47,6 @@ protected:
     std::unique_ptr<LibraryService> library_;
     std::unique_ptr<Setlist> setlist_;
     std::unique_ptr<TrackCatalog> catalog_;
-    std::unique_ptr<RepeatModeCommand> repeat_switch_;
 
     void SetUp() override;
     void TearDown() override;

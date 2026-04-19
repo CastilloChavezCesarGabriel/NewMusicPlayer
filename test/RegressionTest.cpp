@@ -20,20 +20,20 @@ std::string RegressionTest::identify() const {
 TEST_F(RegressionTest, SortEmptyPlaylistDoesNotCrash) {
     Tracklist tracklist;
     QuickSort byName;
-    EXPECT_NO_THROW(tracklist.arrange(byName));
+    EXPECT_NO_THROW(tracklist.reorder(byName));
 }
 
 TEST_F(RegressionTest, SortSingleSongDoesNotCrash) {
     Tracklist tracklist;
     tracklist.add(Song("A.mp3", "/a"));
     QuickSort byName;
-    EXPECT_NO_THROW(tracklist.arrange(byName));
+    EXPECT_NO_THROW(tracklist.reorder(byName));
 }
 
 TEST_F(RegressionTest, ShellSortEmptyDoesNotCrash) {
     Tracklist tracklist;
     DurationSort byNumber;
-    EXPECT_NO_THROW(tracklist.arrange(byNumber));
+    EXPECT_NO_THROW(tracklist.reorder(byNumber));
 }
 
 TEST_F(RegressionTest, ModelRefreshDoesNotRecurse) {
@@ -92,7 +92,7 @@ TEST_F(RegressionTest, RemoveBeforeCurrentAdjustsSelection) {
     tracklist.add(Song("C.mp3", "/c"));
     cursor.select(2);
     TestPlaylistVisitor sink;
-    tracklist.discard(0, sink);
+    tracklist.remove(0, sink);
     EXPECT_TRUE(cursor.hasSelected());
 }
 
@@ -140,7 +140,7 @@ TEST_F(RegressionTest, ShufflePreservesAllSongs) {
         tracklist.add(Song(std::to_string(i) + ".mp3", "/s"));
     }
     ShuffleArrangement strat;
-    tracklist.arrange(strat);
+    tracklist.reorder(strat);
     TestPlaylistVisitor visitor;
     tracklist.accept(visitor);
     EXPECT_TRUE(visitor.hasSongs(20));
@@ -148,23 +148,23 @@ TEST_F(RegressionTest, ShufflePreservesAllSongs) {
 
 TEST_F(RegressionTest, RepeatCycles) {
     build();
-    repeat_switch_->cycle();
-    repeat_switch_->cycle();
-    repeat_switch_->cycle();
-    EXPECT_NO_THROW(repeat_switch_->cycle());
+    repeat_mode_->advance();
+    repeat_mode_->advance();
+    repeat_mode_->advance();
+    EXPECT_NO_THROW(repeat_mode_->advance());
 }
 
 TEST_F(RegressionTest, RemoveFromEmptyPlaylistDoesNotCrash) {
     Tracklist tracklist;
     TestPlaylistVisitor sink;
-    EXPECT_NO_THROW(tracklist.discard(0, sink));
+    EXPECT_NO_THROW(tracklist.remove(0, sink));
 }
 
 TEST_F(RegressionTest, RemoveNegativeIndexDoesNotCrash) {
     Tracklist tracklist;
     tracklist.add(Song("A.mp3", "/a"));
     TestPlaylistVisitor sink;
-    EXPECT_NO_THROW(tracklist.discard(-1, sink));
+    EXPECT_NO_THROW(tracklist.remove(-1, sink));
 }
 
 TEST_F(RegressionTest, SelectInvalidIndexDoesNotCrash) {
@@ -227,7 +227,7 @@ TEST_F(RegressionTest, LargePlaylistSortDoesNotCrash) {
         tracklist.add(Song("(" + std::to_string(i) + ") Song.mp3", "/s"));
     }
     DurationSort byNumber;
-    EXPECT_NO_THROW(tracklist.arrange(byNumber));
+    EXPECT_NO_THROW(tracklist.reorder(byNumber));
     QuickSort byName;
-    EXPECT_NO_THROW(tracklist.arrange(byName));
+    EXPECT_NO_THROW(tracklist.reorder(byName));
 }

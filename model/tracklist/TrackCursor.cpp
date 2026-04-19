@@ -49,17 +49,13 @@ bool TrackCursor::hasSelected() const {
     return tracklist_.hasAt(track_index_);
 }
 
-void TrackCursor::pin(const std::function<void()>& operation) {
-    track_index_ = tracklist_.pin(track_index_, operation);
-}
-
-void TrackCursor::clear() {
-    track_index_ = -1;
+void TrackCursor::follow(const std::function<void()>& operation) {
+    track_index_ = tracklist_.follow(track_index_, operation);
 }
 
 void TrackCursor::onRemove(const int index) {
     if (index == track_index_) {
-        clear();
+        track_index_ = -1;
     } else if (index < track_index_) {
         track_index_--;
     }

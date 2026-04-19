@@ -13,10 +13,10 @@ private:
     QLabel* label_;
 
     void slide(int volume) const;
+    void adjust(int volume) const;
 
 public:
     explicit QtVolumePanel(IAudioControl& playback, QWidget* parent = nullptr);
-    void adjust(int volume) const;
 };
 
 #endif //QT_VOLUME_PANEL_H

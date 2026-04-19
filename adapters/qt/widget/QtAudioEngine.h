@@ -30,7 +30,6 @@ public:
     void play(const std::string& path) override;
     void resume() override;
     void pause() override;
-    void stop() override;
     void adjust(int volume) override;
     void enable(bool state) override;
 

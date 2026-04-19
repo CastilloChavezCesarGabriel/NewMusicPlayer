@@ -21,14 +21,14 @@ public:
     Tracklist();
 
     void add(const Song& song);
-    void discard(int index, IPathVisitor& receiver);
-    void arrange(IArrangementStrategy& strategy);
+    void remove(int index, IPathVisitor& receiver);
+    void reorder(IArrangementStrategy& strategy);
     void restore();
     void accept(ISongVisitor& visitor) const;
     void visit(const std::string& name, const std::string& path) override;
-    void search(const std::string& query, ISongVisitor& visitor) const;
+    void filter(const std::string& query, ISongVisitor& visitor) const;
     void stream(int index, IPathVisitor& visitor) const;
-    int pin(int index, const std::function<void()>& operation) const;
+    int follow(int index, const std::function<void()>& operation) const;
     bool hasAt(int index) const;
     bool hasAfter(int index) const;
     int find(const std::string& name) const;

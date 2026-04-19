@@ -12,7 +12,7 @@ class RelayFactory {
 public:
     static std::unique_ptr<TrackRelay> createTrackRelay(IAudioPlayer& audio, IPlaylistPanel& display, IEnableable& enable);
     static std::unique_ptr<LibraryRelay> createLibraryRelay(TrackCatalog& catalog, IPlaylistPanel& display, INotification& notification);
-    static std::unique_ptr<ArrangementRelay> createArrangementRelay(IRefreshable& arrangement);
+    static std::unique_ptr<ArrangementRelay> createArrangementRelay(ArrangementController& arrangement);
     static std::unique_ptr<AdRelay> createAdRelay(IEnableable& enable, ITimingPanel& timing, IToolbarDisplay& toolbar);
     static std::unique_ptr<RepeatRelay> createRepeatRelay(IRepeatDisplay& display);
 };

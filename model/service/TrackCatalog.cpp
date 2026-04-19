@@ -7,5 +7,5 @@ void TrackCatalog::accept(ISongVisitor& visitor) const {
 }
 
 void TrackCatalog::search(const std::string& query, ISongVisitor& visitor) const {
-    tracklist_.search(query, visitor);
+    tracklist_.filter(query, visitor);
 }

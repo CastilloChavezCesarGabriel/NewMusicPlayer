@@ -1,6 +1,6 @@
 #include "CollectionFactory.h"
 
-MusicDirectory CollectionFactory::createDirectory(const std::string& path) {
+MusicDirectory CollectionFactory::createMusicDirectory(const std::string& path) {
     return MusicDirectory(path);
 }
 
@@ -12,6 +12,6 @@ std::unique_ptr<TrackCursor> CollectionFactory::createTrackCursor(Tracklist& tra
     return std::make_unique<TrackCursor>(tracklist, trackBus);
 }
 
-ShuffleArrangement CollectionFactory::createShuffle() {
+ShuffleArrangement CollectionFactory::createShuffleArrangement() {
     return ShuffleArrangement();
 }

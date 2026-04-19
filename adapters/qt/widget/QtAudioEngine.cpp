@@ -68,10 +68,6 @@ void QtAudioEngine::pause() {
     media_player_->pause();
 }
 
-void QtAudioEngine::stop() {
-    media_player_->stop();
-}
-
 void QtAudioEngine::adjust(const int volume) {
     audio_output_->setVolume(volume / 100.0);
 }

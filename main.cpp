@@ -35,12 +35,12 @@ int main(int argc, char *argv[]) {
     auto repeatBus = EventFactory::createRepeatBus();
 
     // Music collection
-    auto musicDirectory = CollectionFactory::createDirectory(base + "/resources/music");
+    auto musicDirectory = CollectionFactory::createMusicDirectory(base + "/resources/music");
     auto tracklist = CollectionFactory::createTracklist();
     musicDirectory.load(tracklist);
     auto trackCursor = CollectionFactory::createTrackCursor(tracklist, trackBus);
-    auto initialShuffle = CollectionFactory::createShuffle();
-    tracklist.arrange(initialShuffle);
+    auto initialShuffle = CollectionFactory::createShuffleArrangement();
+    tracklist.reorder(initialShuffle);
 
     // Playback system
     auto dice = PlaybackFactory::createDice();
@@ -55,7 +55,6 @@ int main(int argc, char *argv[]) {
     auto library = ServiceFactory::createLibrary(musicDirectory, tracklist, libraryBus);
     auto setlist = ServiceFactory::createSetlist(tracklist, *trackCursor, libraryBus);
     auto catalog = ServiceFactory::createTrackCatalog(tracklist);
-    auto repeatSwitch = ServiceFactory::createRepeatModeCommand(*repeatMode);
 
     // Layout shell (Created early to parent the notifications and dialogs)
     QtView view;
@@ -71,7 +70,7 @@ int main(int argc, char *argv[]) {
     // Controllers
     auto transportController = ControllerFactory::createTransport(*playback, *audio, *searchOverlay);
     auto libraryController = ControllerFactory::createLibrary(*library, *dialog);
-    auto arrangementController = ControllerFactory::createArrangement(*setlist, *repeatSwitch, *sortHeader);
+    auto arrangementController = ControllerFactory::createArrangement(*setlist, *repeatMode, *sortHeader);
     auto searchController = ControllerFactory::createSearch(*catalog, *playback, *searchOverlay);
 
     // Active widgets

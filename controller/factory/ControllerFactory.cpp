@@ -13,8 +13,8 @@ std::unique_ptr<LibraryController> ControllerFactory::createLibrary(LibraryServi
     return std::make_unique<LibraryController>(library, dialog);
 }
 
-std::unique_ptr<ArrangementController> ControllerFactory::createArrangement(Setlist& setlist, RepeatModeCommand& repeat, ISortDisplay& sort) {
-    auto controller = std::make_unique<ArrangementController>(setlist, repeat, sort);
+std::unique_ptr<ArrangementController> ControllerFactory::createArrangement(Setlist& setlist, RepeatMode& repeatMode, ISortDisplay& sort) {
+    auto controller = std::make_unique<ArrangementController>(setlist, repeatMode, sort);
     controller->add(std::make_unique<SortMode>("Title \xe2\x96\xb2", new QuickSort()));
     controller->add(std::make_unique<TitleDescending>());
     controller->add(std::make_unique<SortMode>("Duration \xe2\x96\xb2", new DurationSort()));

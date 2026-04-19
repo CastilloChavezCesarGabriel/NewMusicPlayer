@@ -2,15 +2,15 @@
 #define QT_TOGGLE_CONNECTION_H
 
 #include "../widget/QtAudioEngine.h"
-#include "../../../view/IPlaybackDisplay.h"
+#include "../widget/QtTransportPanel.h"
 #include <QObject>
 
 class QtToggleConnection final : public QObject {
 private:
-    IPlaybackDisplay& playback_display_;
+    QtTransportPanel& transport_;
 
 public:
-    QtToggleConnection(QtAudioEngine& audio, IPlaybackDisplay& display);
+    QtToggleConnection(QtAudioEngine& audio, QtTransportPanel& transport);
 
 private slots:
     void relay(bool playing) const;

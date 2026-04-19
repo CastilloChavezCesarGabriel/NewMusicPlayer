@@ -87,13 +87,13 @@ add_executable(NewMusicPlayer main.cpp
         model/service/TrackCatalog.cpp
         model/service/TrackCatalog.h
         model/service/ISearchProvider.h
-        model/service/RepeatModeCommand.cpp
-        model/service/RepeatModeCommand.h
         model/library/IDice.h
         model/library/Dice.cpp
         model/library/Dice.h
         model/song/FileMetadata.cpp
         model/song/FileMetadata.h
+        model/song/SongTitle.cpp
+        model/song/SongTitle.h
         view/IPlaylistPanel.h
         view/ISearchPanel.h
         view/INotification.h
@@ -107,7 +107,6 @@ add_executable(NewMusicPlayer main.cpp
         view/IEnableable.h
         view/ITimingPanel.h
         view/ISortDisplay.h
-        view/IPlaybackDisplay.h
         view/IRepeatDisplay.h
         view/IToolbarDisplay.h
         controller/PlaylistRenderer.cpp
@@ -138,7 +137,6 @@ add_executable(NewMusicPlayer main.cpp
         controller/ArrangementController.h
         controller/ArrangementRelay.cpp
         controller/ArrangementRelay.h
-        view/IRefreshable.h
         adapters/qt/QtLayoutUtil.cpp
         adapters/qt/QtLayoutUtil.h
         adapters/qt/widget/QtTransportPanel.cpp
@@ -334,13 +332,15 @@ add_executable(NewMusicPlayerTests
         model/service/TrackCatalog.cpp
         model/service/TrackCatalog.h
         model/service/ISearchProvider.h
-        model/service/RepeatModeCommand.cpp
-        model/service/RepeatModeCommand.h
         model/library/IDice.h
         model/library/Dice.cpp
         model/library/Dice.h
         model/song/FileMetadata.cpp
         model/song/FileMetadata.h
+        model/song/SongTitle.cpp
+        model/song/SongTitle.h
+        test/model/SongTitleTest.cpp
+        test/model/SongTitleTest.h
 )
 
 target_link_libraries(NewMusicPlayerTests GTest::gtest_main)

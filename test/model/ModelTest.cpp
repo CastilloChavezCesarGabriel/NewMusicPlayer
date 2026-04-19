@@ -64,7 +64,7 @@ TEST_F(ModelTest, RepeatOneReplays) {
     createSong("a.mp3");
     createSong("b.mp3");
     build();
-    repeat_switch_->cycle();
+    repeat_mode_->advance();
     playback_->play(0);
     playback_->end();
     EXPECT_TRUE(listener_.wasStarted());
@@ -73,8 +73,8 @@ TEST_F(ModelTest, RepeatOneReplays) {
 TEST_F(ModelTest, RepeatAllLoops) {
     createSong("a.mp3");
     build();
-    repeat_switch_->cycle();
-    repeat_switch_->cycle();
+    repeat_mode_->advance();
+    repeat_mode_->advance();
     playback_->play(0);
     playback_->end();
     EXPECT_TRUE(listener_.wasSelectedWith(0));

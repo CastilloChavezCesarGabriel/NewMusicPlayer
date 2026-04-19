@@ -8,7 +8,7 @@ std::unique_ptr<LibraryRelay> RelayFactory::createLibraryRelay(TrackCatalog& cat
     return std::make_unique<LibraryRelay>(catalog, display, notification);
 }
 
-std::unique_ptr<ArrangementRelay> RelayFactory::createArrangementRelay(IRefreshable& arrangement) {
+std::unique_ptr<ArrangementRelay> RelayFactory::createArrangementRelay(ArrangementController& arrangement) {
     return std::make_unique<ArrangementRelay>(arrangement);
 }
 

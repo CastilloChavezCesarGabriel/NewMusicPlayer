@@ -8,7 +8,6 @@ public:
     virtual void play(const std::string& path) = 0;
     virtual void resume() = 0;
     virtual void pause() = 0;
-    virtual void stop() = 0;
     virtual void adjust(int volume) = 0;
 };
 

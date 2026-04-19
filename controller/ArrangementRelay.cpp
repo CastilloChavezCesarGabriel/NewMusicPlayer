@@ -1,6 +1,6 @@
 #include "ArrangementRelay.h"
 
-ArrangementRelay::ArrangementRelay(IRefreshable& arrangement)
+ArrangementRelay::ArrangementRelay(ArrangementController& arrangement)
     : arrangement_(arrangement) {}
 
 void ArrangementRelay::onChanged() {

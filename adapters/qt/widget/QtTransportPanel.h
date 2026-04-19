@@ -4,11 +4,10 @@
 #include <QWidget>
 #include <QPushButton>
 #include "../../../view/IPlaybackControl.h"
-#include "../../../view/IPlaybackDisplay.h"
 #include "../../../view/IEnableable.h"
 #include "IWidgetSetup.h"
 
-class QtTransportPanel final : public QWidget, public IWidgetSetup, public IPlaybackDisplay, public IEnableable {
+class QtTransportPanel final : public QWidget, public IWidgetSetup, public IEnableable {
     Q_OBJECT
 private:
     IPlaybackControl& playback_control_;
@@ -21,7 +20,7 @@ public:
     void setup() override;
     void wire() override;
     void enable(bool state) override;
-    void toggle(bool playing) override;
+    void toggle(bool playing);
 };
 
 #endif

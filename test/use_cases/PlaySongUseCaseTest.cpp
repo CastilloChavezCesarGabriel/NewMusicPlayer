@@ -95,7 +95,7 @@ TEST_F(PlaySongUseCaseTest, EndAtLastSongDoesNotCrash) {
 TEST_F(PlaySongUseCaseTest, RepeatOneReplays) {
     createSong("song.mp3");
     build();
-    repeat_switch_->cycle();
+    repeat_mode_->advance();
     playback_->play(0);
     playback_->end();
     EXPECT_TRUE(listener_.wasStarted());
@@ -104,8 +104,8 @@ TEST_F(PlaySongUseCaseTest, RepeatOneReplays) {
 TEST_F(PlaySongUseCaseTest, RepeatAllLoops) {
     createSong("a.mp3");
     build();
-    repeat_switch_->cycle();
-    repeat_switch_->cycle();
+    repeat_mode_->advance();
+    repeat_mode_->advance();
     playback_->play(0);
     playback_->end();
     EXPECT_TRUE(listener_.wasSelectedWith(0));
@@ -115,7 +115,7 @@ TEST_F(PlaySongUseCaseTest, EndWithRepeatReplays) {
     createSong("a.mp3");
     createSong("b.mp3");
     build();
-    repeat_switch_->cycle();
+    repeat_mode_->advance();
     playback_->play(0);
     playback_->end();
     EXPECT_TRUE(listener_.wasSelected());

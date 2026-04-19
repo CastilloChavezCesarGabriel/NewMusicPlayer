@@ -11,7 +11,7 @@ void Tracklist::add(const Song& song) {
     original_order_.invalidate();
 }
 
-void Tracklist::discard(const int index, IPathVisitor& receiver) {
+void Tracklist::remove(const int index, IPathVisitor& receiver) {
     if (index < 0 || index >= static_cast<int>(songs_.size())) return;
     songs_[index].stream(receiver);
     songs_.erase(songs_.begin() + index);
@@ -21,7 +21,7 @@ void Tracklist::discard(const int index, IPathVisitor& receiver) {
     }
 }
 
-void Tracklist::arrange(IArrangementStrategy& strategy) {
+void Tracklist::reorder(IArrangementStrategy& strategy) {
     original_order_.preserve(songs_);
     strategy.arrange(songs_);
 }
@@ -36,7 +36,7 @@ void Tracklist::accept(ISongVisitor& visitor) const {
     }
 }
 
-void Tracklist::search(const std::string& query, ISongVisitor& visitor) const {
+void Tracklist::filter(const std::string& query, ISongVisitor& visitor) const {
     for (const Song& song : songs_) {
         if (song.matches(query)) {
             song.accept(visitor);
@@ -50,7 +50,7 @@ void Tracklist::stream(const int index, IPathVisitor& visitor) const {
     }
 }
 
-int Tracklist::pin(const int index, const std::function<void()>& operation) const {
+int Tracklist::follow(const int index, const std::function<void()>& operation) const {
     if (!hasAt(index)) {
         operation();
         return -1;
