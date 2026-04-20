@@ -1,26 +1,20 @@
 #include "SortingTest.h"
-#include <filesystem>
 #include <fstream>
 
-void ShellSortTest::SetUp() {
-    test_directory_ = std::filesystem::temp_directory_path().string() + "/shell_sort_test";
-    std::filesystem::create_directories(test_directory_);
+std::string ShellSortTest::identify() const {
+    return "shell_sort_test";
 }
 
-void ShellSortTest::TearDown() {
-    std::filesystem::remove_all(test_directory_);
-}
-
-std::string ShellSortTest::createFile(const std::string& name, const int size) const {
+std::string ShellSortTest::createSizedFile(const std::string& name, const int size) const {
     const std::string path = test_directory_ + "/" + name;
     std::ofstream(path) << std::string(size, 'x');
     return path;
 }
 
 TEST_F(ShellSortTest, SortByDurationAscending) {
-    const std::string c = createFile("c.mp3", 300);
-    const std::string a = createFile("a.mp3", 100);
-    const std::string b = createFile("b.mp3", 200);
+    const std::string c = createSizedFile("c.mp3", 300);
+    const std::string a = createSizedFile("a.mp3", 100);
+    const std::string b = createSizedFile("b.mp3", 200);
     std::vector<Song> songs = {Song("c.mp3", c), Song("a.mp3", a), Song("b.mp3", b)};
     sorter_.arrange(songs);
     songs[0].accept(visitor_);
@@ -28,9 +22,9 @@ TEST_F(ShellSortTest, SortByDurationAscending) {
 }
 
 TEST_F(ShellSortTest, SortAlreadySorted) {
-    const std::string a = createFile("a.mp3", 100);
-    const std::string b = createFile("b.mp3", 200);
-    const std::string c = createFile("c.mp3", 300);
+    const std::string a = createSizedFile("a.mp3", 100);
+    const std::string b = createSizedFile("b.mp3", 200);
+    const std::string c = createSizedFile("c.mp3", 300);
     std::vector<Song> songs = {Song("a.mp3", a), Song("b.mp3", b), Song("c.mp3", c)};
     sorter_.arrange(songs);
     songs[0].accept(visitor_);
@@ -38,11 +32,11 @@ TEST_F(ShellSortTest, SortAlreadySorted) {
 }
 
 TEST_F(ShellSortTest, SortReversed) {
-    const std::string e = createFile("e.mp3", 500);
-    const std::string d = createFile("d.mp3", 400);
-    const std::string c = createFile("c.mp3", 300);
-    const std::string b = createFile("b.mp3", 200);
-    const std::string a = createFile("a.mp3", 100);
+    const std::string e = createSizedFile("e.mp3", 500);
+    const std::string d = createSizedFile("d.mp3", 400);
+    const std::string c = createSizedFile("c.mp3", 300);
+    const std::string b = createSizedFile("b.mp3", 200);
+    const std::string a = createSizedFile("a.mp3", 100);
     std::vector<Song> songs = {
         Song("e.mp3", e), Song("d.mp3", d), Song("c.mp3", c),
         Song("b.mp3", b), Song("a.mp3", a)
@@ -53,7 +47,7 @@ TEST_F(ShellSortTest, SortReversed) {
 }
 
 TEST_F(ShellSortTest, SortSingleElement) {
-    const std::string a = createFile("a.mp3", 100);
+    const std::string a = createSizedFile("a.mp3", 100);
     std::vector<Song> songs = {Song("a.mp3", a)};
     sorter_.arrange(songs);
     songs[0].accept(visitor_);
@@ -67,9 +61,9 @@ TEST_F(ShellSortTest, SortEmptyVector) {
 }
 
 TEST_F(ShellSortTest, SortDuplicateSizes) {
-    const std::string b = createFile("b.mp3", 200);
-    const std::string a = createFile("a.mp3", 100);
-    const std::string c = createFile("c.mp3", 200);
+    const std::string b = createSizedFile("b.mp3", 200);
+    const std::string a = createSizedFile("a.mp3", 100);
+    const std::string c = createSizedFile("c.mp3", 200);
     std::vector<Song> songs = {Song("b.mp3", b), Song("a.mp3", a), Song("c.mp3", c)};
     sorter_.arrange(songs);
     songs[0].accept(visitor_);
@@ -77,17 +71,17 @@ TEST_F(ShellSortTest, SortDuplicateSizes) {
 }
 
 TEST_F(ShellSortTest, SortPreservesAllElements) {
-    const std::string c = createFile("c.mp3", 300);
-    const std::string a = createFile("a.mp3", 100);
-    const std::string b = createFile("b.mp3", 200);
+    const std::string c = createSizedFile("c.mp3", 300);
+    const std::string a = createSizedFile("a.mp3", 100);
+    const std::string b = createSizedFile("b.mp3", 200);
     std::vector<Song> songs = {Song("c.mp3", c), Song("a.mp3", a), Song("b.mp3", b)};
     sorter_.arrange(songs);
     EXPECT_EQ(3, songs.size());
 }
 
 TEST_F(ShellSortTest, SortTwoElements) {
-    const std::string b = createFile("b.mp3", 200);
-    const std::string a = createFile("a.mp3", 100);
+    const std::string b = createSizedFile("b.mp3", 200);
+    const std::string a = createSizedFile("a.mp3", 100);
     std::vector<Song> songs = {Song("b.mp3", b), Song("a.mp3", a)};
     sorter_.arrange(songs);
     songs[0].accept(visitor_);
@@ -98,7 +92,7 @@ TEST_F(ShellSortTest, SortLargeCollection) {
     std::vector<Song> songs;
     for (int i = 100; i > 0; i--) {
         const std::string name = std::to_string(i) + ".mp3";
-        const std::string path = createFile(name, i * 10);
+        const std::string path = createSizedFile(name, i * 10);
         songs.emplace_back(name, path);
     }
     sorter_.arrange(songs);

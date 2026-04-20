@@ -4,12 +4,14 @@
 #include "../../model/event/ITrackListener.h"
 #include "../../model/tracklist/ShuffleArrangement.h"
 #include "../../model/tracklist/ReverseArrangement.h"
-#include <filesystem>
 #include <fstream>
 
+std::string PlaylistTest::identify() const {
+    return "playlist_test";
+}
+
 void PlaylistTest::SetUp() {
-    test_directory_ = std::filesystem::temp_directory_path().string() + "/playlist_test";
-    std::filesystem::create_directories(test_directory_);
+    DirectoryTestFixture::SetUp();
     track_bus_.add(listener_);
     tracklist_ = std::make_unique<Tracklist>();
     cursor_ = std::make_unique<TrackCursor>(*tracklist_, track_bus_);
@@ -18,7 +20,7 @@ void PlaylistTest::SetUp() {
 void PlaylistTest::TearDown() {
     cursor_.reset();
     tracklist_.reset();
-    std::filesystem::remove_all(test_directory_);
+    DirectoryTestFixture::TearDown();
 }
 
 void PlaylistTest::populate(int count) const {
@@ -27,7 +29,6 @@ void PlaylistTest::populate(int count) const {
                           test_directory_ + "/song" + std::to_string(i) + ".mp3"));
     }
 }
-
 TEST_F(PlaylistTest, AddSingleSong) {
     tracklist_->add(Song("A.mp3", "/a"));
     tracklist_->accept(visitor_);

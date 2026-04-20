@@ -1,23 +1,19 @@
 #ifndef SORTINGTEST_H
 #define SORTINGTEST_H
 
-#include <gtest/gtest.h>
+#include "../DirectoryTestFixture.h"
 #include "../../model/tracklist/DurationSort.h"
 #include "../../model/tracklist/QuickSort.h"
-#include "../../model/song/Song.h"
 #include "../TestPlaylistVisitor.h"
-#include <vector>
 #include <string>
 
-class ShellSortTest : public ::testing::Test {
+class ShellSortTest : public DirectoryTestFixture {
 protected:
-    std::string test_directory_;
     DurationSort sorter_;
     TestPlaylistVisitor visitor_;
 
-    void SetUp() override;
-    void TearDown() override;
-    std::string createFile(const std::string& name, int size) const;
+    std::string identify() const override;
+    std::string createSizedFile(const std::string& name, int size) const;
 };
 
 class QuickSortTest : public ::testing::Test {
