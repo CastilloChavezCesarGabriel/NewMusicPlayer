@@ -4,8 +4,8 @@
 #include <QHBoxLayout>
 #include <QStyle>
 
-QtRepeatButton::QtRepeatButton(IArrangementControl& arrangement, QWidget* parent)
-    : QWidget(parent), arrangement_(arrangement) {
+QtRepeatButton::QtRepeatButton(IRepeatControl& repeat, QWidget* parent)
+    : QWidget(parent), repeat_(repeat) {
     setup();
     wire();
 }
@@ -22,7 +22,7 @@ void QtRepeatButton::setup() {
 }
 
 void QtRepeatButton::wire() {
-    connect(button_, &QPushButton::clicked, this, [this]() { arrangement_.onRepeat(); });
+    connect(button_, &QPushButton::clicked, this, [this]() { repeat_.onRepeat(); });
 }
 
 void QtRepeatButton::enable(const bool state) {

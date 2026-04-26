@@ -1,10 +1,10 @@
 #include "ArrangementPresenter.h"
 
-ArrangementPresenter::ArrangementPresenter(PlaybackModeController& arrangement)
-    : arrangement_(arrangement) {}
+ArrangementPresenter::ArrangementPresenter(OrderingController& ordering)
+    : ordering_(ordering) {}
 
 void ArrangementPresenter::onChanged() {
-    arrangement_.refresh();
+    ordering_.refresh();
 }
 
 void ArrangementPresenter::onFeedback(const std::string&, bool) {}

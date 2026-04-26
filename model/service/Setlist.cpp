@@ -7,28 +7,26 @@ Setlist::Setlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& li
 
 void Setlist::shuffle() const {
     ShuffleStrategy strategy;
-    run(strategy);
+    arrange(strategy);
 }
 
 void Setlist::sort(IArrangementStrategy& criteria) const {
-    run(criteria);
+    arrange(criteria);
 }
 
 void Setlist::reverse() const {
     ReverseStrategy strategy;
-    run(strategy);
+    arrange(strategy);
 }
 
 void Setlist::restore() const {
     cursor_.chase([&] { tracklist_.restore(); });
+}
+
+void Setlist::announce() const {
     library_events_.onChanged();
 }
 
-void Setlist::rearrange(IArrangementStrategy& criteria) const {
-    cursor_.chase([&] { tracklist_.reorder(criteria); });
-}
-
-void Setlist::run(IArrangementStrategy& strategy) const {
-    rearrange(strategy);
-    library_events_.onChanged();
+void Setlist::arrange(IArrangementStrategy& strategy) const {
+    cursor_.chase([&] { tracklist_.reorder(strategy); });
 }

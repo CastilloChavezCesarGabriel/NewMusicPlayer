@@ -14,9 +14,8 @@ void TrackCursor::select(const int index) {
 }
 
 void TrackCursor::pick(const std::string& name) {
-    const int index = tracklist_.find(name);
-    if (index >= 0) {
-        select(index);
+    if (const auto index = tracklist_.find(name)) {
+        select(*index);
     }
 }
 

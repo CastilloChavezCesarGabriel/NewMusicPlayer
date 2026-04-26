@@ -32,10 +32,7 @@ void PlaybackTransport::retreat() const {
 }
 
 void PlaybackTransport::end() const {
-    if (ad_scheduler_.conclude()) {
-        cursor_.play();
-        return;
-    }
+    if (resume()) return;
 
     if (repeat_policy_.apply()) {
         cursor_.play();
@@ -44,8 +41,12 @@ void PlaybackTransport::end() const {
     }
 }
 
-void PlaybackTransport::skip() const {
-    if (ad_scheduler_.conclude()) {
-        cursor_.play();
-    }
+bool PlaybackTransport::skip() const {
+    return resume();
+}
+
+bool PlaybackTransport::resume() const {
+    if (!ad_scheduler_.conclude()) return false;
+    cursor_.play();
+    return true;
 }

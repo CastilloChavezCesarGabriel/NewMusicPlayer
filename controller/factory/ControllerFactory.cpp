@@ -13,14 +13,18 @@ std::unique_ptr<LibraryController> ControllerFactory::createLibrary(LibraryEdito
     return std::make_unique<LibraryController>(library, dialog);
 }
 
-std::unique_ptr<PlaybackModeController> ControllerFactory::createPlaybackMode(Setlist& setlist, RepeatPolicy& repeatPolicy, ISortDisplay& sort) {
-    auto controller = std::make_unique<PlaybackModeController>(setlist, repeatPolicy, sort);
+std::unique_ptr<OrderingController> ControllerFactory::createOrdering(Setlist& setlist, ISortDisplay& sort) {
+    auto controller = std::make_unique<OrderingController>(setlist, sort);
     controller->add(std::make_unique<SortMode>("Title \xe2\x96\xb2", std::make_unique<QuickSort>()));
     controller->add(std::make_unique<TitleDescendingSort>());
     controller->add(std::make_unique<SortMode>("Duration \xe2\x96\xb2", std::make_unique<DurationSort>()));
     controller->add(std::make_unique<SortMode>("Date \xe2\x96\xb2", std::make_unique<DateSort>()));
     controller->add(std::make_unique<CustomMode>());
     return controller;
+}
+
+std::unique_ptr<RepeatController> ControllerFactory::createRepeat(RepeatPolicy& repeatPolicy) {
+    return std::make_unique<RepeatController>(repeatPolicy);
 }
 
 std::unique_ptr<SearchController> ControllerFactory::createSearch(ISearchProvider& provider, PlaybackTransport& playback, ISearchPanel& search) {

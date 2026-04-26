@@ -2,14 +2,14 @@
 #define ARRANGEMENT_PRESENTER_H
 
 #include "../model/event/ILibraryListener.h"
-#include "PlaybackModeController.h"
+#include "OrderingController.h"
 
 class ArrangementPresenter final : public ILibraryListener {
 private:
-    PlaybackModeController& arrangement_;
+    OrderingController& ordering_;
 
 public:
-    explicit ArrangementPresenter(PlaybackModeController& arrangement);
+    explicit ArrangementPresenter(OrderingController& ordering);
     void onChanged() override;
     void onFeedback(const std::string& message, bool success) override;
 };

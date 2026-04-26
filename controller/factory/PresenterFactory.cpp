@@ -8,8 +8,8 @@ std::unique_ptr<LibraryPresenter> PresenterFactory::createLibraryPresenter(Track
     return std::make_unique<LibraryPresenter>(catalog, display, notification);
 }
 
-std::unique_ptr<ArrangementPresenter> PresenterFactory::createArrangementPresenter(PlaybackModeController& arrangement) {
-    return std::make_unique<ArrangementPresenter>(arrangement);
+std::unique_ptr<ArrangementPresenter> PresenterFactory::createArrangementPresenter(OrderingController& ordering) {
+    return std::make_unique<ArrangementPresenter>(ordering);
 }
 
 std::unique_ptr<AdPresenter> PresenterFactory::createAdPresenter(IEnableable& enable, ITimingPanel& timing, IToolbarDisplay& toolbar) {

@@ -29,6 +29,8 @@ add_executable(NewMusicPlayer main.cpp
         model/tracklist/QuickSort.h
         model/tracklist/Tracklist.cpp
         model/tracklist/Tracklist.h
+        model/tracklist/TracklistImporter.cpp
+        model/tracklist/TracklistImporter.h
         model/tracklist/TrackCursor.cpp
         model/tracklist/TrackCursor.h
         model/tracklist/IRemovalListener.h
@@ -102,7 +104,8 @@ add_executable(NewMusicPlayer main.cpp
         view/IAudioControl.h
         view/ILibraryControl.h
         view/ISearchInput.h
-        view/IArrangementControl.h
+        view/IOrderControl.h
+        view/IRepeatControl.h
         view/IAudioPlayer.h
         view/IEnableable.h
         view/ITimingPanel.h
@@ -133,8 +136,10 @@ add_executable(NewMusicPlayer main.cpp
         controller/TransportController.h
         controller/LibraryController.cpp
         controller/LibraryController.h
-        controller/PlaybackModeController.cpp
-        controller/PlaybackModeController.h
+        controller/OrderingController.cpp
+        controller/OrderingController.h
+        controller/RepeatController.cpp
+        controller/RepeatController.h
         controller/ArrangementPresenter.cpp
         controller/ArrangementPresenter.h
         adapters/qt/QtLayoutUtil.cpp
@@ -290,6 +295,8 @@ add_executable(NewMusicPlayerTests
         model/tracklist/QuickSort.h
         model/tracklist/Tracklist.cpp
         model/tracklist/Tracklist.h
+        model/tracklist/TracklistImporter.cpp
+        model/tracklist/TracklistImporter.h
         model/tracklist/TrackCursor.cpp
         model/tracklist/TrackCursor.h
         model/tracklist/IRemovalListener.h

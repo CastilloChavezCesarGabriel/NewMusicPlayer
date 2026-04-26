@@ -2,15 +2,15 @@
 #define QT_SORT_CONNECTION_H
 
 #include "../widget/QtSortHeader.h"
-#include "../../../view/IArrangementControl.h"
+#include "../../../view/IOrderControl.h"
 #include <QObject>
 
 class QtSortConnection final : public QObject {
 private:
-    IArrangementControl& arrangement_control_;
+    IOrderControl& order_control_;
 
 public:
-    QtSortConnection(QtSortHeader& header, IArrangementControl& arrangement);
+    QtSortConnection(QtSortHeader& header, IOrderControl& order);
 
 private slots:
     void relay() const;

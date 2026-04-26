@@ -10,8 +10,9 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <optional>
 
-class Tracklist final : public ISongVisitor {
+class Tracklist final {
 private:
     std::vector<Song> songs_;
     OriginalOrder original_order_;
@@ -25,13 +26,12 @@ public:
     void reorder(IArrangementStrategy& strategy);
     void restore();
     void accept(ISongVisitor& visitor) const;
-    void visit(const std::string& name, const std::string& path) override;
     void filter(const std::string& query, ISongVisitor& visitor) const;
     void dispatch(int index, IPathVisitor& visitor) const;
     int chase(int index, const std::function<void()>& operation) const;
     bool existsAt(int index) const;
     bool existsAfter(int index) const;
-    int find(const std::string& name) const;
+    std::optional<int> find(const std::string& name) const;
     void subscribe(IRemovalListener& listener);
 };
 

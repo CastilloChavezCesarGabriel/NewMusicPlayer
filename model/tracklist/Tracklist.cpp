@@ -2,10 +2,6 @@
 
 Tracklist::Tracklist() = default;
 
-void Tracklist::visit(const std::string& name, const std::string& path) {
-    add(Song(name, path));
-}
-
 void Tracklist::add(const Song& song) {
     songs_.push_back(song);
     original_order_.invalidate();
@@ -73,13 +69,13 @@ bool Tracklist::existsAfter(const int index) const {
     return index + 1 < static_cast<int>(songs_.size());
 }
 
-int Tracklist::find(const std::string& name) const {
+std::optional<int> Tracklist::find(const std::string& name) const {
     for (int index = 0; index < static_cast<int>(songs_.size()); index++) {
         if (songs_[index].matches(name)) {
             return index;
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 void Tracklist::subscribe(IRemovalListener& listener) {

@@ -3,8 +3,8 @@
 #include "../QtLayoutUtil.h"
 #include <QHBoxLayout>
 
-QtShuffleButton::QtShuffleButton(IArrangementControl& arrangement, QWidget* parent)
-    : QWidget(parent), arrangement_(arrangement) {
+QtShuffleButton::QtShuffleButton(IOrderControl& order, QWidget* parent)
+    : QWidget(parent), order_(order) {
     setup();
     wire();
 }
@@ -21,7 +21,7 @@ void QtShuffleButton::setup() {
 }
 
 void QtShuffleButton::wire() {
-    connect(button_, &QPushButton::clicked, this, [this]() { arrangement_.onShuffle(); });
+    connect(button_, &QPushButton::clicked, this, [this]() { order_.onShuffle(); });
 }
 
 void QtShuffleButton::enable(const bool state) {

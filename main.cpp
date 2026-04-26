@@ -21,6 +21,7 @@
 #include "adapters/qt/connection/QtSortConnection.h"
 #include "adapters/qt/connection/QtRemoveConnection.h"
 #include "controller/EnableCoordinator.h"
+#include "model/tracklist/TracklistImporter.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -37,7 +38,8 @@ int main(int argc, char *argv[]) {
     // Music collection
     auto musicDirectory = CollectionFactory::createMusicDirectory(base + "/resources/music");
     auto tracklist = CollectionFactory::createTracklist();
-    musicDirectory.load(tracklist);
+    TracklistImporter importer(tracklist);
+    musicDirectory.load(importer);
     auto trackCursor = CollectionFactory::createTrackCursor(tracklist, trackBus);
     auto initialShuffle = CollectionFactory::createShuffleStrategy();
     tracklist.reorder(initialShuffle);
@@ -70,14 +72,15 @@ int main(int argc, char *argv[]) {
     // Controllers
     auto transportController = ControllerFactory::createTransport(*playback, *audio, *searchOverlay);
     auto libraryController = ControllerFactory::createLibrary(*library, *dialog);
-    auto playbackModeController = ControllerFactory::createPlaybackMode(*setlist, *repeatPolicy, *sortHeader);
+    auto orderingController = ControllerFactory::createOrdering(*setlist, *sortHeader);
+    auto repeatController = ControllerFactory::createRepeat(*repeatPolicy);
     auto searchController = ControllerFactory::createSearch(*catalog, *playback, *searchOverlay);
 
     // Active widgets
     auto* display = QtDisplayFactory::createDisplay(*transportController, *libraryController);
     auto* transport = QtPlaybackFactory::createTransport(*transportController);
-    auto* shuffleButton = QtArrangementFactory::createShuffleButton(*playbackModeController);
-    auto* repeatButton = QtArrangementFactory::createRepeatButton(*playbackModeController);
+    auto* shuffleButton = QtArrangementFactory::createShuffleButton(*orderingController);
+    auto* repeatButton = QtArrangementFactory::createRepeatButton(*repeatController);
     auto* volume = QtPlaybackFactory::createVolume(*transportController);
     auto* libraryBar = QtDisplayFactory::createLibraryBar(*libraryController);
     auto* skipButton = QtPlaybackFactory::createSkipButton(*transportController);
@@ -88,7 +91,7 @@ int main(int argc, char *argv[]) {
     QtSearchFieldConnection searchFieldConnection(searchField, *searchController);
     QtPickConnection pickConnection(*searchOverlay, *searchController);
     QtClearConnection clearConnection(*searchOverlay, searchField);
-    QtSortConnection sortConnection(*sortHeader, *playbackModeController);
+    QtSortConnection sortConnection(*sortHeader, *orderingController);
 
     // Connections (adapter-to-adapter)
     QtToggleConnection toggleConnection(*audio, *transport);
@@ -110,7 +113,7 @@ int main(int argc, char *argv[]) {
 
     // Relays
     auto trackRelay = PresenterFactory::createTrackPresenter(*audio, *display, playbackControls);
-    auto arrangementRelay = PresenterFactory::createArrangementPresenter(*playbackModeController);
+    auto arrangementRelay = PresenterFactory::createArrangementPresenter(*orderingController);
     auto libraryRelay = PresenterFactory::createLibraryPresenter(*catalog, *display, *notification);
     auto adRelay = PresenterFactory::createAdPresenter(adControls, *adTimer, *skipButton);
     auto repeatRelay = PresenterFactory::createRepeatPresenter(*repeatButton);

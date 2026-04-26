@@ -13,6 +13,7 @@ private:
     RepeatPolicy& repeat_policy_;
 
     void start() const;
+    bool resume() const;
 
 public:
     PlaybackTransport(TrackCursor& cursor, AdScheduler& adScheduler, RepeatPolicy& repeatPolicy);
@@ -22,7 +23,7 @@ public:
     void advance() const;
     void retreat() const;
     void end() const;
-    void skip() const;
+    bool skip() const;
 };
 
 #endif //PLAYBACK_TRANSPORT_H

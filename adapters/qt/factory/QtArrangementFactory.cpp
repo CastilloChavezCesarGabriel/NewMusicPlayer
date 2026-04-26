@@ -1,9 +1,9 @@
 #include "QtArrangementFactory.h"
 
-QtShuffleButton* QtArrangementFactory::createShuffleButton(IArrangementControl& arrangement, QWidget* parent) {
-    return new QtShuffleButton(arrangement, parent);
+QtShuffleButton* QtArrangementFactory::createShuffleButton(IOrderControl& order, QWidget* parent) {
+    return new QtShuffleButton(order, parent);
 }
 
-QtRepeatButton* QtArrangementFactory::createRepeatButton(IArrangementControl& arrangement, QWidget* parent) {
-    return new QtRepeatButton(arrangement, parent);
+QtRepeatButton* QtArrangementFactory::createRepeatButton(IRepeatControl& repeat, QWidget* parent) {
+    return new QtRepeatButton(repeat, parent);
 }

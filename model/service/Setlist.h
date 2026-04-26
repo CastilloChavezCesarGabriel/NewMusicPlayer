@@ -12,7 +12,7 @@ private:
     TrackCursor& cursor_;
     ILibraryListener& library_events_;
 
-    void run(IArrangementStrategy& strategy) const;
+    void arrange(IArrangementStrategy& strategy) const;
 
 public:
     Setlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& libraryEvents);
@@ -21,7 +21,7 @@ public:
     void sort(IArrangementStrategy& criteria) const;
     void reverse() const;
     void restore() const;
-    void rearrange(IArrangementStrategy& criteria) const;
+    void announce() const;
 };
 
 #endif //SETLIST_H

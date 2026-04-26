@@ -3,13 +3,14 @@
 
 #include "../widget/QtShuffleButton.h"
 #include "../widget/QtRepeatButton.h"
-#include "../../../view/IArrangementControl.h"
+#include "../../../view/IOrderControl.h"
+#include "../../../view/IRepeatControl.h"
 #include <QWidget>
 
 class QtArrangementFactory {
 public:
-    static QtShuffleButton* createShuffleButton(IArrangementControl& arrangement, QWidget* parent = nullptr);
-    static QtRepeatButton* createRepeatButton(IArrangementControl& arrangement, QWidget* parent = nullptr);
+    static QtShuffleButton* createShuffleButton(IOrderControl& order, QWidget* parent = nullptr);
+    static QtRepeatButton* createRepeatButton(IRepeatControl& repeat, QWidget* parent = nullptr);
 };
 
 #endif //QT_ARRANGEMENT_FACTORY_H
