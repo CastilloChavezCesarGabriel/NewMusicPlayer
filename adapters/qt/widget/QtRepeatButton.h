@@ -5,10 +5,9 @@
 #include <QPushButton>
 #include "../../../view/IArrangementControl.h"
 #include "../../../view/IRepeatDisplay.h"
-#include "../../../view/IEnableable.h"
 #include "IWidgetSetup.h"
 
-class QtRepeatButton final : public QWidget, public IWidgetSetup, public IRepeatDisplay, public IEnableable {
+class QtRepeatButton final : public QWidget, public IWidgetSetup, public IRepeatDisplay {
     Q_OBJECT
 private:
     IArrangementControl& arrangement_;

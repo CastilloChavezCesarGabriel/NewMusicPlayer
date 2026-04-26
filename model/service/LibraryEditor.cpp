@@ -18,7 +18,7 @@ void LibraryEditor::insert(const std::string& filePath) const {
         return;
     }
 
-    const std::string destination = directory_.store(filePath);
+    const std::string destination = directory_.copyTo(filePath);
     tracklist_.add(Song(filename, destination));
     library_events_.onChanged();
     library_events_.onFeedback("Song added successfully!", true);

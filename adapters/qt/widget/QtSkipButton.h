@@ -3,12 +3,11 @@
 
 #include "../../../view/IAudioControl.h"
 #include "../../../view/IToolbarDisplay.h"
-#include "../../../view/IEnableable.h"
 #include "IWidgetSetup.h"
 #include <QWidget>
 #include <QPushButton>
 
-class QtSkipButton final : public QWidget, public IWidgetSetup, public IToolbarDisplay, public IEnableable {
+class QtSkipButton final : public QWidget, public IWidgetSetup, public IToolbarDisplay {
     Q_OBJECT
 private:
     QPushButton* button_;

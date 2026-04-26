@@ -1,6 +1,6 @@
 #include "QtSearchFieldConnection.h"
 
-QtSearchFieldConnection::QtSearchFieldConnection(QtSearchField& field, IDisplayControl& display)
+QtSearchFieldConnection::QtSearchFieldConnection(QtSearchField& field, ISearchInput& display)
     : display_control_(display) {
     connect(&field, &QtSearchField::searchRequested, this, &QtSearchFieldConnection::relay);
 }

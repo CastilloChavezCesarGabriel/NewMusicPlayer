@@ -14,9 +14,9 @@ public:
     Song(const std::string& name, const std::string& path);
 
     void accept(ISongVisitor& visitor) const;
-    void stream(IPathVisitor& visitor) const;
+    void dispatch(IPathVisitor& visitor) const;
     bool matches(const std::string& query) const;
-    bool identifies(const Song& other) const;
+    bool equals(const Song& other) const;
 };
 
 #endif //SONG_H

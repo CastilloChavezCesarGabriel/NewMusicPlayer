@@ -20,12 +20,12 @@ void Setlist::reverse() const {
 }
 
 void Setlist::restore() const {
-    cursor_.follow([&] { tracklist_.restore(); });
+    cursor_.chase([&] { tracklist_.restore(); });
     library_events_.onChanged();
 }
 
 void Setlist::rearrange(IArrangementStrategy& criteria) const {
-    cursor_.follow([&] { tracklist_.reorder(criteria); });
+    cursor_.chase([&] { tracklist_.reorder(criteria); });
 }
 
 void Setlist::run(IArrangementStrategy& strategy) const {

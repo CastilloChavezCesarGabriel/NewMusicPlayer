@@ -25,7 +25,7 @@ public:
     void play() const;
     bool hasNext() const;
     bool hasSelected() const;
-    void follow(const std::function<void()>& operation);
+    void chase(const std::function<void()>& operation);
     void onRemove(int index) override;
 };
 

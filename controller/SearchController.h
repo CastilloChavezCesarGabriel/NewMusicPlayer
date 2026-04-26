@@ -3,11 +3,11 @@
 
 #include "../model/service/ISearchProvider.h"
 #include "../model/service/PlaybackTransport.h"
-#include "../view/IDisplayControl.h"
+#include "../view/ISearchInput.h"
 #include "../view/ISearchPanel.h"
 #include <string>
 
-class SearchController final : public IDisplayControl {
+class SearchController final : public ISearchInput {
 private:
     ISearchProvider& provider_;
     PlaybackTransport& playback_;

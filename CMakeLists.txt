@@ -101,7 +101,7 @@ add_executable(NewMusicPlayer main.cpp
         view/IPlaybackControl.h
         view/IAudioControl.h
         view/ILibraryControl.h
-        view/IDisplayControl.h
+        view/ISearchInput.h
         view/IArrangementControl.h
         view/IAudioPlayer.h
         view/IEnableable.h

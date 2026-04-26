@@ -2,15 +2,15 @@
 #define QT_PICK_CONNECTION_H
 
 #include "../widget/QtSearchOverlay.h"
-#include "../../../view/IDisplayControl.h"
+#include "../../../view/ISearchInput.h"
 #include <QObject>
 
 class QtPickConnection final : public QObject {
 private:
-    IDisplayControl& display_control_;
+    ISearchInput& display_control_;
 
 public:
-    QtPickConnection(QtSearchOverlay& overlay, IDisplayControl& display);
+    QtPickConnection(QtSearchOverlay& overlay, ISearchInput& display);
 
 private slots:
     void relay(const std::string& name) const;

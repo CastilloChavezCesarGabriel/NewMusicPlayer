@@ -27,10 +27,10 @@ public:
     void accept(ISongVisitor& visitor) const;
     void visit(const std::string& name, const std::string& path) override;
     void filter(const std::string& query, ISongVisitor& visitor) const;
-    void stream(int index, IPathVisitor& visitor) const;
-    int follow(int index, const std::function<void()>& operation) const;
-    bool hasAt(int index) const;
-    bool hasAfter(int index) const;
+    void dispatch(int index, IPathVisitor& visitor) const;
+    int chase(int index, const std::function<void()>& operation) const;
+    bool existsAt(int index) const;
+    bool existsAfter(int index) const;
     int find(const std::string& name) const;
     void subscribe(IRemovalListener& listener);
 };

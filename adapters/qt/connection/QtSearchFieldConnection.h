@@ -2,15 +2,15 @@
 #define QT_SEARCH_FIELD_CONNECTION_H
 
 #include "../widget/QtSearchField.h"
-#include "../../../view/IDisplayControl.h"
+#include "../../../view/ISearchInput.h"
 #include <QObject>
 
 class QtSearchFieldConnection final : public QObject {
 private:
-    IDisplayControl& display_control_;
+    ISearchInput& display_control_;
 
 public:
-    QtSearchFieldConnection(QtSearchField& field, IDisplayControl& display);
+    QtSearchFieldConnection(QtSearchField& field, ISearchInput& display);
 
 private slots:
     void relay(const std::string& query) const;

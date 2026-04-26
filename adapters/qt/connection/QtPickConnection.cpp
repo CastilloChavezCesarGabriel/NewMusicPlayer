@@ -1,6 +1,6 @@
 #include "QtPickConnection.h"
 
-QtPickConnection::QtPickConnection(QtSearchOverlay& overlay, IDisplayControl& display)
+QtPickConnection::QtPickConnection(QtSearchOverlay& overlay, ISearchInput& display)
     : display_control_(display) {
     connect(&overlay, &QtSearchOverlay::selectRequested, this, &QtPickConnection::relay);
 }

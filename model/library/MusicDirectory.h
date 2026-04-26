@@ -17,7 +17,7 @@ public:
     void load(ISongVisitor& visitor) const;
     bool contains(const std::string& filename) const;
     static void erase(const std::string& path);
-    std::string store(const std::string& sourcePath) const;
+    std::string copyTo(const std::string& sourcePath) const;
     bool accepts(const std::string& filename) const;
     std::vector<std::string> scan() const;
 };

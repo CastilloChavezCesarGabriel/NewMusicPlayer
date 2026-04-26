@@ -7,7 +7,7 @@ TrackCursor::TrackCursor(Tracklist& tracklist, ITrackListener& tracks)
 }
 
 void TrackCursor::select(const int index) {
-    if (tracklist_.hasAt(index)) {
+    if (tracklist_.existsAt(index)) {
         track_index_ = index;
         notify();
     }
@@ -37,20 +37,20 @@ void TrackCursor::retreat() {
 void TrackCursor::play() const {
     if (hasSelected()) {
         SongStartAnnouncer announcer(tracks_);
-        tracklist_.stream(track_index_, announcer);
+        tracklist_.dispatch(track_index_, announcer);
     }
 }
 
 bool TrackCursor::hasNext() const {
-    return tracklist_.hasAfter(track_index_);
+    return tracklist_.existsAfter(track_index_);
 }
 
 bool TrackCursor::hasSelected() const {
-    return tracklist_.hasAt(track_index_);
+    return tracklist_.existsAt(track_index_);
 }
 
-void TrackCursor::follow(const std::function<void()>& operation) {
-    track_index_ = tracklist_.follow(track_index_, operation);
+void TrackCursor::chase(const std::function<void()>& operation) {
+    track_index_ = tracklist_.chase(track_index_, operation);
 }
 
 void TrackCursor::onRemove(const int index) {

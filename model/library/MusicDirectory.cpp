@@ -19,7 +19,7 @@ void MusicDirectory::erase(const std::string& path) {
     std::filesystem::remove(path);
 }
 
-std::string MusicDirectory::store(const std::string& sourcePath) const {
+std::string MusicDirectory::copyTo(const std::string& sourcePath) const {
     const std::filesystem::path source(sourcePath);
     const std::string filename = source.filename().string();
     const std::filesystem::path destination = std::filesystem::path(path_) / filename;
