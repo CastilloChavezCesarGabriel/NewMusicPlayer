@@ -1,21 +1,21 @@
-#ifndef PLAYBACK_SERVICE_H
-#define PLAYBACK_SERVICE_H
+#ifndef PLAYBACK_TRANSPORT_H
+#define PLAYBACK_TRANSPORT_H
 
 #include "../tracklist/TrackCursor.h"
-#include "../playback/Advertisement.h"
+#include "../playback/AdScheduler.h"
 #include "../playback/RepeatPolicy.h"
 #include <string>
 
-class PlaybackService {
+class PlaybackTransport {
 private:
     TrackCursor& cursor_;
-    Advertisement& advertisement_;
+    AdScheduler& advertisement_;
     RepeatPolicy& repeat_mode_;
 
     void start() const;
 
 public:
-    PlaybackService(TrackCursor& cursor, Advertisement& advertisement, RepeatPolicy& repeatMode);
+    PlaybackTransport(TrackCursor& cursor, AdScheduler& advertisement, RepeatPolicy& repeatMode);
 
     void play(int index) const;
     void pick(const std::string& name) const;
@@ -25,4 +25,4 @@ public:
     void skip() const;
 };
 
-#endif //PLAYBACK_SERVICE_H
+#endif //PLAYBACK_TRANSPORT_H

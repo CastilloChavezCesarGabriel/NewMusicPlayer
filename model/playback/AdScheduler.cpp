@@ -1,16 +1,16 @@
-#include "Advertisement.h"
+#include "AdScheduler.h"
 #include "../library/MusicDirectory.h"
 
-Advertisement::Advertisement(IAdPolicy& policy, IAdListener& adsEvents, ITrackListener& tracks)
+AdScheduler::AdScheduler(IAdPolicy& policy, IAdListener& adsEvents, ITrackListener& tracks)
     : policy_(policy), ads_events_(adsEvents), tracks_(tracks) {
 }
 
-void Advertisement::load(const std::string& adsPath) {
+void AdScheduler::load(const std::string& adsPath) {
     const MusicDirectory directory(adsPath);
     ads_ = directory.scan();
 }
 
-bool Advertisement::interrupt() {
+bool AdScheduler::interrupt() {
     if (ads_.empty() || !policy_.decide()) return false;
 
     is_playing_ = true;
@@ -20,7 +20,7 @@ bool Advertisement::interrupt() {
     return true;
 }
 
-bool Advertisement::conclude() {
+bool AdScheduler::conclude() {
     if (!is_playing_) return false;
     is_playing_ = false;
     ads_events_.onCancel();

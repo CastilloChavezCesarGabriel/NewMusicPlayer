@@ -4,7 +4,7 @@
 #include "model/factory/PlaybackFactory.h"
 #include "model/factory/ServiceFactory.h"
 #include "controller/factory/ControllerFactory.h"
-#include "controller/factory/RelayFactory.h"
+#include "controller/factory/PresenterFactory.h"
 #include "adapters/qt/QtView.h"
 #include "adapters/qt/style/QtStyler.h"
 #include "adapters/qt/factory/QtPlaybackFactory.h"
@@ -39,15 +39,15 @@ int main(int argc, char *argv[]) {
     auto tracklist = CollectionFactory::createTracklist();
     musicDirectory.load(tracklist);
     auto trackCursor = CollectionFactory::createTrackCursor(tracklist, trackBus);
-    auto initialShuffle = CollectionFactory::createShuffleArrangement();
+    auto initialShuffle = CollectionFactory::createShuffleStrategy();
     tracklist.reorder(initialShuffle);
 
     // Playback system
     auto dice = PlaybackFactory::createDice();
     auto advertisementPolicy = PlaybackFactory::createAdPolicy(dice);
-    auto advertisement = PlaybackFactory::createAdvertisement(*advertisementPolicy, advertisementBus, trackBus);
+    auto advertisement = PlaybackFactory::createAdScheduler(*advertisementPolicy, advertisementBus, trackBus);
     advertisement->load(base + "/resources/announcements");
-    auto repeatListener = PlaybackFactory::createRepeatCoordinator(repeatBus, trackBus);
+    auto repeatListener = PlaybackFactory::createRepeatBroadcaster(repeatBus, trackBus);
     auto repeatMode = PlaybackFactory::createRepeatPolicy(*trackCursor, *repeatListener);
 
     // Services
@@ -70,14 +70,14 @@ int main(int argc, char *argv[]) {
     // Controllers
     auto transportController = ControllerFactory::createTransport(*playback, *audio, *searchOverlay);
     auto libraryController = ControllerFactory::createLibrary(*library, *dialog);
-    auto arrangementController = ControllerFactory::createArrangement(*setlist, *repeatMode, *sortHeader);
+    auto playbackModeController = ControllerFactory::createPlaybackMode(*setlist, *repeatMode, *sortHeader);
     auto searchController = ControllerFactory::createSearch(*catalog, *playback, *searchOverlay);
 
     // Active widgets
     auto* display = QtDisplayFactory::createDisplay(*transportController, *libraryController);
     auto* transport = QtPlaybackFactory::createTransport(*transportController);
-    auto* shuffleButton = QtArrangementFactory::createShuffleButton(*arrangementController);
-    auto* repeatButton = QtArrangementFactory::createRepeatButton(*arrangementController);
+    auto* shuffleButton = QtArrangementFactory::createShuffleButton(*playbackModeController);
+    auto* repeatButton = QtArrangementFactory::createRepeatButton(*playbackModeController);
     auto* volume = QtPlaybackFactory::createVolume(*transportController);
     auto* libraryBar = QtDisplayFactory::createLibraryBar(*libraryController);
     auto* skipButton = QtPlaybackFactory::createSkipButton(*transportController);
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
     QtSearchFieldConnection searchFieldConnection(searchField, *searchController);
     QtPickConnection pickConnection(*searchOverlay, *searchController);
     QtClearConnection clearConnection(*searchOverlay, searchField);
-    QtSortConnection sortConnection(*sortHeader, *arrangementController);
+    QtSortConnection sortConnection(*sortHeader, *playbackModeController);
 
     // Connections (adapter-to-adapter)
     QtToggleConnection toggleConnection(*audio, *transport);
@@ -109,11 +109,11 @@ int main(int argc, char *argv[]) {
     adControls.add(*searchOverlay);
 
     // Relays
-    auto trackRelay = RelayFactory::createTrackRelay(*audio, *display, playbackControls);
-    auto arrangementRelay = RelayFactory::createArrangementRelay(*arrangementController);
-    auto libraryRelay = RelayFactory::createLibraryRelay(*catalog, *display, *notification);
-    auto adRelay = RelayFactory::createAdRelay(adControls, *adTimer, *skipButton);
-    auto repeatRelay = RelayFactory::createRepeatRelay(*repeatButton);
+    auto trackRelay = PresenterFactory::createTrackPresenter(*audio, *display, playbackControls);
+    auto arrangementRelay = PresenterFactory::createArrangementPresenter(*playbackModeController);
+    auto libraryRelay = PresenterFactory::createLibraryPresenter(*catalog, *display, *notification);
+    auto adRelay = PresenterFactory::createAdPresenter(adControls, *adTimer, *skipButton);
+    auto repeatRelay = PresenterFactory::createRepeatPresenter(*repeatButton);
 
     trackBus.add(*trackRelay);
     libraryBus.add(*arrangementRelay);

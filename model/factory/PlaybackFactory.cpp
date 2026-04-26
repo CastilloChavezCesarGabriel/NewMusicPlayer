@@ -11,15 +11,15 @@ std::unique_ptr<RandomAdPolicy> PlaybackFactory::createAdPolicy(IDice& dice) {
     return std::make_unique<RandomAdPolicy>(dice);
 }
 
-std::unique_ptr<Advertisement> PlaybackFactory::createAdvertisement(IAdPolicy& adPolicy, IAdListener& adBus, ITrackListener& trackBus) {
-    return std::make_unique<Advertisement>(adPolicy, adBus, trackBus);
+std::unique_ptr<AdScheduler> PlaybackFactory::createAdScheduler(IAdPolicy& adPolicy, IAdListener& adBus, ITrackListener& trackBus) {
+    return std::make_unique<AdScheduler>(adPolicy, adBus, trackBus);
 }
 
-std::unique_ptr<RepeatCoordinator> PlaybackFactory::createRepeatCoordinator(IRepeatListener& repeatBus, ITrackListener& trackBus) {
-    return std::make_unique<RepeatCoordinator>(repeatBus, trackBus);
+std::unique_ptr<RepeatBroadcaster> PlaybackFactory::createRepeatBroadcaster(IRepeatListener& repeatBus, ITrackListener& trackBus) {
+    return std::make_unique<RepeatBroadcaster>(repeatBus, trackBus);
 }
 
-std::unique_ptr<RepeatPolicy> PlaybackFactory::createRepeatPolicy(TrackCursor& cursor, RepeatCoordinator& listener) {
+std::unique_ptr<RepeatPolicy> PlaybackFactory::createRepeatPolicy(TrackCursor& cursor, RepeatBroadcaster& listener) {
     auto mode = std::make_unique<RepeatPolicy>(cursor, listener);
     mode->add(std::make_unique<NoRepeatStrategy>());
     mode->add(std::make_unique<RepeatOneStrategy>());

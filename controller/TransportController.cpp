@@ -1,6 +1,6 @@
 #include "TransportController.h"
 
-TransportController::TransportController(PlaybackService& playback, IAudioPlayer& audio, ISearchPanel& search)
+TransportController::TransportController(PlaybackTransport& playback, IAudioPlayer& audio, ISearchPanel& search)
     : playback_(playback), audio_(audio), search_(search) {}
 
 void TransportController::onPlay(const int index) {

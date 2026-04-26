@@ -1,6 +1,6 @@
 #include "TitleDescendingSort.h"
 #include "../model/tracklist/QuickSort.h"
-#include "../model/tracklist/ReverseArrangement.h"
+#include "../model/tracklist/ReverseStrategy.h"
 
 TitleDescendingSort::TitleDescendingSort() : SortMode("Title \xe2\x96\xbc", new QuickSort()) {}
 
@@ -10,7 +10,7 @@ void TitleDescendingSort::apply(Setlist& setlist) {
 }
 
 void TitleDescendingSort::reapply(Setlist& setlist) {
-    ReverseArrangement descending;
+    ReverseStrategy descending;
     setlist.rearrange(*criteria_);
     setlist.rearrange(descending);
 }

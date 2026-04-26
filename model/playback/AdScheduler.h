@@ -1,5 +1,5 @@
-#ifndef ADVERTISEMENT_H
-#define ADVERTISEMENT_H
+#ifndef AD_SCHEDULER_H
+#define AD_SCHEDULER_H
 
 #include "IAdListener.h"
 #include "../event/ITrackListener.h"
@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-class Advertisement {
+class AdScheduler {
 private:
     std::vector<std::string> ads_;
     IAdPolicy& policy_;
@@ -16,11 +16,11 @@ private:
     bool is_playing_ = false;
 
 public:
-    Advertisement(IAdPolicy& policy, IAdListener& adsEvents, ITrackListener& tracks);
+    AdScheduler(IAdPolicy& policy, IAdListener& adsEvents, ITrackListener& tracks);
 
     void load(const std::string& adsPath);
     bool interrupt();
     bool conclude();
 };
 
-#endif //ADVERTISEMENT_H
+#endif //AD_SCHEDULER_H

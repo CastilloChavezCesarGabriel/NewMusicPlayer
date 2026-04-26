@@ -1,12 +1,12 @@
 #include "Setlist.h"
-#include "../tracklist/ShuffleArrangement.h"
-#include "../tracklist/ReverseArrangement.h"
+#include "../tracklist/ShuffleStrategy.h"
+#include "../tracklist/ReverseStrategy.h"
 
 Setlist::Setlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& libraryEvents)
     : tracklist_(tracklist), cursor_(cursor), library_events_(libraryEvents) {}
 
 void Setlist::shuffle() const {
-    ShuffleArrangement strategy;
+    ShuffleStrategy strategy;
     run(strategy);
 }
 
@@ -15,7 +15,7 @@ void Setlist::sort(IArrangementStrategy& criteria) const {
 }
 
 void Setlist::reverse() const {
-    ReverseArrangement strategy;
+    ReverseStrategy strategy;
     run(strategy);
 }
 

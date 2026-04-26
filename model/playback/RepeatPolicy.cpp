@@ -1,6 +1,6 @@
 #include "RepeatPolicy.h"
 
-RepeatPolicy::RepeatPolicy(TrackCursor& cursor, RepeatCoordinator& listener)
+RepeatPolicy::RepeatPolicy(TrackCursor& cursor, RepeatBroadcaster& listener)
     : cursor_(cursor), listener_(listener) {}
 
 void RepeatPolicy::add(std::unique_ptr<RepeatStrategy> strategy) {

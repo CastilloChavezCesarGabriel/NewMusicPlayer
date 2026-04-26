@@ -33,10 +33,10 @@ add_executable(NewMusicPlayer main.cpp
         model/tracklist/TrackCursor.h
         model/tracklist/IRemovalListener.h
         model/tracklist/IArrangementStrategy.h
-        model/tracklist/ShuffleArrangement.cpp
-        model/tracklist/ShuffleArrangement.h
-        model/tracklist/ReverseArrangement.cpp
-        model/tracklist/ReverseArrangement.h
+        model/tracklist/ShuffleStrategy.cpp
+        model/tracklist/ShuffleStrategy.h
+        model/tracklist/ReverseStrategy.cpp
+        model/tracklist/ReverseStrategy.h
         model/tracklist/OriginalOrder.cpp
         model/tracklist/OriginalOrder.h
         model/event/ITrackListener.h
@@ -53,10 +53,10 @@ add_executable(NewMusicPlayer main.cpp
         model/event/AdBus.h
         model/event/RepeatBus.cpp
         model/event/RepeatBus.h
-        model/playback/RepeatCoordinator.cpp
-        model/playback/RepeatCoordinator.h
-        model/playback/Advertisement.cpp
-        model/playback/Advertisement.h
+        model/playback/RepeatBroadcaster.cpp
+        model/playback/RepeatBroadcaster.h
+        model/playback/AdScheduler.cpp
+        model/playback/AdScheduler.h
         model/playback/IAdPolicy.h
         model/playback/RandomAdPolicy.cpp
         model/playback/RandomAdPolicy.h
@@ -78,10 +78,10 @@ add_executable(NewMusicPlayer main.cpp
         model/playback/RepeatAllStrategy.h
         model/playback/RepeatPolicy.cpp
         model/playback/RepeatPolicy.h
-        model/service/PlaybackService.cpp
-        model/service/PlaybackService.h
-        model/service/LibraryService.cpp
-        model/service/LibraryService.h
+        model/service/PlaybackTransport.cpp
+        model/service/PlaybackTransport.h
+        model/service/LibraryEditor.cpp
+        model/service/LibraryEditor.h
         model/service/Setlist.cpp
         model/service/Setlist.h
         model/service/TrackCatalog.cpp
@@ -109,8 +109,8 @@ add_executable(NewMusicPlayer main.cpp
         view/ISortDisplay.h
         view/IRepeatDisplay.h
         view/IToolbarDisplay.h
-        controller/PlaylistRenderer.cpp
-        controller/PlaylistRenderer.h
+        controller/PlaylistPresenter.cpp
+        controller/PlaylistPresenter.h
         controller/SortMode.cpp
         controller/SortMode.h
         controller/TitleDescendingSort.cpp
@@ -119,24 +119,24 @@ add_executable(NewMusicPlayer main.cpp
         controller/CustomMode.h
         controller/SearchController.cpp
         controller/SearchController.h
-        controller/TrackRelay.cpp
-        controller/TrackRelay.h
-        controller/LibraryRelay.cpp
-        controller/LibraryRelay.h
-        controller/AdRelay.cpp
-        controller/AdRelay.h
-        controller/RepeatRelay.cpp
-        controller/RepeatRelay.h
+        controller/TrackPresenter.cpp
+        controller/TrackPresenter.h
+        controller/LibraryPresenter.cpp
+        controller/LibraryPresenter.h
+        controller/AdPresenter.cpp
+        controller/AdPresenter.h
+        controller/RepeatPresenter.cpp
+        controller/RepeatPresenter.h
         controller/EnableCoordinator.cpp
         controller/EnableCoordinator.h
         controller/TransportController.cpp
         controller/TransportController.h
         controller/LibraryController.cpp
         controller/LibraryController.h
-        controller/ArrangementController.cpp
-        controller/ArrangementController.h
-        controller/ArrangementRelay.cpp
-        controller/ArrangementRelay.h
+        controller/PlaybackModeController.cpp
+        controller/PlaybackModeController.h
+        controller/ArrangementPresenter.cpp
+        controller/ArrangementPresenter.h
         adapters/qt/QtLayoutUtil.cpp
         adapters/qt/QtLayoutUtil.h
         adapters/qt/widget/QtTransportPanel.cpp
@@ -211,8 +211,8 @@ add_executable(NewMusicPlayer main.cpp
         model/factory/ServiceFactory.h
         controller/factory/ControllerFactory.cpp
         controller/factory/ControllerFactory.h
-        controller/factory/RelayFactory.cpp
-        controller/factory/RelayFactory.h
+        controller/factory/PresenterFactory.cpp
+        controller/factory/PresenterFactory.h
 )
 
 add_custom_target(CopyResources ALL
@@ -245,7 +245,7 @@ add_executable(NewMusicPlayerTests
         test/model/FileMetadataTest.h
         test/model/SongTest.cpp
         test/model/PlaylistTest.cpp
-        test/model/AdvertisementTest.cpp
+        test/model/AdSchedulerTest.cpp
         test/model/SortingTest.cpp
         test/model/ModelTest.cpp
         test/RegressionTest.cpp
@@ -278,8 +278,8 @@ add_executable(NewMusicPlayerTests
         model/event/AdBus.h
         model/event/RepeatBus.cpp
         model/event/RepeatBus.h
-        model/playback/RepeatCoordinator.cpp
-        model/playback/RepeatCoordinator.h
+        model/playback/RepeatBroadcaster.cpp
+        model/playback/RepeatBroadcaster.h
         model/tracklist/ShellSort.cpp
         model/tracklist/ShellSort.h
         model/tracklist/DurationSort.cpp
@@ -294,14 +294,14 @@ add_executable(NewMusicPlayerTests
         model/tracklist/TrackCursor.h
         model/tracklist/IRemovalListener.h
         model/tracklist/IArrangementStrategy.h
-        model/tracklist/ShuffleArrangement.cpp
-        model/tracklist/ShuffleArrangement.h
-        model/tracklist/ReverseArrangement.cpp
-        model/tracklist/ReverseArrangement.h
+        model/tracklist/ShuffleStrategy.cpp
+        model/tracklist/ShuffleStrategy.h
+        model/tracklist/ReverseStrategy.cpp
+        model/tracklist/ReverseStrategy.h
         model/tracklist/OriginalOrder.cpp
         model/tracklist/OriginalOrder.h
-        model/playback/Advertisement.cpp
-        model/playback/Advertisement.h
+        model/playback/AdScheduler.cpp
+        model/playback/AdScheduler.h
         model/playback/IAdPolicy.h
         model/playback/RandomAdPolicy.cpp
         model/playback/RandomAdPolicy.h
@@ -323,10 +323,10 @@ add_executable(NewMusicPlayerTests
         model/playback/RepeatAllStrategy.h
         model/playback/RepeatPolicy.cpp
         model/playback/RepeatPolicy.h
-        model/service/PlaybackService.cpp
-        model/service/PlaybackService.h
-        model/service/LibraryService.cpp
-        model/service/LibraryService.h
+        model/service/PlaybackTransport.cpp
+        model/service/PlaybackTransport.h
+        model/service/LibraryEditor.cpp
+        model/service/LibraryEditor.h
         model/service/Setlist.cpp
         model/service/Setlist.h
         model/service/TrackCatalog.cpp

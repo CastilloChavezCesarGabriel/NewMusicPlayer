@@ -1,6 +1,6 @@
 #include "LibraryController.h"
 
-LibraryController::LibraryController(LibraryService& library, IDialog& dialog)
+LibraryController::LibraryController(LibraryEditor& library, IDialog& dialog)
     : library_(library), dialog_(dialog) {}
 
 void LibraryController::onAdd() {

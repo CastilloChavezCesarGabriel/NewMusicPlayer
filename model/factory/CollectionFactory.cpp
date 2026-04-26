@@ -12,6 +12,6 @@ std::unique_ptr<TrackCursor> CollectionFactory::createTrackCursor(Tracklist& tra
     return std::make_unique<TrackCursor>(tracklist, trackBus);
 }
 
-ShuffleArrangement CollectionFactory::createShuffleArrangement() {
-    return ShuffleArrangement();
+ShuffleStrategy CollectionFactory::createShuffleStrategy() {
+    return ShuffleStrategy();
 }

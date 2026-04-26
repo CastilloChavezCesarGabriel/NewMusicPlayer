@@ -1,7 +1,7 @@
 #ifndef TRANSPORT_CONTROLLER_H
 #define TRANSPORT_CONTROLLER_H
 
-#include "../model/service/PlaybackService.h"
+#include "../model/service/PlaybackTransport.h"
 #include "../view/IPlaybackControl.h"
 #include "../view/IAudioControl.h"
 #include "../view/IAudioPlayer.h"
@@ -9,13 +9,13 @@
 
 class TransportController final : public IPlaybackControl, public IAudioControl {
 private:
-    PlaybackService& playback_;
+    PlaybackTransport& playback_;
     IAudioPlayer& audio_;
     ISearchPanel& search_;
     bool playing_ = false;
 
 public:
-    TransportController(PlaybackService& playback, IAudioPlayer& audio, ISearchPanel& search);
+    TransportController(PlaybackTransport& playback, IAudioPlayer& audio, ISearchPanel& search);
     void onPlay(int index) override;
     void onToggle() override;
     void onAdvance() override;

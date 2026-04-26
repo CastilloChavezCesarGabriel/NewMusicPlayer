@@ -1,27 +1,27 @@
-#include "ArrangementController.h"
+#include "PlaybackModeController.h"
 
-ArrangementController::ArrangementController(Setlist& setlist, RepeatPolicy& repeatMode, ISortDisplay& sortDisplay)
+PlaybackModeController::PlaybackModeController(Setlist& setlist, RepeatPolicy& repeatMode, ISortDisplay& sortDisplay)
     : setlist_(setlist), repeat_mode_(repeatMode), sort_display_(sortDisplay) {}
 
-void ArrangementController::add(std::unique_ptr<SortMode> mode) {
+void PlaybackModeController::add(std::unique_ptr<SortMode> mode) {
     modes_.push_back(std::move(mode));
 }
 
-void ArrangementController::onSort() {
+void PlaybackModeController::onSort() {
     mode_index_ = (mode_index_ + 1) % static_cast<int>(modes_.size());
     modes_[mode_index_]->apply(setlist_);
     modes_[mode_index_]->display(sort_display_);
 }
 
-void ArrangementController::onShuffle() {
+void PlaybackModeController::onShuffle() {
     setlist_.shuffle();
 }
 
-void ArrangementController::onRepeat() {
+void PlaybackModeController::onRepeat() {
     repeat_mode_.advance();
 }
 
-void ArrangementController::refresh() {
+void PlaybackModeController::refresh() {
     if (mode_index_ >= 0) {
         modes_[mode_index_]->reapply(setlist_);
     }

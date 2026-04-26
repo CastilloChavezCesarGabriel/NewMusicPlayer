@@ -1,22 +1,22 @@
-#ifndef LIBRARY_SERVICE_H
-#define LIBRARY_SERVICE_H
+#ifndef LIBRARY_EDITOR_H
+#define LIBRARY_EDITOR_H
 
 #include "../library/MusicDirectory.h"
 #include "../tracklist/Tracklist.h"
 #include "../event/ILibraryListener.h"
 #include <string>
 
-class LibraryService {
+class LibraryEditor {
 private:
     MusicDirectory& directory_;
     Tracklist& tracklist_;
     ILibraryListener& library_events_;
 
 public:
-    LibraryService(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& libraryEvents);
+    LibraryEditor(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& libraryEvents);
 
     void insert(const std::string& filePath) const;
     void remove(int index) const;
 };
 
-#endif //LIBRARY_SERVICE_H
+#endif //LIBRARY_EDITOR_H

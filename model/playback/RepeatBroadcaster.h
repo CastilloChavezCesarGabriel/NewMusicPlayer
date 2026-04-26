@@ -1,19 +1,19 @@
-#ifndef REPEAT_COORDINATOR_H
-#define REPEAT_COORDINATOR_H
+#ifndef REPEAT_BROADCASTER_H
+#define REPEAT_BROADCASTER_H
 
 #include "IRepeatListener.h"
 #include "../event/ITrackListener.h"
 #include "RepeatModeKind.h"
 
-class RepeatCoordinator final : public IRepeatListener {
+class RepeatBroadcaster final : public IRepeatListener {
 private:
     IRepeatListener& repeats_;
     ITrackListener& tracks_;
 
 public:
-    RepeatCoordinator(IRepeatListener& repeats, ITrackListener& tracks);
+    RepeatBroadcaster(IRepeatListener& repeats, ITrackListener& tracks);
     void onChanged(RepeatModeKind kind) override;
     void stop() const;
 };
 
-#endif //REPEAT_COORDINATOR_H
+#endif //REPEAT_BROADCASTER_H

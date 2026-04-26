@@ -1,5 +1,5 @@
-#ifndef PLAYLIST_RENDERER_H
-#define PLAYLIST_RENDERER_H
+#ifndef PLAYLIST_PRESENTER_H
+#define PLAYLIST_PRESENTER_H
 
 #include "../model/song/ISongVisitor.h"
 #include "../view/IPlaylistPanel.h"
@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 
-class PlaylistRenderer final : public ISongVisitor {
+class PlaylistPresenter final : public ISongVisitor {
 private:
     std::vector<std::string> names_;
 
@@ -17,4 +17,4 @@ public:
     void suggest(ISearchPanel& search) const;
 };
 
-#endif //PLAYLIST_RENDERER_H
+#endif //PLAYLIST_PRESENTER_H

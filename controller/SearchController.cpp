@@ -1,7 +1,7 @@
 #include "SearchController.h"
-#include "PlaylistRenderer.h"
+#include "PlaylistPresenter.h"
 
-SearchController::SearchController(ISearchProvider& provider, PlaybackService& playback, ISearchPanel& search)
+SearchController::SearchController(ISearchProvider& provider, PlaybackTransport& playback, ISearchPanel& search)
     : provider_(provider), playback_(playback), search_(search) {}
 
 void SearchController::onSearch(const std::string& query) {
@@ -9,7 +9,7 @@ void SearchController::onSearch(const std::string& query) {
         search_.dismiss();
         return;
     }
-    PlaylistRenderer renderer;
+    PlaylistPresenter renderer;
     provider_.search(query, renderer);
     renderer.suggest(search_);
 }

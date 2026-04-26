@@ -1,37 +1,37 @@
-#include "PlaybackService.h"
+#include "PlaybackTransport.h"
 
-PlaybackService::PlaybackService(TrackCursor& cursor, Advertisement& advertisement, RepeatPolicy& repeatMode)
+PlaybackTransport::PlaybackTransport(TrackCursor& cursor, AdScheduler& advertisement, RepeatPolicy& repeatMode)
     : cursor_(cursor), advertisement_(advertisement), repeat_mode_(repeatMode) {}
 
-void PlaybackService::start() const {
+void PlaybackTransport::start() const {
     if (!advertisement_.interrupt()) {
         cursor_.play();
     }
 }
 
-void PlaybackService::play(const int index) const {
+void PlaybackTransport::play(const int index) const {
     cursor_.select(index);
     start();
 }
 
-void PlaybackService::pick(const std::string& name) const {
+void PlaybackTransport::pick(const std::string& name) const {
     cursor_.pick(name);
     start();
 }
 
-void PlaybackService::advance() const {
+void PlaybackTransport::advance() const {
     if (cursor_.hasNext()) {
         cursor_.advance();
         cursor_.play();
     }
 }
 
-void PlaybackService::retreat() const {
+void PlaybackTransport::retreat() const {
     cursor_.retreat();
     cursor_.play();
 }
 
-void PlaybackService::end() const {
+void PlaybackTransport::end() const {
     if (advertisement_.conclude()) {
         cursor_.play();
         return;
@@ -44,7 +44,7 @@ void PlaybackService::end() const {
     }
 }
 
-void PlaybackService::skip() const {
+void PlaybackTransport::skip() const {
     if (advertisement_.conclude()) {
         cursor_.play();
     }
