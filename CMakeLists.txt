@@ -70,14 +70,14 @@ add_executable(NewMusicPlayer main.cpp
         model/song/SongStartAnnouncer.h
         model/playback/RepeatStrategy.cpp
         model/playback/RepeatStrategy.h
-        model/playback/NoRepeatMode.cpp
-        model/playback/NoRepeatMode.h
-        model/playback/RepeatOneMode.cpp
-        model/playback/RepeatOneMode.h
-        model/playback/RepeatAllMode.cpp
-        model/playback/RepeatAllMode.h
-        model/playback/RepeatMode.cpp
-        model/playback/RepeatMode.h
+        model/playback/NoRepeatStrategy.cpp
+        model/playback/NoRepeatStrategy.h
+        model/playback/RepeatOneStrategy.cpp
+        model/playback/RepeatOneStrategy.h
+        model/playback/RepeatAllStrategy.cpp
+        model/playback/RepeatAllStrategy.h
+        model/playback/RepeatPolicy.cpp
+        model/playback/RepeatPolicy.h
         model/service/PlaybackService.cpp
         model/service/PlaybackService.h
         model/service/LibraryService.cpp
@@ -92,8 +92,8 @@ add_executable(NewMusicPlayer main.cpp
         model/library/Dice.h
         model/song/FileMetadata.cpp
         model/song/FileMetadata.h
-        model/song/SongTitle.cpp
-        model/song/SongTitle.h
+        model/song/SongTitleParser.cpp
+        model/song/SongTitleParser.h
         view/IPlaylistPanel.h
         view/ISearchPanel.h
         view/INotification.h
@@ -113,8 +113,8 @@ add_executable(NewMusicPlayer main.cpp
         controller/PlaylistRenderer.h
         controller/SortMode.cpp
         controller/SortMode.h
-        controller/TitleDescending.cpp
-        controller/TitleDescending.h
+        controller/TitleDescendingSort.cpp
+        controller/TitleDescendingSort.h
         controller/CustomMode.cpp
         controller/CustomMode.h
         controller/SearchController.cpp
@@ -315,14 +315,14 @@ add_executable(NewMusicPlayerTests
         model/song/SongStartAnnouncer.h
         model/playback/RepeatStrategy.cpp
         model/playback/RepeatStrategy.h
-        model/playback/NoRepeatMode.cpp
-        model/playback/NoRepeatMode.h
-        model/playback/RepeatOneMode.cpp
-        model/playback/RepeatOneMode.h
-        model/playback/RepeatAllMode.cpp
-        model/playback/RepeatAllMode.h
-        model/playback/RepeatMode.cpp
-        model/playback/RepeatMode.h
+        model/playback/NoRepeatStrategy.cpp
+        model/playback/NoRepeatStrategy.h
+        model/playback/RepeatOneStrategy.cpp
+        model/playback/RepeatOneStrategy.h
+        model/playback/RepeatAllStrategy.cpp
+        model/playback/RepeatAllStrategy.h
+        model/playback/RepeatPolicy.cpp
+        model/playback/RepeatPolicy.h
         model/service/PlaybackService.cpp
         model/service/PlaybackService.h
         model/service/LibraryService.cpp
@@ -337,8 +337,8 @@ add_executable(NewMusicPlayerTests
         model/library/Dice.h
         model/song/FileMetadata.cpp
         model/song/FileMetadata.h
-        model/song/SongTitle.cpp
-        model/song/SongTitle.h
+        model/song/SongTitleParser.cpp
+        model/song/SongTitleParser.h
         test/model/SongTitleTest.cpp
         test/model/SongTitleTest.h
 )

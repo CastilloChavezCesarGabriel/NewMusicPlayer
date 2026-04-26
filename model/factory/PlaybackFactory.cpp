@@ -1,7 +1,7 @@
 #include "PlaybackFactory.h"
-#include "../playback/NoRepeatMode.h"
-#include "../playback/RepeatOneMode.h"
-#include "../playback/RepeatAllMode.h"
+#include "../playback/NoRepeatStrategy.h"
+#include "../playback/RepeatOneStrategy.h"
+#include "../playback/RepeatAllStrategy.h"
 
 Dice PlaybackFactory::createDice() {
     return Dice();
@@ -19,10 +19,10 @@ std::unique_ptr<RepeatCoordinator> PlaybackFactory::createRepeatCoordinator(IRep
     return std::make_unique<RepeatCoordinator>(repeatBus, trackBus);
 }
 
-std::unique_ptr<RepeatMode> PlaybackFactory::createRepeatMode(TrackCursor& cursor, RepeatCoordinator& listener) {
-    auto mode = std::make_unique<RepeatMode>(cursor, listener);
-    mode->add(std::make_unique<NoRepeatMode>());
-    mode->add(std::make_unique<RepeatOneMode>());
-    mode->add(std::make_unique<RepeatAllMode>());
+std::unique_ptr<RepeatPolicy> PlaybackFactory::createRepeatPolicy(TrackCursor& cursor, RepeatCoordinator& listener) {
+    auto mode = std::make_unique<RepeatPolicy>(cursor, listener);
+    mode->add(std::make_unique<NoRepeatStrategy>());
+    mode->add(std::make_unique<RepeatOneStrategy>());
+    mode->add(std::make_unique<RepeatAllStrategy>());
     return mode;
 }

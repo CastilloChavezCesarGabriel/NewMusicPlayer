@@ -1,6 +1,6 @@
 #include "ArrangementController.h"
 
-ArrangementController::ArrangementController(Setlist& setlist, RepeatMode& repeatMode, ISortDisplay& sortDisplay)
+ArrangementController::ArrangementController(Setlist& setlist, RepeatPolicy& repeatMode, ISortDisplay& sortDisplay)
     : setlist_(setlist), repeat_mode_(repeatMode), sort_display_(sortDisplay) {}
 
 void ArrangementController::add(std::unique_ptr<SortMode> mode) {

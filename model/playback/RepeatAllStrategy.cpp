@@ -1,6 +1,6 @@
-#include "RepeatAllMode.h"
+#include "RepeatAllStrategy.h"
 
-bool RepeatAllMode::apply(TrackCursor& cursor) {
+bool RepeatAllStrategy::apply(TrackCursor& cursor) {
     if (cursor.hasNext()) {
         cursor.advance();
     } else {
@@ -9,6 +9,6 @@ bool RepeatAllMode::apply(TrackCursor& cursor) {
     return true;
 }
 
-RepeatModeKind RepeatAllMode::identify() const {
+RepeatModeKind RepeatAllStrategy::identify() const {
     return RepeatModeKind::All;
 }

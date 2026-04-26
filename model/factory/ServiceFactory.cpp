@@ -1,6 +1,6 @@
 #include "ServiceFactory.h"
 
-std::unique_ptr<PlaybackService> ServiceFactory::createPlayback(TrackCursor& cursor, Advertisement& advertisement, RepeatMode& repeatMode) {
+std::unique_ptr<PlaybackService> ServiceFactory::createPlayback(TrackCursor& cursor, Advertisement& advertisement, RepeatPolicy& repeatMode) {
     return std::make_unique<PlaybackService>(cursor, advertisement, repeatMode);
 }
 

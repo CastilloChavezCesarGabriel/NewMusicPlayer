@@ -1,9 +1,9 @@
 #include "QuickSort.h"
-#include "../song/SongTitle.h"
+#include "../song/SongTitleParser.h"
 #include <stack>
 
 void QuickSort::visit(const std::string& name, const std::string&) {
-    title_ = SongTitle::parse(name);
+    title_ = SongTitleParser::parse(name);
 }
 
 void QuickSort::arrange(std::vector<Song>& songs) {

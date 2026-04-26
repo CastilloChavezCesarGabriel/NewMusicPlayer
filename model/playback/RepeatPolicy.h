@@ -1,5 +1,5 @@
-#ifndef REPEAT_MODE_H
-#define REPEAT_MODE_H
+#ifndef REPEAT_POLICY_H
+#define REPEAT_POLICY_H
 
 #include "RepeatStrategy.h"
 #include "../tracklist/TrackCursor.h"
@@ -7,7 +7,7 @@
 #include <vector>
 #include <memory>
 
-class RepeatMode {
+class RepeatPolicy {
 private:
     TrackCursor& cursor_;
     RepeatCoordinator& listener_;
@@ -15,11 +15,11 @@ private:
     int mode_index_ = 0;
 
 public:
-    RepeatMode(TrackCursor& cursor, RepeatCoordinator& listener);
+    RepeatPolicy(TrackCursor& cursor, RepeatCoordinator& listener);
     void add(std::unique_ptr<RepeatStrategy> strategy);
     void advance();
     bool apply() const;
     void stop() const;
 };
 
-#endif //REPEAT_MODE_H
+#endif //REPEAT_POLICY_H

@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     auto advertisement = PlaybackFactory::createAdvertisement(*advertisementPolicy, advertisementBus, trackBus);
     advertisement->load(base + "/resources/announcements");
     auto repeatListener = PlaybackFactory::createRepeatCoordinator(repeatBus, trackBus);
-    auto repeatMode = PlaybackFactory::createRepeatMode(*trackCursor, *repeatListener);
+    auto repeatMode = PlaybackFactory::createRepeatPolicy(*trackCursor, *repeatListener);
 
     // Services
     auto playback = ServiceFactory::createPlayback(*trackCursor, *advertisement, *repeatMode);

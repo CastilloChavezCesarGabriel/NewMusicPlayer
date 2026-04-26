@@ -5,7 +5,7 @@
 #include "../playback/RandomAdPolicy.h"
 #include "../playback/Advertisement.h"
 #include "../playback/RepeatCoordinator.h"
-#include "../playback/RepeatMode.h"
+#include "../playback/RepeatPolicy.h"
 #include <memory>
 
 class PlaybackFactory {
@@ -14,7 +14,7 @@ public:
     static std::unique_ptr<RandomAdPolicy> createAdPolicy(IDice& dice);
     static std::unique_ptr<Advertisement> createAdvertisement(IAdPolicy& adPolicy, IAdListener& adBus, ITrackListener& trackBus);
     static std::unique_ptr<RepeatCoordinator> createRepeatCoordinator(IRepeatListener& repeatBus, ITrackListener& trackBus);
-    static std::unique_ptr<RepeatMode> createRepeatMode(TrackCursor& cursor, RepeatCoordinator& listener);
+    static std::unique_ptr<RepeatPolicy> createRepeatPolicy(TrackCursor& cursor, RepeatCoordinator& listener);
 };
 
 #endif //PLAYBACK_FACTORY_H

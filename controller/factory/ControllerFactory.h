@@ -11,7 +11,7 @@ class ControllerFactory {
 public:
     static std::unique_ptr<TransportController> createTransport(PlaybackService& playback, IAudioPlayer& audio, ISearchPanel& search);
     static std::unique_ptr<LibraryController> createLibrary(LibraryService& library, IDialog& dialog);
-    static std::unique_ptr<ArrangementController> createArrangement(Setlist& setlist, RepeatMode& repeatMode, ISortDisplay& sort);
+    static std::unique_ptr<ArrangementController> createArrangement(Setlist& setlist, RepeatPolicy& repeatMode, ISortDisplay& sort);
     static std::unique_ptr<SearchController> createSearch(ISearchProvider& provider, PlaybackService& playback, ISearchPanel& search);
 };
 

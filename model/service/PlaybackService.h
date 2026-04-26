@@ -3,19 +3,19 @@
 
 #include "../tracklist/TrackCursor.h"
 #include "../playback/Advertisement.h"
-#include "../playback/RepeatMode.h"
+#include "../playback/RepeatPolicy.h"
 #include <string>
 
 class PlaybackService {
 private:
     TrackCursor& cursor_;
     Advertisement& advertisement_;
-    RepeatMode& repeat_mode_;
+    RepeatPolicy& repeat_mode_;
 
     void start() const;
 
 public:
-    PlaybackService(TrackCursor& cursor, Advertisement& advertisement, RepeatMode& repeatMode);
+    PlaybackService(TrackCursor& cursor, Advertisement& advertisement, RepeatPolicy& repeatMode);
 
     void play(int index) const;
     void pick(const std::string& name) const;

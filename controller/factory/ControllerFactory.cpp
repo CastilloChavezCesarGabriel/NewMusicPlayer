@@ -1,5 +1,5 @@
 #include "ControllerFactory.h"
-#include "../TitleDescending.h"
+#include "../TitleDescendingSort.h"
 #include "../CustomMode.h"
 #include "../../model/tracklist/QuickSort.h"
 #include "../../model/tracklist/DurationSort.h"
@@ -13,10 +13,10 @@ std::unique_ptr<LibraryController> ControllerFactory::createLibrary(LibraryServi
     return std::make_unique<LibraryController>(library, dialog);
 }
 
-std::unique_ptr<ArrangementController> ControllerFactory::createArrangement(Setlist& setlist, RepeatMode& repeatMode, ISortDisplay& sort) {
+std::unique_ptr<ArrangementController> ControllerFactory::createArrangement(Setlist& setlist, RepeatPolicy& repeatMode, ISortDisplay& sort) {
     auto controller = std::make_unique<ArrangementController>(setlist, repeatMode, sort);
     controller->add(std::make_unique<SortMode>("Title \xe2\x96\xb2", new QuickSort()));
-    controller->add(std::make_unique<TitleDescending>());
+    controller->add(std::make_unique<TitleDescendingSort>());
     controller->add(std::make_unique<SortMode>("Duration \xe2\x96\xb2", new DurationSort()));
     controller->add(std::make_unique<SortMode>("Date \xe2\x96\xb2", new DateSort()));
     controller->add(std::make_unique<CustomMode>());
