@@ -9,7 +9,7 @@
 
 class ServiceFactory {
 public:
-    static std::unique_ptr<PlaybackTransport> createPlayback(TrackCursor& cursor, AdScheduler& advertisement, RepeatPolicy& repeatMode);
+    static std::unique_ptr<PlaybackTransport> createPlayback(TrackCursor& cursor, AdScheduler& adScheduler, RepeatPolicy& repeatPolicy);
     static std::unique_ptr<LibraryEditor> createLibrary(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& libraryEvents);
     static std::unique_ptr<Setlist> createSetlist(Tracklist& tracklist, TrackCursor& cursor, ILibraryListener& libraryEvents);
     static std::unique_ptr<TrackCatalog> createTrackCatalog(Tracklist& tracklist);

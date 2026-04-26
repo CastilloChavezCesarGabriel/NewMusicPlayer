@@ -12,13 +12,13 @@
 class PlaybackModeController final : public IArrangementControl {
 private:
     Setlist& setlist_;
-    RepeatPolicy& repeat_mode_;
+    RepeatPolicy& repeat_policy_;
     ISortDisplay& sort_display_;
     std::vector<std::unique_ptr<SortMode>> modes_;
     int mode_index_ = -1;
 
 public:
-    PlaybackModeController(Setlist& setlist, RepeatPolicy& repeatMode, ISortDisplay& sortDisplay);
+    PlaybackModeController(Setlist& setlist, RepeatPolicy& repeatPolicy, ISortDisplay& sortDisplay);
     void add(std::unique_ptr<SortMode> mode);
     void onSort() override;
     void onShuffle() override;

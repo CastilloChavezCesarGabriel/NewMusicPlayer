@@ -1,7 +1,7 @@
 #include "SortMode.h"
 
-SortMode::SortMode(const std::string& label, IArrangementStrategy* criteria)
-    : label_(label), criteria_(criteria) {}
+SortMode::SortMode(const std::string& label, std::unique_ptr<IArrangementStrategy> criteria)
+    : label_(label), criteria_(std::move(criteria)) {}
 
 void SortMode::apply(Setlist& setlist) {
     setlist.sort(*criteria_);

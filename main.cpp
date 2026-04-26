@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     // Event buses
     auto trackBus = EventFactory::createTrackBus();
     auto libraryBus = EventFactory::createLibraryBus();
-    auto advertisementBus = EventFactory::createAdBus();
+    auto adBus = EventFactory::createAdBus();
     auto repeatBus = EventFactory::createRepeatBus();
 
     // Music collection
@@ -44,14 +44,14 @@ int main(int argc, char *argv[]) {
 
     // Playback system
     auto dice = PlaybackFactory::createDice();
-    auto advertisementPolicy = PlaybackFactory::createAdPolicy(dice);
-    auto advertisement = PlaybackFactory::createAdScheduler(*advertisementPolicy, advertisementBus, trackBus);
-    advertisement->load(base + "/resources/announcements");
+    auto adPolicy = PlaybackFactory::createAdPolicy(dice);
+    auto adScheduler = PlaybackFactory::createAdScheduler(*adPolicy, adBus, trackBus);
+    adScheduler->load(base + "/resources/announcements");
     auto repeatListener = PlaybackFactory::createRepeatBroadcaster(repeatBus, trackBus);
-    auto repeatMode = PlaybackFactory::createRepeatPolicy(*trackCursor, *repeatListener);
+    auto repeatPolicy = PlaybackFactory::createRepeatPolicy(*trackCursor, *repeatListener);
 
     // Services
-    auto playback = ServiceFactory::createPlayback(*trackCursor, *advertisement, *repeatMode);
+    auto playback = ServiceFactory::createPlayback(*trackCursor, *adScheduler, *repeatPolicy);
     auto library = ServiceFactory::createLibrary(musicDirectory, tracklist, libraryBus);
     auto setlist = ServiceFactory::createSetlist(tracklist, *trackCursor, libraryBus);
     auto catalog = ServiceFactory::createTrackCatalog(tracklist);
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     // Controllers
     auto transportController = ControllerFactory::createTransport(*playback, *audio, *searchOverlay);
     auto libraryController = ControllerFactory::createLibrary(*library, *dialog);
-    auto playbackModeController = ControllerFactory::createPlaybackMode(*setlist, *repeatMode, *sortHeader);
+    auto playbackModeController = ControllerFactory::createPlaybackMode(*setlist, *repeatPolicy, *sortHeader);
     auto searchController = ControllerFactory::createSearch(*catalog, *playback, *searchOverlay);
 
     // Active widgets
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
     trackBus.add(*trackRelay);
     libraryBus.add(*arrangementRelay);
     libraryBus.add(*libraryRelay);
-    advertisementBus.add(*adRelay);
+    adBus.add(*adRelay);
     repeatBus.add(*repeatRelay);
 
     // Layout

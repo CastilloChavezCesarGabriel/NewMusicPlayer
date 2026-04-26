@@ -1,7 +1,7 @@
 #include "PlaybackModeController.h"
 
-PlaybackModeController::PlaybackModeController(Setlist& setlist, RepeatPolicy& repeatMode, ISortDisplay& sortDisplay)
-    : setlist_(setlist), repeat_mode_(repeatMode), sort_display_(sortDisplay) {}
+PlaybackModeController::PlaybackModeController(Setlist& setlist, RepeatPolicy& repeatPolicy, ISortDisplay& sortDisplay)
+    : setlist_(setlist), repeat_policy_(repeatPolicy), sort_display_(sortDisplay) {}
 
 void PlaybackModeController::add(std::unique_ptr<SortMode> mode) {
     modes_.push_back(std::move(mode));
@@ -18,7 +18,7 @@ void PlaybackModeController::onShuffle() {
 }
 
 void PlaybackModeController::onRepeat() {
-    repeat_mode_.advance();
+    repeat_policy_.advance();
 }
 
 void PlaybackModeController::refresh() {

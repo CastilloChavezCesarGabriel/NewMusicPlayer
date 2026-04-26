@@ -15,7 +15,7 @@ protected:
     std::unique_ptr<IArrangementStrategy> criteria_;
 
 public:
-    SortMode(const std::string& label, IArrangementStrategy* criteria);
+    SortMode(const std::string& label, std::unique_ptr<IArrangementStrategy> criteria);
     virtual ~SortMode() = default;
     virtual void apply(Setlist& setlist);
     virtual void reapply(Setlist& setlist);

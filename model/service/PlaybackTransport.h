@@ -9,13 +9,13 @@
 class PlaybackTransport {
 private:
     TrackCursor& cursor_;
-    AdScheduler& advertisement_;
-    RepeatPolicy& repeat_mode_;
+    AdScheduler& ad_scheduler_;
+    RepeatPolicy& repeat_policy_;
 
     void start() const;
 
 public:
-    PlaybackTransport(TrackCursor& cursor, AdScheduler& advertisement, RepeatPolicy& repeatMode);
+    PlaybackTransport(TrackCursor& cursor, AdScheduler& adScheduler, RepeatPolicy& repeatPolicy);
 
     void play(int index) const;
     void pick(const std::string& name) const;

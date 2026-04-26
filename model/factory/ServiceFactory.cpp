@@ -1,7 +1,7 @@
 #include "ServiceFactory.h"
 
-std::unique_ptr<PlaybackTransport> ServiceFactory::createPlayback(TrackCursor& cursor, AdScheduler& advertisement, RepeatPolicy& repeatMode) {
-    return std::make_unique<PlaybackTransport>(cursor, advertisement, repeatMode);
+std::unique_ptr<PlaybackTransport> ServiceFactory::createPlayback(TrackCursor& cursor, AdScheduler& adScheduler, RepeatPolicy& repeatPolicy) {
+    return std::make_unique<PlaybackTransport>(cursor, adScheduler, repeatPolicy);
 }
 
 std::unique_ptr<LibraryEditor> ServiceFactory::createLibrary(MusicDirectory& directory, Tracklist& tracklist, ILibraryListener& libraryEvents) {

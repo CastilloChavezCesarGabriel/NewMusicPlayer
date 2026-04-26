@@ -13,12 +13,12 @@ std::unique_ptr<LibraryController> ControllerFactory::createLibrary(LibraryEdito
     return std::make_unique<LibraryController>(library, dialog);
 }
 
-std::unique_ptr<PlaybackModeController> ControllerFactory::createPlaybackMode(Setlist& setlist, RepeatPolicy& repeatMode, ISortDisplay& sort) {
-    auto controller = std::make_unique<PlaybackModeController>(setlist, repeatMode, sort);
-    controller->add(std::make_unique<SortMode>("Title \xe2\x96\xb2", new QuickSort()));
+std::unique_ptr<PlaybackModeController> ControllerFactory::createPlaybackMode(Setlist& setlist, RepeatPolicy& repeatPolicy, ISortDisplay& sort) {
+    auto controller = std::make_unique<PlaybackModeController>(setlist, repeatPolicy, sort);
+    controller->add(std::make_unique<SortMode>("Title \xe2\x96\xb2", std::make_unique<QuickSort>()));
     controller->add(std::make_unique<TitleDescendingSort>());
-    controller->add(std::make_unique<SortMode>("Duration \xe2\x96\xb2", new DurationSort()));
-    controller->add(std::make_unique<SortMode>("Date \xe2\x96\xb2", new DateSort()));
+    controller->add(std::make_unique<SortMode>("Duration \xe2\x96\xb2", std::make_unique<DurationSort>()));
+    controller->add(std::make_unique<SortMode>("Date \xe2\x96\xb2", std::make_unique<DateSort>()));
     controller->add(std::make_unique<CustomMode>());
     return controller;
 }

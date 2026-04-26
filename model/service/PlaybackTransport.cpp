@@ -1,10 +1,10 @@
 #include "PlaybackTransport.h"
 
-PlaybackTransport::PlaybackTransport(TrackCursor& cursor, AdScheduler& advertisement, RepeatPolicy& repeatMode)
-    : cursor_(cursor), advertisement_(advertisement), repeat_mode_(repeatMode) {}
+PlaybackTransport::PlaybackTransport(TrackCursor& cursor, AdScheduler& adScheduler, RepeatPolicy& repeatPolicy)
+    : cursor_(cursor), ad_scheduler_(adScheduler), repeat_policy_(repeatPolicy) {}
 
 void PlaybackTransport::start() const {
-    if (!advertisement_.interrupt()) {
+    if (!ad_scheduler_.interrupt()) {
         cursor_.play();
     }
 }
@@ -32,20 +32,20 @@ void PlaybackTransport::retreat() const {
 }
 
 void PlaybackTransport::end() const {
-    if (advertisement_.conclude()) {
+    if (ad_scheduler_.conclude()) {
         cursor_.play();
         return;
     }
 
-    if (repeat_mode_.apply()) {
+    if (repeat_policy_.apply()) {
         cursor_.play();
     } else {
-        repeat_mode_.stop();
+        repeat_policy_.stop();
     }
 }
 
 void PlaybackTransport::skip() const {
-    if (advertisement_.conclude()) {
+    if (ad_scheduler_.conclude()) {
         cursor_.play();
     }
 }
