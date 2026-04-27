@@ -10,7 +10,9 @@ void TrackListenerSpy::onSelect(const int index) {
     selections_.push_back(index);
 }
 
-void TrackListenerSpy::onStop() {}
+void TrackListenerSpy::onStop() {
+    stops_++;
+}
 
 void TrackListenerSpy::expectStart() const {
     EXPECT_FALSE(starts_.empty()) << "expected onStart to have been received";
@@ -41,4 +43,12 @@ void TrackListenerSpy::expectNoSelect() const {
 void TrackListenerSpy::expectNoSelectWith(const int index) const {
     EXPECT_TRUE(std::ranges::find(selections_, index) == selections_.end())
         << "expected no onSelect with index: " << index;
+}
+
+void TrackListenerSpy::expectStop() const {
+    EXPECT_GT(stops_, 0) << "expected onStop to have been received";
+}
+
+void TrackListenerSpy::expectNoStop() const {
+    EXPECT_EQ(stops_, 0) << "expected no onStop, but got " << stops_;
 }

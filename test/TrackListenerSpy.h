@@ -9,6 +9,7 @@ class TrackListenerSpy final : public ITrackListener {
 private:
     std::vector<std::string> starts_;
     std::vector<int> selections_;
+    int stops_ = 0;
 
 public:
     void onStart(const std::string& path) override;
@@ -22,6 +23,8 @@ public:
     void expectSelectWith(int index) const;
     void expectNoSelect() const;
     void expectNoSelectWith(int index) const;
+    void expectStop() const;
+    void expectNoStop() const;
 };
 
 #endif //TRACK_LISTENER_SPY_H

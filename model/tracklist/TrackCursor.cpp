@@ -55,6 +55,7 @@ void TrackCursor::chase(const std::function<void()>& operation) {
 void TrackCursor::onRemove(const int index) {
     if (index == track_index_) {
         track_index_ = -1;
+        tracks_.onStop();
     } else if (index < track_index_) {
         track_index_--;
     }

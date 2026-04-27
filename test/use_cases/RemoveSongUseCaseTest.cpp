@@ -318,3 +318,12 @@ TEST_F(RemoveSongUseCaseTest, RemoveDoesNotGiveFeedback) {
     library_->remove(0);
     library_spy_.expectNoFeedback("Song added successfully!");
 }
+
+TEST_F(RemoveSongUseCaseTest, RemovePlayingSongStopsPlayback) {
+    createSong("a.mp3");
+    createSong("b.mp3");
+    build();
+    playback_->play(0);
+    library_->remove(0);
+    track_spy_.expectStop();
+}
