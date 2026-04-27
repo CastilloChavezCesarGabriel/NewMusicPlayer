@@ -1,5 +1,5 @@
 #include "SortPlaylistUseCaseTest.h"
-#include "../TestPlaylistVisitor.h"
+#include "../SongVisitorSpy.h"
 #include "../../model/tracklist/QuickSort.h"
 #include "../../model/tracklist/DurationSort.h"
 #include <filesystem>
@@ -15,7 +15,8 @@ TEST_F(SortPlaylistUseCaseTest, SortByNameNotifiesChanged) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    EXPECT_TRUE(listener_.wasChanged());
+    setlist_->announce();
+    library_spy_.expectChange();
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortByNumberNotifiesChanged) {
@@ -24,7 +25,8 @@ TEST_F(SortPlaylistUseCaseTest, SortByNumberNotifiesChanged) {
     build();
     DurationSort byDuration;
     setlist_->sort(byDuration);
-    EXPECT_TRUE(listener_.wasChanged());
+    setlist_->announce();
+    library_spy_.expectChange();
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortByNameOrdersAlphabetically) {
@@ -34,11 +36,11 @@ TEST_F(SortPlaylistUseCaseTest, SortByNameOrdersAlphabetically) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasNameAt(0, "apple.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(1, "banana.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(2, "cherry.mp3"));
+    visitor.expectNameAt(0, "apple.mp3");
+    visitor.expectNameAt(1, "banana.mp3");
+    visitor.expectNameAt(2, "cherry.mp3");
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortEmptyPlaylistDoesNotCrash) {
@@ -51,7 +53,8 @@ TEST_F(SortPlaylistUseCaseTest, SortEmptyPlaylistNotifiesChanged) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    EXPECT_TRUE(listener_.wasChanged());
+    setlist_->announce();
+    library_spy_.expectChange();
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortSingleSongDoesNotCrash) {
@@ -66,10 +69,10 @@ TEST_F(SortPlaylistUseCaseTest, SortSingleSongPreserves) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasName("only.mp3"));
-    EXPECT_TRUE(visitor.hasSongs(1));
+    visitor.expectName("only.mp3");
+    visitor.expectCount(1);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortPreservesSongCount) {
@@ -79,9 +82,9 @@ TEST_F(SortPlaylistUseCaseTest, SortPreservesSongCount) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(3));
+    visitor.expectCount(3);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortPreservesAllSongNames) {
@@ -91,11 +94,11 @@ TEST_F(SortPlaylistUseCaseTest, SortPreservesAllSongNames) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasName("a.mp3"));
-    EXPECT_TRUE(visitor.hasName("b.mp3"));
-    EXPECT_TRUE(visitor.hasName("c.mp3"));
+    visitor.expectName("a.mp3");
+    visitor.expectName("b.mp3");
+    visitor.expectName("c.mp3");
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortThenPlayFirstSong) {
@@ -106,7 +109,7 @@ TEST_F(SortPlaylistUseCaseTest, SortThenPlayFirstSong) {
     QuickSort byTitle;
     setlist_->sort(byTitle);
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortThenPlaySelectsCorrectIndex) {
@@ -116,7 +119,7 @@ TEST_F(SortPlaylistUseCaseTest, SortThenPlaySelectsCorrectIndex) {
     QuickSort byTitle;
     setlist_->sort(byTitle);
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortThenAdvance) {
@@ -128,7 +131,7 @@ TEST_F(SortPlaylistUseCaseTest, SortThenAdvance) {
     setlist_->sort(byTitle);
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortThenRetreat) {
@@ -140,7 +143,7 @@ TEST_F(SortPlaylistUseCaseTest, SortThenRetreat) {
     setlist_->sort(byTitle);
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortMultipleTimesDoesNotCrash) {
@@ -161,9 +164,12 @@ TEST_F(SortPlaylistUseCaseTest, SortMultipleTimesNotifiesEachTime) {
     QuickSort byTitle;
     DurationSort byDuration;
     setlist_->sort(byTitle);
+    setlist_->announce();
     setlist_->sort(byDuration);
+    setlist_->announce();
     setlist_->sort(byTitle);
-    EXPECT_TRUE(listener_.wasChangedTimes(3));
+    setlist_->announce();
+    library_spy_.expectChanges(3);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortAlreadySortedPreservesOrder) {
@@ -173,11 +179,11 @@ TEST_F(SortPlaylistUseCaseTest, SortAlreadySortedPreservesOrder) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasNameAt(0, "a.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(1, "b.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(2, "c.mp3"));
+    visitor.expectNameAt(0, "a.mp3");
+    visitor.expectNameAt(1, "b.mp3");
+    visitor.expectNameAt(2, "c.mp3");
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortByNumberDoesNotCrash) {
@@ -196,26 +202,23 @@ TEST_F(SortPlaylistUseCaseTest, SortByNumberPreservesSongCount) {
     build();
     DurationSort byDuration;
     setlist_->sort(byDuration);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(3));
+    visitor.expectCount(3);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortAfterInsert) {
     createSong("c.mp3");
     createSong("a.mp3");
-    std::string srcDir = base_directory_ + "/src";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/b.mp3") << "audio";
     build();
-    library_->insert(srcDir + "/b.mp3");
+    library_->insert(prepare("b.mp3"));
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasNameAt(0, "a.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(1, "b.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(2, "c.mp3"));
+    visitor.expectNameAt(0, "a.mp3");
+    visitor.expectNameAt(1, "b.mp3");
+    visitor.expectNameAt(2, "c.mp3");
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortAfterRemove) {
@@ -226,11 +229,11 @@ TEST_F(SortPlaylistUseCaseTest, SortAfterRemove) {
     QuickSort byTitle;
     setlist_->sort(byTitle);
     library_->remove(1);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
-    EXPECT_TRUE(visitor.hasName("a.mp3"));
-    EXPECT_TRUE(visitor.hasName("c.mp3"));
+    visitor.expectCount(2);
+    visitor.expectName("a.mp3");
+    visitor.expectName("c.mp3");
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortByNameThenByNumber) {
@@ -241,9 +244,9 @@ TEST_F(SortPlaylistUseCaseTest, SortByNameThenByNumber) {
     setlist_->sort(byTitle);
     DurationSort byDuration;
     setlist_->sort(byDuration);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortByNameTwoSongs) {
@@ -252,10 +255,10 @@ TEST_F(SortPlaylistUseCaseTest, SortByNameTwoSongs) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasNameAt(0, "a.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(1, "z.mp3"));
+    visitor.expectNameAt(0, "a.mp3");
+    visitor.expectNameAt(1, "z.mp3");
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortFiveSongsByName) {
@@ -267,13 +270,13 @@ TEST_F(SortPlaylistUseCaseTest, SortFiveSongsByName) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasNameAt(0, "a.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(1, "b.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(2, "c.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(3, "d.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(4, "e.mp3"));
+    visitor.expectNameAt(0, "a.mp3");
+    visitor.expectNameAt(1, "b.mp3");
+    visitor.expectNameAt(2, "c.mp3");
+    visitor.expectNameAt(3, "d.mp3");
+    visitor.expectNameAt(4, "e.mp3");
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortThenAcceptVisitsAll) {
@@ -283,10 +286,10 @@ TEST_F(SortPlaylistUseCaseTest, SortThenAcceptVisitsAll) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_FALSE(visitor.isEmpty());
-    EXPECT_TRUE(visitor.hasSongs(3));
+    visitor.expectNotEmpty();
+    visitor.expectCount(3);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortDoesNotAffectPlayback) {
@@ -295,7 +298,7 @@ TEST_F(SortPlaylistUseCaseTest, SortDoesNotAffectPlayback) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    EXPECT_FALSE(listener_.wasStarted());
+    track_spy_.expectNoStart();
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortDoesNotSelect) {
@@ -304,7 +307,7 @@ TEST_F(SortPlaylistUseCaseTest, SortDoesNotSelect) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    EXPECT_FALSE(listener_.wasSelected());
+    track_spy_.expectNoSelect();
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortThenPlayThenAdvanceThroughAll) {
@@ -317,7 +320,7 @@ TEST_F(SortPlaylistUseCaseTest, SortThenPlayThenAdvanceThroughAll) {
     playback_->play(0);
     playback_->advance();
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(2));
+    track_spy_.expectSelectWith(2);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortWavFiles) {
@@ -326,10 +329,10 @@ TEST_F(SortPlaylistUseCaseTest, SortWavFiles) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasNameAt(0, "a.wav"));
-    EXPECT_TRUE(visitor.hasNameAt(1, "b.wav"));
+    visitor.expectNameAt(0, "a.wav");
+    visitor.expectNameAt(1, "b.wav");
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortMixedExtensions) {
@@ -338,9 +341,9 @@ TEST_F(SortPlaylistUseCaseTest, SortMixedExtensions) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortSingleSongNotifiesChanged) {
@@ -348,7 +351,8 @@ TEST_F(SortPlaylistUseCaseTest, SortSingleSongNotifiesChanged) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    EXPECT_TRUE(listener_.wasChangedTimes(1));
+    setlist_->announce();
+    library_spy_.expectChanges(1);
 }
 
 TEST_F(SortPlaylistUseCaseTest, SortThenSearchFindsCorrectly) {
@@ -358,7 +362,7 @@ TEST_F(SortPlaylistUseCaseTest, SortThenSearchFindsCorrectly) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->search("apple", visitor);
-    EXPECT_TRUE(visitor.hasName("apple.mp3"));
+    visitor.expectName("apple.mp3");
 }

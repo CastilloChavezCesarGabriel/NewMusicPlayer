@@ -1,5 +1,5 @@
 #include "RemoveSongUseCaseTest.h"
-#include "../TestPlaylistVisitor.h"
+#include "../SongVisitorSpy.h"
 #include "../../model/tracklist/QuickSort.h"
 #include <filesystem>
 #include <fstream>
@@ -14,9 +14,9 @@ TEST_F(RemoveSongUseCaseTest, RemoveFirstSong) {
     createSong("c.mp3");
     build();
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveLastSong) {
@@ -25,9 +25,9 @@ TEST_F(RemoveSongUseCaseTest, RemoveLastSong) {
     createSong("c.mp3");
     build();
     library_->remove(2);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveMiddleSong) {
@@ -36,16 +36,16 @@ TEST_F(RemoveSongUseCaseTest, RemoveMiddleSong) {
     createSong("c.mp3");
     build();
     library_->remove(1);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveNotifiesChanged) {
     createSong("a.mp3");
     build();
     library_->remove(0);
-    EXPECT_TRUE(listener_.wasChanged());
+    library_spy_.expectChange();
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveReducesPlaylistSize) {
@@ -53,9 +53,9 @@ TEST_F(RemoveSongUseCaseTest, RemoveReducesPlaylistSize) {
     createSong("b.mp3");
     build();
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(1));
+    visitor.expectCount(1);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveFromEmptyDoesNotCrash) {
@@ -69,16 +69,16 @@ TEST_F(RemoveSongUseCaseTest, RemoveThenPlay) {
     build();
     library_->remove(0);
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveOnlySongLeavesEmpty) {
     createSong("only.mp3");
     build();
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.isEmpty());
+    visitor.expectEmpty();
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveAllSongsOneByOne) {
@@ -89,23 +89,20 @@ TEST_F(RemoveSongUseCaseTest, RemoveAllSongsOneByOne) {
     library_->remove(0);
     library_->remove(0);
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.isEmpty());
+    visitor.expectEmpty();
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveThenAdd) {
     createSong("a.mp3");
-    std::string srcDir = base_directory_ + "/src";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/b.mp3") << "audio";
     build();
     library_->remove(0);
-    library_->insert(srcDir + "/b.mp3");
-    TestPlaylistVisitor visitor;
+    library_->insert(prepare("b.mp3"));
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(1));
-    EXPECT_TRUE(visitor.hasName("b.mp3"));
+    visitor.expectCount(1);
+    visitor.expectName("b.mp3");
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveThenSort) {
@@ -116,9 +113,9 @@ TEST_F(RemoveSongUseCaseTest, RemoveThenSort) {
     library_->remove(0);
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveThenSearch) {
@@ -128,23 +125,23 @@ TEST_F(RemoveSongUseCaseTest, RemoveThenSearch) {
     QuickSort byTitle;
     setlist_->sort(byTitle);
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->search("jazz", visitor);
-    EXPECT_TRUE(visitor.isEmpty());
+    visitor.expectEmpty();
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveDoesNotStartPlayback) {
     createSong("a.mp3");
     build();
     library_->remove(0);
-    EXPECT_FALSE(listener_.wasStarted());
+    track_spy_.expectNoStart();
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveDoesNotSelect) {
     createSong("a.mp3");
     build();
     library_->remove(0);
-    EXPECT_FALSE(listener_.wasSelected());
+    track_spy_.expectNoSelect();
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveMultipleNotifiesEachTime) {
@@ -154,7 +151,7 @@ TEST_F(RemoveSongUseCaseTest, RemoveMultipleNotifiesEachTime) {
     build();
     library_->remove(0);
     library_->remove(0);
-    EXPECT_TRUE(listener_.wasChangedTimes(2));
+    library_spy_.expectChanges(2);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemovePreservesOtherSongs) {
@@ -165,10 +162,10 @@ TEST_F(RemoveSongUseCaseTest, RemovePreservesOtherSongs) {
     QuickSort byTitle;
     setlist_->sort(byTitle);
     library_->remove(1);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasName("a.mp3"));
-    EXPECT_TRUE(visitor.hasName("c.mp3"));
+    visitor.expectName("a.mp3");
+    visitor.expectName("c.mp3");
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveFirstPreservesRest) {
@@ -178,9 +175,9 @@ TEST_F(RemoveSongUseCaseTest, RemoveFirstPreservesRest) {
     QuickSort byTitle;
     setlist_->sort(byTitle);
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasName("b.mp3"));
+    visitor.expectName("b.mp3");
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveLastPreservesRest) {
@@ -190,9 +187,9 @@ TEST_F(RemoveSongUseCaseTest, RemoveLastPreservesRest) {
     QuickSort byTitle;
     setlist_->sort(byTitle);
     library_->remove(1);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasName("a.mp3"));
+    visitor.expectName("a.mp3");
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveThenPlayRemaining) {
@@ -202,7 +199,7 @@ TEST_F(RemoveSongUseCaseTest, RemoveThenPlayRemaining) {
     build();
     library_->remove(0);
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveThenAdvance) {
@@ -213,7 +210,7 @@ TEST_F(RemoveSongUseCaseTest, RemoveThenAdvance) {
     library_->remove(0);
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveThenRetreat) {
@@ -224,20 +221,17 @@ TEST_F(RemoveSongUseCaseTest, RemoveThenRetreat) {
     library_->remove(0);
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveAllThenAddNew) {
     createSong("a.mp3");
     build();
     library_->remove(0);
-    std::string srcDir = base_directory_ + "/src";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/new.mp3") << "audio";
-    library_->insert(srcDir + "/new.mp3");
-    TestPlaylistVisitor visitor;
+    library_->insert(prepare("new.mp3"));
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(1));
+    visitor.expectCount(1);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveTwoFromThree) {
@@ -247,9 +241,9 @@ TEST_F(RemoveSongUseCaseTest, RemoveTwoFromThree) {
     build();
     library_->remove(0);
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(1));
+    visitor.expectCount(1);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveThenSortRemaining) {
@@ -260,26 +254,26 @@ TEST_F(RemoveSongUseCaseTest, RemoveThenSortRemaining) {
     QuickSort byTitle;
     setlist_->sort(byTitle);
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasNameAt(0, "b.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(1, "c.mp3"));
+    visitor.expectNameAt(0, "b.mp3");
+    visitor.expectNameAt(1, "c.mp3");
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveWavFile) {
     createSong("track.wav");
     build();
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.isEmpty());
+    visitor.expectEmpty();
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveNotifiesChangedOnce) {
     createSong("a.mp3");
     build();
     library_->remove(0);
-    EXPECT_TRUE(listener_.wasChangedTimes(1));
+    library_spy_.expectChanges(1);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveFromFiveSongs) {
@@ -290,9 +284,9 @@ TEST_F(RemoveSongUseCaseTest, RemoveFromFiveSongs) {
     createSong("e.mp3");
     build();
     library_->remove(2);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(4));
+    visitor.expectCount(4);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveThreeTimesNotifiesThree) {
@@ -303,7 +297,7 @@ TEST_F(RemoveSongUseCaseTest, RemoveThreeTimesNotifiesThree) {
     library_->remove(0);
     library_->remove(0);
     library_->remove(0);
-    EXPECT_TRUE(listener_.wasChangedTimes(3));
+    library_spy_.expectChanges(3);
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveThenSearchFindsRemaining) {
@@ -313,14 +307,14 @@ TEST_F(RemoveSongUseCaseTest, RemoveThenSearchFindsRemaining) {
     QuickSort byTitle;
     setlist_->sort(byTitle);
     library_->remove(1);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->search("jazz", visitor);
-    EXPECT_TRUE(visitor.hasName("jazz.mp3"));
+    visitor.expectName("jazz.mp3");
 }
 
 TEST_F(RemoveSongUseCaseTest, RemoveDoesNotGiveFeedback) {
     createSong("a.mp3");
     build();
     library_->remove(0);
-    EXPECT_FALSE(listener_.wasFeedback("Song added successfully!"));
+    library_spy_.expectNoFeedback("Song added successfully!");
 }

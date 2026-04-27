@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #include <string>
 
-class DirectoryTestFixture : public ::testing::Test {
+class DirectoryTestFixture : public::testing::Test {
 protected:
     std::string test_directory_;
 

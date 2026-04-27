@@ -8,48 +8,50 @@
 #include "../model/event/LibraryBus.h"
 #include "../model/event/AdBus.h"
 #include "../model/event/RepeatBus.h"
-#include "../model/playback/RepeatCoordinator.h"
+#include "../model/playback/RepeatBroadcaster.h"
 #include "../model/library/MusicDirectory.h"
 #include "../model/tracklist/Tracklist.h"
 #include "../model/tracklist/TrackCursor.h"
-#include "../model/tracklist/ShuffleArrangement.h"
-#include "../model/playback/Advertisement.h"
-#include "../model/playback/RepeatMode.h"
-#include "../model/service/PlaybackService.h"
-#include "../model/service/LibraryService.h"
+#include "../model/playback/AdScheduler.h"
+#include "../model/playback/RepeatPolicy.h"
+#include "../model/service/PlaybackTransport.h"
+#include "../model/service/LibraryEditor.h"
 #include "../model/service/Setlist.h"
 #include "../model/service/TrackCatalog.h"
-#include "MockPlaybackListener.h"
-#include "TestPlaylistVisitor.h"
+#include "TrackListenerSpy.h"
+#include "LibraryListenerSpy.h"
+#include "AdListenerSpy.h"
 #include <memory>
 #include <string>
 
 class ModelTestFixture : public ::testing::Test {
 protected:
-    std::string base_directory_;
-    std::string music_directory_;
-    std::string ads_directory_;
-    MockPlaybackListener listener_;
     Dice dice_;
-    std::unique_ptr<RandomAdPolicy> ad_policy_;
-
     TrackBus track_bus_;
     LibraryBus library_bus_;
     AdBus ad_bus_;
     RepeatBus repeat_bus_;
-    std::unique_ptr<RepeatCoordinator> repeat_listener_;
+    std::string base_directory_;
+    std::string music_directory_;
+    std::string ads_directory_;
+    TrackListenerSpy track_spy_;
+    LibraryListenerSpy library_spy_;
+    AdListenerSpy ad_spy_;
+    std::unique_ptr<RandomAdPolicy> ad_policy_;
+    std::unique_ptr<RepeatBroadcaster> repeat_listener_;
     std::unique_ptr<MusicDirectory> directory_;
     std::unique_ptr<Tracklist> tracklist_;
     std::unique_ptr<TrackCursor> cursor_;
-    std::unique_ptr<Advertisement> advertisement_;
-    std::unique_ptr<RepeatMode> repeat_mode_;
-    std::unique_ptr<PlaybackService> playback_;
-    std::unique_ptr<LibraryService> library_;
+    std::unique_ptr<AdScheduler> ad_scheduler_;
+    std::unique_ptr<RepeatPolicy> repeat_policy_;
+    std::unique_ptr<PlaybackTransport> playback_;
+    std::unique_ptr<LibraryEditor> library_;
     std::unique_ptr<Setlist> setlist_;
     std::unique_ptr<TrackCatalog> catalog_;
 
     void SetUp() override;
     void TearDown() override;
+    std::string prepare(const std::string& name) const;
     void createSong(const std::string& name) const;
     void createAd(const std::string& name) const;
     void build();

@@ -1,10 +1,8 @@
 #include "ModelTest.h"
-#include "../TestPlaylistVisitor.h"
+#include "../SongVisitorSpy.h"
 #include "../../model/tracklist/QuickSort.h"
 #include "../../model/tracklist/DurationSort.h"
 #include "../../model/tracklist/DateSort.h"
-#include <filesystem>
-#include <fstream>
 
 std::string ModelTest::identify() const {
     return "model_test";
@@ -14,30 +12,30 @@ TEST_F(ModelTest, LoadsSongsFromDirectory) {
     createSong("(1) First.mp3");
     createSong("(2) Second.mp3");
     build();
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }
 
 TEST_F(ModelTest, LoadsEmptyDirectory) {
     build();
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.isEmpty());
+    visitor.expectEmpty();
 }
 
 TEST_F(ModelTest, PlaySelectsAndStartsSong) {
     createSong("song.mp3");
     build();
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(ModelTest, PlayNotifiesSelection) {
     createSong("song.mp3");
     build();
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(ModelTest, AdvanceMovesToNextSong) {
@@ -47,7 +45,7 @@ TEST_F(ModelTest, AdvanceMovesToNextSong) {
     build();
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(ModelTest, RetreatMovesToPreviousSong) {
@@ -57,72 +55,60 @@ TEST_F(ModelTest, RetreatMovesToPreviousSong) {
     build();
     playback_->play(2);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(ModelTest, RepeatOneReplays) {
     createSong("a.mp3");
     createSong("b.mp3");
     build();
-    repeat_mode_->advance();
+    repeat_policy_->advance();
     playback_->play(0);
     playback_->end();
-    EXPECT_TRUE(listener_.wasStarted());
+    track_spy_.expectStart();
 }
 
 TEST_F(ModelTest, RepeatAllLoops) {
     createSong("a.mp3");
     build();
-    repeat_mode_->advance();
-    repeat_mode_->advance();
+    repeat_policy_->advance();
+    repeat_policy_->advance();
     playback_->play(0);
     playback_->end();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(ModelTest, InsertValidFile) {
-    std::string srcDir = base_directory_ + "/import";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/new.mp3") << "audio";
-
     build();
-    library_->insert(srcDir + "/new.mp3");
-    EXPECT_TRUE(listener_.wasChanged());
-    EXPECT_TRUE(listener_.wasFeedback("Song added successfully!"));
+    library_->insert(prepare("new.mp3"));
+    library_spy_.expectChange();
+    library_spy_.expectFeedback("Song added successfully!");
 }
 
 TEST_F(ModelTest, InsertUnsupportedFile) {
-    std::string srcDir = base_directory_ + "/import";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/doc.txt") << "text";
-
     build();
-    library_->insert(srcDir + "/doc.txt");
-    EXPECT_TRUE(listener_.wasFeedback("Unsupported file type."));
+    library_->insert(prepare("doc.txt"));
+    library_spy_.expectFeedback("Unsupported file type.");
 }
 
 TEST_F(ModelTest, InsertEmptyPath) {
     build();
     library_->insert("");
-    EXPECT_TRUE(listener_.wasFeedback("Unsupported file type."));
+    library_spy_.expectFeedback("Unsupported file type.");
 }
 
 TEST_F(ModelTest, InsertDuplicateFile) {
     createSong("existing.mp3");
-    std::string srcDir = base_directory_ + "/import";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/existing.mp3") << "audio";
-
     build();
-    library_->insert(srcDir + "/existing.mp3");
-    EXPECT_TRUE(listener_.wasFeedback("This song already exists."));
+    library_->insert(prepare("existing.mp3"));
+    library_spy_.expectFeedback("This song already exists.");
 }
 
 TEST_F(ModelTest, RemoveNotifiesChanged) {
     createSong("song.mp3");
     build();
     library_->remove(0);
-    EXPECT_TRUE(listener_.wasChanged());
+    library_spy_.expectChange();
 }
 
 TEST_F(ModelTest, RemoveReducesPlaylist) {
@@ -130,9 +116,9 @@ TEST_F(ModelTest, RemoveReducesPlaylist) {
     createSong("b.mp3");
     build();
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(1));
+    visitor.expectCount(1);
 }
 
 TEST_F(ModelTest, SortByNameNotifiesChanged) {
@@ -141,7 +127,8 @@ TEST_F(ModelTest, SortByNameNotifiesChanged) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    EXPECT_TRUE(listener_.wasChanged());
+    setlist_->announce();
+    library_spy_.expectChange();
 }
 
 TEST_F(ModelTest, SortByNumberNotifiesChanged) {
@@ -150,7 +137,8 @@ TEST_F(ModelTest, SortByNumberNotifiesChanged) {
     build();
     DurationSort byDuration;
     setlist_->sort(byDuration);
-    EXPECT_TRUE(listener_.wasChanged());
+    setlist_->announce();
+    library_spy_.expectChange();
 }
 
 TEST_F(ModelTest, SearchFiltersSongs) {
@@ -158,17 +146,17 @@ TEST_F(ModelTest, SearchFiltersSongs) {
     createSong("Goodbye.mp3");
     createSong("Hello World.mp3");
     build();
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->search("Hello", visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }
 
 TEST_F(ModelTest, SearchNoResults) {
     createSong("Hello.mp3");
     build();
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->search("ZZZZ", visitor);
-    EXPECT_TRUE(visitor.isEmpty());
+    visitor.expectEmpty();
 }
 
 TEST_F(ModelTest, AcceptShowsAllSongs) {
@@ -176,9 +164,9 @@ TEST_F(ModelTest, AcceptShowsAllSongs) {
     createSong("b.mp3");
     createSong("c.mp3");
     build();
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(3));
+    visitor.expectCount(3);
 }
 
 TEST_F(ModelTest, EndWithoutAdAdvances) {
@@ -187,26 +175,22 @@ TEST_F(ModelTest, EndWithoutAdAdvances) {
     build();
     playback_->play(0);
     playback_->end();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(ModelTest, SkipWithoutAdDoesNothing) {
     createSong("song.mp3");
     build();
-    playback_->skip();
-    EXPECT_FALSE(listener_.wasRevealed());
+    EXPECT_FALSE(playback_->skip());
+    ad_spy_.expectNoReveal();
 }
 
 TEST_F(ModelTest, InsertIncreasesPlaylistSize) {
-    std::string srcDir = base_directory_ + "/import";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/new.mp3") << "audio";
-
     build();
-    library_->insert(srcDir + "/new.mp3");
-    TestPlaylistVisitor visitor;
+    library_->insert(prepare("new.mp3"));
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(1));
+    visitor.expectCount(1);
 }
 
 TEST_F(ModelTest, SortByNameOrders) {
@@ -216,9 +200,9 @@ TEST_F(ModelTest, SortByNameOrders) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasNameAt(0, "A.mp3"));
+    visitor.expectNameAt(0, "A.mp3");
 }
 
 TEST_F(ModelTest, MultipleRemoves) {
@@ -228,21 +212,16 @@ TEST_F(ModelTest, MultipleRemoves) {
     build();
     library_->remove(0);
     library_->remove(0);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(1));
+    visitor.expectCount(1);
 }
 
 TEST_F(ModelTest, MultipleInserts) {
-    std::string srcDir = base_directory_ + "/import";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/a.mp3") << "audio";
-    std::ofstream(srcDir + "/b.mp3") << "audio";
-
     build();
-    library_->insert(srcDir + "/a.mp3");
-    library_->insert(srcDir + "/b.mp3");
-    EXPECT_TRUE(listener_.wasChangedTimes(2));
+    library_->insert(prepare("a.mp3"));
+    library_->insert(prepare("b.mp3"));
+    library_spy_.expectChanges(2);
 }
 
 TEST_F(ModelTest, ReverseNotifiesChanged) {
@@ -250,7 +229,8 @@ TEST_F(ModelTest, ReverseNotifiesChanged) {
     createSong("b.mp3");
     build();
     setlist_->reverse();
-    EXPECT_TRUE(listener_.wasChanged());
+    setlist_->announce();
+    library_spy_.expectChange();
 }
 
 TEST_F(ModelTest, ReverseInvertsOrder) {
@@ -261,10 +241,10 @@ TEST_F(ModelTest, ReverseInvertsOrder) {
     QuickSort byName;
     setlist_->sort(byName);
     setlist_->reverse();
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasNameAt(0, "c.mp3"));
-    EXPECT_TRUE(visitor.hasNameAt(2, "a.mp3"));
+    visitor.expectNameAt(0, "c.mp3");
+    visitor.expectNameAt(2, "a.mp3");
 }
 
 TEST_F(ModelTest, RestoreNotifiesChanged) {
@@ -273,7 +253,8 @@ TEST_F(ModelTest, RestoreNotifiesChanged) {
     QuickSort byName;
     setlist_->sort(byName);
     setlist_->restore();
-    EXPECT_TRUE(listener_.wasChanged());
+    setlist_->announce();
+    library_spy_.expectChange();
 }
 
 TEST_F(ModelTest, SortByDateNotifiesChanged) {
@@ -281,7 +262,8 @@ TEST_F(ModelTest, SortByDateNotifiesChanged) {
     build();
     DateSort byDate;
     setlist_->sort(byDate);
-    EXPECT_TRUE(listener_.wasChanged());
+    setlist_->announce();
+    library_spy_.expectChange();
 }
 
 TEST_F(ModelTest, SortByDateAcceptsSongs) {
@@ -290,7 +272,7 @@ TEST_F(ModelTest, SortByDateAcceptsSongs) {
     build();
     DateSort byDate;
     setlist_->sort(byDate);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }

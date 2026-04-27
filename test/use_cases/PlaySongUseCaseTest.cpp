@@ -11,14 +11,14 @@ TEST_F(PlaySongUseCaseTest, PlaySelectsSong) {
     createSong("song.mp3");
     build();
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(PlaySongUseCaseTest, PlayStartsPlayback) {
     createSong("song.mp3");
     build();
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, PlaySecondSong) {
@@ -26,7 +26,7 @@ TEST_F(PlaySongUseCaseTest, PlaySecondSong) {
     createSong("b.mp3");
     build();
     playback_->play(1);
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(PlaySongUseCaseTest, PlayThenPlayAnother) {
@@ -35,7 +35,7 @@ TEST_F(PlaySongUseCaseTest, PlayThenPlayAnother) {
     build();
     playback_->play(0);
     playback_->play(1);
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(PlaySongUseCaseTest, PlayLastSong) {
@@ -44,7 +44,7 @@ TEST_F(PlaySongUseCaseTest, PlayLastSong) {
     createSong("c.mp3");
     build();
     playback_->play(2);
-    EXPECT_TRUE(listener_.wasSelectedWith(2));
+    track_spy_.expectSelectWith(2);
 }
 
 TEST_F(PlaySongUseCaseTest, PlayFromMiddle) {
@@ -55,14 +55,14 @@ TEST_F(PlaySongUseCaseTest, PlayFromMiddle) {
     createSong("e.mp3");
     build();
     playback_->play(2);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, PlayAlwaysSelects) {
     createSong("song.mp3");
     build();
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, PlayMultipleTimesAllSelect) {
@@ -72,8 +72,8 @@ TEST_F(PlaySongUseCaseTest, PlayMultipleTimesAllSelect) {
     playback_->play(0);
     playback_->play(1);
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(0);
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(PlaySongUseCaseTest, EndAdvancesToNextSong) {
@@ -82,7 +82,7 @@ TEST_F(PlaySongUseCaseTest, EndAdvancesToNextSong) {
     build();
     playback_->play(0);
     playback_->end();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(PlaySongUseCaseTest, EndAtLastSongDoesNotCrash) {
@@ -95,44 +95,44 @@ TEST_F(PlaySongUseCaseTest, EndAtLastSongDoesNotCrash) {
 TEST_F(PlaySongUseCaseTest, RepeatOneReplays) {
     createSong("song.mp3");
     build();
-    repeat_mode_->advance();
+    repeat_policy_->advance();
     playback_->play(0);
     playback_->end();
-    EXPECT_TRUE(listener_.wasStarted());
+    track_spy_.expectStart();
 }
 
 TEST_F(PlaySongUseCaseTest, RepeatAllLoops) {
     createSong("a.mp3");
     build();
-    repeat_mode_->advance();
-    repeat_mode_->advance();
+    repeat_policy_->advance();
+    repeat_policy_->advance();
     playback_->play(0);
     playback_->end();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(PlaySongUseCaseTest, EndWithRepeatReplays) {
     createSong("a.mp3");
     createSong("b.mp3");
     build();
-    repeat_mode_->advance();
+    repeat_policy_->advance();
     playback_->play(0);
     playback_->end();
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, SkipWithoutAdDoesNothing) {
     createSong("song.mp3");
     build();
-    playback_->skip();
-    EXPECT_FALSE(listener_.wasRevealed());
+    EXPECT_FALSE(playback_->skip());
+    ad_spy_.expectNoReveal();
 }
 
 TEST_F(PlaySongUseCaseTest, PlayWithSingleSong) {
     createSong("only.mp3");
     build();
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, PlayDoesNotCrashOnEmptyPlaylist) {
@@ -146,7 +146,7 @@ TEST_F(PlaySongUseCaseTest, AdvanceFromFirstToSecond) {
     build();
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(PlaySongUseCaseTest, RetreatFromSecondToFirst) {
@@ -155,7 +155,7 @@ TEST_F(PlaySongUseCaseTest, RetreatFromSecondToFirst) {
     build();
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(PlaySongUseCaseTest, AdvanceStartsPlayback) {
@@ -164,7 +164,7 @@ TEST_F(PlaySongUseCaseTest, AdvanceStartsPlayback) {
     build();
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, RetreatStartsPlayback) {
@@ -173,7 +173,7 @@ TEST_F(PlaySongUseCaseTest, RetreatStartsPlayback) {
     build();
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, AdvanceThroughEntirePlaylist) {
@@ -184,7 +184,7 @@ TEST_F(PlaySongUseCaseTest, AdvanceThroughEntirePlaylist) {
     playback_->play(0);
     playback_->advance();
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(2));
+    track_spy_.expectSelectWith(2);
 }
 
 TEST_F(PlaySongUseCaseTest, RetreatAtStartDoesNotCrash) {
@@ -211,7 +211,7 @@ TEST_F(PlaySongUseCaseTest, PlaySortedThenAdvance) {
     setlist_->sort(byTitle);
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, EndMultipleTimes) {
@@ -222,7 +222,7 @@ TEST_F(PlaySongUseCaseTest, EndMultipleTimes) {
     playback_->play(0);
     playback_->end();
     playback_->end();
-    EXPECT_TRUE(listener_.wasSelectedWith(2));
+    track_spy_.expectSelectWith(2);
 }
 
 TEST_F(PlaySongUseCaseTest, PlayAfterRemove) {
@@ -231,17 +231,14 @@ TEST_F(PlaySongUseCaseTest, PlayAfterRemove) {
     build();
     library_->remove(0);
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, PlayAfterInsert) {
-    std::string srcDir = base_directory_ + "/src";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/new.mp3") << "audio";
     build();
-    library_->insert(srcDir + "/new.mp3");
+    library_->insert(prepare("new.mp3"));
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, AdvanceThenRetreat) {
@@ -252,7 +249,7 @@ TEST_F(PlaySongUseCaseTest, AdvanceThenRetreat) {
     playback_->play(0);
     playback_->advance();
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(PlaySongUseCaseTest, PlayAfterShuffle) {
@@ -261,7 +258,7 @@ TEST_F(PlaySongUseCaseTest, PlayAfterShuffle) {
     createSong("c.mp3");
     build();
     playback_->play(0);
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(PlaySongUseCaseTest, RepeatOffAdvances) {
@@ -270,5 +267,5 @@ TEST_F(PlaySongUseCaseTest, RepeatOffAdvances) {
     build();
     playback_->play(0);
     playback_->end();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }

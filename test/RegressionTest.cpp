@@ -8,8 +8,9 @@
 #include "../model/playback/RandomAdPolicy.h"
 #include "../model/tracklist/DurationSort.h"
 #include "../model/tracklist/QuickSort.h"
-#include "../model/tracklist/ShuffleArrangement.h"
-#include "TestPlaylistVisitor.h"
+#include "../model/tracklist/ShuffleStrategy.h"
+#include "SongVisitorSpy.h"
+#include "PathVisitorSpy.h"
 #include <filesystem>
 #include <fstream>
 
@@ -42,7 +43,8 @@ TEST_F(RegressionTest, ModelRefreshDoesNotRecurse) {
     build();
     QuickSort byTitle;
     EXPECT_NO_THROW(setlist_->sort(byTitle));
-    EXPECT_TRUE(listener_.wasChanged());
+    setlist_->announce();
+    library_spy_.expectChange();
 }
 
 TEST_F(RegressionTest, ModelSortByNameDoesNotCrash) {
@@ -70,7 +72,7 @@ TEST_F(RegressionTest, AdvanceUpdatesSelection) {
     build();
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(RegressionTest, RetreatUpdatesSelection) {
@@ -80,7 +82,7 @@ TEST_F(RegressionTest, RetreatUpdatesSelection) {
     build();
     playback_->play(2);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(RegressionTest, RemoveBeforeCurrentAdjustsSelection) {
@@ -91,7 +93,7 @@ TEST_F(RegressionTest, RemoveBeforeCurrentAdjustsSelection) {
     tracklist.add(Song("B.mp3", "/b"));
     tracklist.add(Song("C.mp3", "/c"));
     cursor.select(2);
-    TestPlaylistVisitor sink;
+    PathVisitorSpy sink;
     tracklist.remove(0, sink);
     EXPECT_TRUE(cursor.hasSelected());
 }
@@ -108,18 +110,14 @@ TEST_F(RegressionTest, QuickSortPartitionDoesNotUnderflow) {
 TEST_F(RegressionTest, InsertUnsupportedFileGivesFeedback) {
     build();
     library_->insert("");
-    EXPECT_TRUE(listener_.wasFeedback("Unsupported file type."));
+    library_spy_.expectFeedback("Unsupported file type.");
 }
 
 TEST_F(RegressionTest, InsertDuplicateGivesFeedback) {
     createSong("dup.mp3");
-    std::string srcDir = base_directory_ + "/src";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/dup.mp3") << "data";
-
     build();
-    library_->insert(srcDir + "/dup.mp3");
-    EXPECT_TRUE(listener_.wasFeedback("This song already exists."));
+    library_->insert(prepare("dup.mp3"));
+    library_spy_.expectFeedback("This song already exists.");
 }
 
 TEST_F(RegressionTest, SortPreservesAllSongs) {
@@ -129,9 +127,9 @@ TEST_F(RegressionTest, SortPreservesAllSongs) {
     build();
     QuickSort byTitle;
     setlist_->sort(byTitle);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(3));
+    visitor.expectCount(3);
 }
 
 TEST_F(RegressionTest, ShufflePreservesAllSongs) {
@@ -139,31 +137,31 @@ TEST_F(RegressionTest, ShufflePreservesAllSongs) {
     for (int i = 0; i < 20; i++) {
         tracklist.add(Song(std::to_string(i) + ".mp3", "/s"));
     }
-    ShuffleArrangement strat;
+    ShuffleStrategy strat;
     tracklist.reorder(strat);
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     tracklist.accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(20));
+    visitor.expectCount(20);
 }
 
 TEST_F(RegressionTest, RepeatCycles) {
     build();
-    repeat_mode_->advance();
-    repeat_mode_->advance();
-    repeat_mode_->advance();
-    EXPECT_NO_THROW(repeat_mode_->advance());
+    repeat_policy_->advance();
+    repeat_policy_->advance();
+    repeat_policy_->advance();
+    EXPECT_NO_THROW(repeat_policy_->advance());
 }
 
 TEST_F(RegressionTest, RemoveFromEmptyPlaylistDoesNotCrash) {
     Tracklist tracklist;
-    TestPlaylistVisitor sink;
+    PathVisitorSpy sink;
     EXPECT_NO_THROW(tracklist.remove(0, sink));
 }
 
 TEST_F(RegressionTest, RemoveNegativeIndexDoesNotCrash) {
     Tracklist tracklist;
     tracklist.add(Song("A.mp3", "/a"));
-    TestPlaylistVisitor sink;
+    PathVisitorSpy sink;
     EXPECT_NO_THROW(tracklist.remove(-1, sink));
 }
 
@@ -187,9 +185,9 @@ TEST_F(RegressionTest, ConcludeWithoutInterruptReturnsFalse) {
     RandomAdPolicy adPolicy(dice);
     AdBus adBus;
     TrackBus trackBus;
-    adBus.add(listener_);
-    trackBus.add(listener_);
-    Advertisement ad(adPolicy, adBus, trackBus);
+    adBus.add(ad_spy_);
+    trackBus.add(track_spy_);
+    AdScheduler ad(adPolicy, adBus, trackBus);
     ad.load(ads_directory_);
     EXPECT_FALSE(ad.conclude());
 }

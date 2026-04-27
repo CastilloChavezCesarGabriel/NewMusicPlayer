@@ -2,77 +2,77 @@
 #include "../../model/song/Song.h"
 
 TEST_F(SongTest, AcceptPassesNameToVisitor) {
-    Song song("(1) First Song.mp3", "/music/(1) First Song.mp3");
+    const Song song("(1) First Song.mp3", "/music/(1) First Song.mp3");
     song.accept(visitor_);
-    EXPECT_TRUE(visitor_.hasName("(1) First Song.mp3"));
+    visitor_.expectName("(1) First Song.mp3");
 }
 
 TEST_F(SongTest, AcceptPassesPathToVisitor) {
-    Song song("song.mp3", "/music/song.mp3");
+    const Song song("song.mp3", "/music/song.mp3");
     song.accept(visitor_);
-    EXPECT_TRUE(visitor_.hasPath("/music/song.mp3"));
+    visitor_.expectPath("/music/song.mp3");
 }
 
 TEST_F(SongTest, MatchFindsSubstring) {
-    Song song("Beautiful Now.mp3", "/music/Beautiful Now.mp3");
+    const Song song("Beautiful Now.mp3", "/music/Beautiful Now.mp3");
     EXPECT_TRUE(song.matches("Beautiful"));
 }
 
 TEST_F(SongTest, MatchFindsExactName) {
-    Song song("Hello.wav", "/music/Hello.wav");
+    const Song song("Hello.wav", "/music/Hello.wav");
     EXPECT_TRUE(song.matches("Hello.wav"));
 }
 
 TEST_F(SongTest, MatchReturnsFalseForMismatch) {
-    Song song("Hello.wav", "/music/Hello.wav");
+    const Song song("Hello.wav", "/music/Hello.wav");
     EXPECT_FALSE(song.matches("Goodbye"));
 }
 
 TEST_F(SongTest, MatchIsCaseSensitive) {
-    Song song("Hello.wav", "/music/Hello.wav");
+    const Song song("Hello.wav", "/music/Hello.wav");
     EXPECT_FALSE(song.matches("hello"));
 }
 
 TEST_F(SongTest, MatchFindsPartialName) {
-    Song song("Counting Stars.mp3", "/music/Counting Stars.mp3");
+    const Song song("Counting Stars.mp3", "/music/Counting Stars.mp3");
     EXPECT_TRUE(song.matches("Stars"));
 }
 
 TEST_F(SongTest, MatchEmptyQueryMatchesAll) {
-    Song song("anything.mp3", "/music/anything.mp3");
+    const Song song("anything.mp3", "/music/anything.mp3");
     EXPECT_TRUE(song.matches(""));
 }
 
 TEST_F(SongTest, AcceptMultipleSongsToSameVisitor) {
-    Song first("A.mp3", "/a");
-    Song second("B.mp3", "/b");
-    first.accept(visitor_);
-    second.accept(visitor_);
-    EXPECT_TRUE(visitor_.hasSongs(2));
+    const Song firstTrack("A.mp3", "/a");
+    const Song secondTrack("B.mp3", "/b");
+    firstTrack.accept(visitor_);
+    secondTrack.accept(visitor_);
+    visitor_.expectCount(2);
 }
 
 TEST_F(SongTest, AcceptPreservesOrderInVisitor) {
-    Song first("A.mp3", "/a");
-    Song second("B.mp3", "/b");
-    first.accept(visitor_);
-    second.accept(visitor_);
-    EXPECT_TRUE(visitor_.hasNameAt(0, "A.mp3"));
-    EXPECT_TRUE(visitor_.hasNameAt(1, "B.mp3"));
+    const Song firstTrack("A.mp3", "/a");
+    const Song secondTrack("B.mp3", "/b");
+    firstTrack.accept(visitor_);
+    secondTrack.accept(visitor_);
+    visitor_.expectNameAt(0, "A.mp3");
+    visitor_.expectNameAt(1, "B.mp3");
 }
 
 TEST_F(SongTest, MatchWithSpecialCharacters) {
-    Song song("I'm good (Blue).mp3", "/music/I'm good (Blue).mp3");
+    const Song song("I'm good (Blue).mp3", "/music/I'm good (Blue).mp3");
     EXPECT_TRUE(song.matches("(Blue)"));
 }
 
 TEST_F(SongTest, ConstructionWithEmptyName) {
-    Song song("", "/music/empty");
+    const Song song("", "/music/empty");
     song.accept(visitor_);
-    EXPECT_TRUE(visitor_.hasName(""));
+    visitor_.expectName("");
 }
 
 TEST_F(SongTest, ConstructionWithEmptyPath) {
-    Song song("song.mp3", "");
+    const Song song("song.mp3", "");
     song.accept(visitor_);
-    EXPECT_TRUE(visitor_.hasPath(""));
+    visitor_.expectPath("");
 }

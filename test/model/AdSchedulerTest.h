@@ -2,15 +2,16 @@
 #define ADVERTISEMENTTEST_H
 
 #include "../DirectoryTestFixture.h"
-#include "../MockPlaybackListener.h"
+#include "../TrackListenerSpy.h"
 #include "../../model/library/Dice.h"
 #include "../../model/playback/RandomAdPolicy.h"
 #include "../../model/event/AdBus.h"
 #include "../../model/event/TrackBus.h"
+#include "../../model/playback/AdScheduler.h"
 
-class AdvertisementTest : public DirectoryTestFixture {
+class AdSchedulerTest : public DirectoryTestFixture {
 protected:
-    MockPlaybackListener listener_;
+    TrackListenerSpy track_spy_;
     Dice dice_;
     RandomAdPolicy ad_policy_{dice_};
     AdBus ad_bus_;
@@ -18,6 +19,7 @@ protected:
 
     void SetUp() override;
     std::string identify() const override;
+    static bool interruptsAtLeastOnce(AdScheduler& ad);
 };
 
 #endif

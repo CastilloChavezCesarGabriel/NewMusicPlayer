@@ -2,11 +2,11 @@
 #define SONGTEST_H
 
 #include <gtest/gtest.h>
-#include "../TestPlaylistVisitor.h"
+#include "../SongVisitorSpy.h"
 
-class SongTest : public ::testing::Test {
+class SongTest : public::testing::Test {
 protected:
-    TestPlaylistVisitor visitor_;
+    SongVisitorSpy visitor_;
 };
 
 #endif

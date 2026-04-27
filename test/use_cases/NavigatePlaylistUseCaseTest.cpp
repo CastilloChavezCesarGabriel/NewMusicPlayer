@@ -1,5 +1,5 @@
 #include "NavigatePlaylistUseCaseTest.h"
-#include "../TestPlaylistVisitor.h"
+#include "../SongVisitorSpy.h"
 #include "../../model/tracklist/QuickSort.h"
 #include <filesystem>
 #include <fstream>
@@ -14,7 +14,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceFromFirstToSecond) {
     build();
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceFromMiddle) {
@@ -24,7 +24,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceFromMiddle) {
     build();
     playback_->play(1);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(2));
+    track_spy_.expectSelectWith(2);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceAtEndDoesNotCrash) {
@@ -41,7 +41,7 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatFromLastToMiddle) {
     build();
     playback_->play(2);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatFromMiddleToFirst) {
@@ -51,7 +51,7 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatFromMiddleToFirst) {
     build();
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatAtStartDoesNotCrash) {
@@ -70,7 +70,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceThenRetreatReturnsToStart) {
     playback_->play(0);
     playback_->advance();
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceThroughAll) {
@@ -81,7 +81,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceThroughAll) {
     playback_->play(0);
     playback_->advance();
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(2));
+    track_spy_.expectSelectWith(2);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatThroughAll) {
@@ -92,7 +92,7 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatThroughAll) {
     playback_->play(2);
     playback_->retreat();
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceStartsPlayback) {
@@ -101,7 +101,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceStartsPlayback) {
     build();
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatStartsPlayback) {
@@ -110,7 +110,7 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatStartsPlayback) {
     build();
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceNotifiesSelection) {
@@ -119,7 +119,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceNotifiesSelection) {
     build();
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatNotifiesSelection) {
@@ -128,7 +128,7 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatNotifiesSelection) {
     build();
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelected());
+    track_spy_.expectSelect();
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceAfterSort) {
@@ -140,7 +140,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceAfterSort) {
     setlist_->sort(byTitle);
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatAfterSort) {
@@ -152,7 +152,7 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatAfterSort) {
     setlist_->sort(byTitle);
     playback_->play(2);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceAfterRemove) {
@@ -163,7 +163,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceAfterRemove) {
     library_->remove(0);
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatAfterRemove) {
@@ -174,31 +174,25 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatAfterRemove) {
     library_->remove(0);
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceAfterInsert) {
     createSong("a.mp3");
-    std::string srcDir = base_directory_ + "/src";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/b.mp3") << "audio";
     build();
-    library_->insert(srcDir + "/b.mp3");
+    library_->insert(prepare("b.mp3"));
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatAfterInsert) {
     createSong("a.mp3");
-    std::string srcDir = base_directory_ + "/src";
-    std::filesystem::create_directories(srcDir);
-    std::ofstream(srcDir + "/b.mp3") << "audio";
     build();
-    library_->insert(srcDir + "/b.mp3");
+    library_->insert(prepare("b.mp3"));
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceMultipleTimes) {
@@ -211,7 +205,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceMultipleTimes) {
     playback_->advance();
     playback_->advance();
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(3));
+    track_spy_.expectSelectWith(3);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatMultipleTimes) {
@@ -224,7 +218,7 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatMultipleTimes) {
     playback_->retreat();
     playback_->retreat();
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceThenRetreatThenAdvance) {
@@ -236,7 +230,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceThenRetreatThenAdvance) {
     playback_->advance();
     playback_->retreat();
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceOnSingleSongDoesNotCrash) {
@@ -259,7 +253,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceTwoSongs) {
     build();
     playback_->play(0);
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(1));
+    track_spy_.expectSelectWith(1);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatTwoSongs) {
@@ -268,7 +262,7 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatTwoSongs) {
     build();
     playback_->play(1);
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceFiveSongs) {
@@ -283,7 +277,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceFiveSongs) {
     playback_->advance();
     playback_->advance();
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(4));
+    track_spy_.expectSelectWith(4);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceDoesNotNotifyChanged) {
@@ -292,7 +286,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceDoesNotNotifyChanged) {
     build();
     playback_->play(0);
     playback_->advance();
-    EXPECT_FALSE(listener_.wasChanged());
+    library_spy_.expectNoChange();
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatDoesNotNotifyChanged) {
@@ -301,7 +295,7 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatDoesNotNotifyChanged) {
     build();
     playback_->play(1);
     playback_->retreat();
-    EXPECT_FALSE(listener_.wasChanged());
+    library_spy_.expectNoChange();
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceThenPlaylistUnchanged) {
@@ -310,9 +304,9 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceThenPlaylistUnchanged) {
     build();
     playback_->play(0);
     playback_->advance();
-    TestPlaylistVisitor visitor;
+    SongVisitorSpy visitor;
     catalog_->accept(visitor);
-    EXPECT_TRUE(visitor.hasSongs(2));
+    visitor.expectCount(2);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, AdvanceSortedPlaylist) {
@@ -325,7 +319,7 @@ TEST_F(NavigatePlaylistUseCaseTest, AdvanceSortedPlaylist) {
     playback_->play(0);
     playback_->advance();
     playback_->advance();
-    EXPECT_TRUE(listener_.wasSelectedWith(2));
+    track_spy_.expectSelectWith(2);
 }
 
 TEST_F(NavigatePlaylistUseCaseTest, RetreatSortedPlaylist) {
@@ -338,5 +332,5 @@ TEST_F(NavigatePlaylistUseCaseTest, RetreatSortedPlaylist) {
     playback_->play(2);
     playback_->retreat();
     playback_->retreat();
-    EXPECT_TRUE(listener_.wasSelectedWith(0));
+    track_spy_.expectSelectWith(0);
 }
