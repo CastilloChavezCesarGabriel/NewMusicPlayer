@@ -20,7 +20,7 @@ public:
     void onToggle() override;
     void onAdvance() override;
     void onRetreat() override;
-    void onSkip() override;
+    bool onSkip() override;
     void onEnd() override;
     void onAdjust(int volume) override;
 };

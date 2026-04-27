@@ -238,10 +238,16 @@ enable_testing()
 find_package(GTest REQUIRED)
 
 add_executable(NewMusicPlayerTests
-        test/MockPlaybackListener.cpp
-        test/MockPlaybackListener.h
-        test/TestPlaylistVisitor.cpp
-        test/TestPlaylistVisitor.h
+        test/TrackListenerSpy.cpp
+        test/TrackListenerSpy.h
+        test/LibraryListenerSpy.cpp
+        test/LibraryListenerSpy.h
+        test/AdListenerSpy.cpp
+        test/AdListenerSpy.h
+        test/SongVisitorSpy.cpp
+        test/SongVisitorSpy.h
+        test/PathVisitorSpy.cpp
+        test/PathVisitorSpy.h
         test/ModelTestFixture.cpp
         test/ModelTestFixture.h
         test/DirectoryTestFixture.cpp
@@ -251,7 +257,10 @@ add_executable(NewMusicPlayerTests
         test/model/SongTest.cpp
         test/model/PlaylistTest.cpp
         test/model/AdSchedulerTest.cpp
-        test/model/SortingTest.cpp
+        test/model/ShellSortTest.cpp
+        test/model/ShellSortTest.h
+        test/model/QuickSortTest.cpp
+        test/model/QuickSortTest.h
         test/model/ModelTest.cpp
         test/RegressionTest.cpp
         test/use_cases/PlaySongUseCaseTest.cpp

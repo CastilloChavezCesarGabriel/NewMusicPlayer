@@ -16,6 +16,7 @@ public:
     void accept(ISongVisitor& visitor) const;
     void dispatch(IPathVisitor& visitor) const;
     bool matches(const std::string& query) const;
+    bool resembles(const std::string& query) const;
     bool equals(const Song& other) const;
 };
 

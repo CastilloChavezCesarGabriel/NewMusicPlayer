@@ -34,7 +34,7 @@ void Tracklist::accept(ISongVisitor& visitor) const {
 
 void Tracklist::filter(const std::string& query, ISongVisitor& visitor) const {
     for (const Song& song : songs_) {
-        if (song.matches(query)) {
+        if (song.resembles(query)) {
             song.accept(visitor);
         }
     }

@@ -6,7 +6,7 @@ public:
     virtual ~IAudioControl() = default;
     virtual void onAdjust(int volume) = 0;
     virtual void onEnd() = 0;
-    virtual void onSkip() = 0;
+    virtual bool onSkip() = 0;
 };
 
 #endif //I_AUDIO_CONTROL_H

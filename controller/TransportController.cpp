@@ -24,8 +24,8 @@ void TransportController::onRetreat() {
     playback_.retreat();
 }
 
-void TransportController::onSkip() {
-    playback_.skip();
+bool TransportController::onSkip() {
+    return playback_.skip();
 }
 
 void TransportController::onEnd() {
